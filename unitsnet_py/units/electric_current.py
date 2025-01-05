@@ -10,51 +10,101 @@ class ElectricCurrentUnits(Enum):
             ElectricCurrentUnits enumeration
         """
         
-        Ampere = 'ampere'
+        Ampere = 'Ampere'
         """
             
         """
         
-        Femtoampere = 'femtoampere'
+        Femtoampere = 'Femtoampere'
         """
             
         """
         
-        Picoampere = 'picoampere'
+        Picoampere = 'Picoampere'
         """
             
         """
         
-        Nanoampere = 'nanoampere'
+        Nanoampere = 'Nanoampere'
         """
             
         """
         
-        Microampere = 'microampere'
+        Microampere = 'Microampere'
         """
             
         """
         
-        Milliampere = 'milliampere'
+        Milliampere = 'Milliampere'
         """
             
         """
         
-        Centiampere = 'centiampere'
+        Centiampere = 'Centiampere'
         """
             
         """
         
-        Kiloampere = 'kiloampere'
+        Kiloampere = 'Kiloampere'
         """
             
         """
         
-        Megaampere = 'megaampere'
+        Megaampere = 'Megaampere'
         """
             
         """
         
+
+class ElectricCurrentDto:
+    """
+    A DTO representation of a ElectricCurrent
+
+    Attributes:
+        value (float): The value of the ElectricCurrent.
+        unit (ElectricCurrentUnits): The specific unit that the ElectricCurrent value is representing.
+    """
+
+    def __init__(self, value: float, unit: ElectricCurrentUnits):
+        """
+        Create a new DTO representation of a ElectricCurrent
+
+        Parameters:
+            value (float): The value of the ElectricCurrent.
+            unit (ElectricCurrentUnits): The specific unit that the ElectricCurrent value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ElectricCurrent
+        """
+        self.unit: ElectricCurrentUnits = unit
+        """
+        The specific unit that the ElectricCurrent value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ElectricCurrent DTO JSON object representing the current unit.
+
+        :return: JSON object represents ElectricCurrent DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Ampere"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ElectricCurrent DTO from a json representation.
+
+        :param data: The ElectricCurrent DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Ampere"}
+        :return: A new instance of ElectricCurrentDto.
+        :rtype: ElectricCurrentDto
+        """
+        return ElectricCurrentDto(value=data["value"], unit=ElectricCurrentUnits(data["unit"]))
+
 
 class ElectricCurrent(AbstractMeasure):
     """
@@ -65,8 +115,10 @@ class ElectricCurrent(AbstractMeasure):
         from_unit (ElectricCurrentUnits): The ElectricCurrent unit to create from, The default unit is Ampere
     """
     def __init__(self, value: float, from_unit: ElectricCurrentUnits = ElectricCurrentUnits.Ampere):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__amperes = None
@@ -90,6 +142,54 @@ class ElectricCurrent(AbstractMeasure):
 
     def convert(self, unit: ElectricCurrentUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ElectricCurrentUnits = ElectricCurrentUnits.Ampere) -> ElectricCurrentDto:
+        """
+        Get a new instance of ElectricCurrent DTO representing the current unit.
+
+        :param hold_in_unit: The specific ElectricCurrent unit to store the ElectricCurrent value in the DTO representation.
+        :type hold_in_unit: ElectricCurrentUnits
+        :return: A new instance of ElectricCurrentDto.
+        :rtype: ElectricCurrentDto
+        """
+        return ElectricCurrentDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ElectricCurrentUnits = ElectricCurrentUnits.Ampere):
+        """
+        Get a ElectricCurrent DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ElectricCurrent unit to store the ElectricCurrent value in the DTO representation.
+        :type hold_in_unit: ElectricCurrentUnits
+        :return: JSON object represents ElectricCurrent DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Ampere"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(electric_current_dto: ElectricCurrentDto):
+        """
+        Obtain a new instance of ElectricCurrent from a DTO unit object.
+
+        :param electric_current_dto: The ElectricCurrent DTO representation.
+        :type electric_current_dto: ElectricCurrentDto
+        :return: A new instance of ElectricCurrent.
+        :rtype: ElectricCurrent
+        """
+        return ElectricCurrent(electric_current_dto.value, electric_current_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ElectricCurrent from a DTO unit json representation.
+
+        :param data: The ElectricCurrent DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Ampere"}
+        :return: A new instance of ElectricCurrent.
+        :rtype: ElectricCurrent
+        """
+        return ElectricCurrent.from_dto(ElectricCurrentDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ElectricCurrentUnits) -> float:
         value = self._value
@@ -395,39 +495,47 @@ class ElectricCurrent(AbstractMeasure):
         return self.__megaamperes
 
     
-    def to_string(self, unit: ElectricCurrentUnits = ElectricCurrentUnits.Ampere) -> str:
+    def to_string(self, unit: ElectricCurrentUnits = ElectricCurrentUnits.Ampere, fractional_digits: int = None) -> str:
         """
-        Format the ElectricCurrent to string.
-        Note! the default format for ElectricCurrent is Ampere.
-        To specify the unit format set the 'unit' parameter.
+        Format the ElectricCurrent to a string.
+        
+        Note: the default format for ElectricCurrent is Ampere.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ElectricCurrent. Default is 'Ampere'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ElectricCurrentUnits.Ampere:
-            return f"""{self.amperes} A"""
+            return f"""{super()._truncate_fraction_digits(self.amperes, fractional_digits)} A"""
         
         if unit == ElectricCurrentUnits.Femtoampere:
-            return f"""{self.femtoamperes} fA"""
+            return f"""{super()._truncate_fraction_digits(self.femtoamperes, fractional_digits)} fA"""
         
         if unit == ElectricCurrentUnits.Picoampere:
-            return f"""{self.picoamperes} pA"""
+            return f"""{super()._truncate_fraction_digits(self.picoamperes, fractional_digits)} pA"""
         
         if unit == ElectricCurrentUnits.Nanoampere:
-            return f"""{self.nanoamperes} nA"""
+            return f"""{super()._truncate_fraction_digits(self.nanoamperes, fractional_digits)} nA"""
         
         if unit == ElectricCurrentUnits.Microampere:
-            return f"""{self.microamperes} μA"""
+            return f"""{super()._truncate_fraction_digits(self.microamperes, fractional_digits)} μA"""
         
         if unit == ElectricCurrentUnits.Milliampere:
-            return f"""{self.milliamperes} mA"""
+            return f"""{super()._truncate_fraction_digits(self.milliamperes, fractional_digits)} mA"""
         
         if unit == ElectricCurrentUnits.Centiampere:
-            return f"""{self.centiamperes} cA"""
+            return f"""{super()._truncate_fraction_digits(self.centiamperes, fractional_digits)} cA"""
         
         if unit == ElectricCurrentUnits.Kiloampere:
-            return f"""{self.kiloamperes} kA"""
+            return f"""{super()._truncate_fraction_digits(self.kiloamperes, fractional_digits)} kA"""
         
         if unit == ElectricCurrentUnits.Megaampere:
-            return f"""{self.megaamperes} MA"""
+            return f"""{super()._truncate_fraction_digits(self.megaamperes, fractional_digits)} MA"""
         
         return f'{self._value}'
 

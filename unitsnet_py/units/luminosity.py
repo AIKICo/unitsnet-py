@@ -10,76 +10,126 @@ class LuminosityUnits(Enum):
             LuminosityUnits enumeration
         """
         
-        Watt = 'watt'
+        Watt = 'Watt'
         """
             
         """
         
-        SolarLuminosity = 'solar_luminosity'
+        SolarLuminosity = 'SolarLuminosity'
         """
             
         """
         
-        Femtowatt = 'femtowatt'
+        Femtowatt = 'Femtowatt'
         """
             
         """
         
-        Picowatt = 'picowatt'
+        Picowatt = 'Picowatt'
         """
             
         """
         
-        Nanowatt = 'nanowatt'
+        Nanowatt = 'Nanowatt'
         """
             
         """
         
-        Microwatt = 'microwatt'
+        Microwatt = 'Microwatt'
         """
             
         """
         
-        Milliwatt = 'milliwatt'
+        Milliwatt = 'Milliwatt'
         """
             
         """
         
-        Deciwatt = 'deciwatt'
+        Deciwatt = 'Deciwatt'
         """
             
         """
         
-        Decawatt = 'decawatt'
+        Decawatt = 'Decawatt'
         """
             
         """
         
-        Kilowatt = 'kilowatt'
+        Kilowatt = 'Kilowatt'
         """
             
         """
         
-        Megawatt = 'megawatt'
+        Megawatt = 'Megawatt'
         """
             
         """
         
-        Gigawatt = 'gigawatt'
+        Gigawatt = 'Gigawatt'
         """
             
         """
         
-        Terawatt = 'terawatt'
+        Terawatt = 'Terawatt'
         """
             
         """
         
-        Petawatt = 'petawatt'
+        Petawatt = 'Petawatt'
         """
             
         """
         
+
+class LuminosityDto:
+    """
+    A DTO representation of a Luminosity
+
+    Attributes:
+        value (float): The value of the Luminosity.
+        unit (LuminosityUnits): The specific unit that the Luminosity value is representing.
+    """
+
+    def __init__(self, value: float, unit: LuminosityUnits):
+        """
+        Create a new DTO representation of a Luminosity
+
+        Parameters:
+            value (float): The value of the Luminosity.
+            unit (LuminosityUnits): The specific unit that the Luminosity value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Luminosity
+        """
+        self.unit: LuminosityUnits = unit
+        """
+        The specific unit that the Luminosity value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Luminosity DTO JSON object representing the current unit.
+
+        :return: JSON object represents Luminosity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Watt"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Luminosity DTO from a json representation.
+
+        :param data: The Luminosity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Watt"}
+        :return: A new instance of LuminosityDto.
+        :rtype: LuminosityDto
+        """
+        return LuminosityDto(value=data["value"], unit=LuminosityUnits(data["unit"]))
+
 
 class Luminosity(AbstractMeasure):
     """
@@ -90,8 +140,10 @@ class Luminosity(AbstractMeasure):
         from_unit (LuminosityUnits): The Luminosity unit to create from, The default unit is Watt
     """
     def __init__(self, value: float, from_unit: LuminosityUnits = LuminosityUnits.Watt):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__watts = None
@@ -125,6 +177,54 @@ class Luminosity(AbstractMeasure):
 
     def convert(self, unit: LuminosityUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: LuminosityUnits = LuminosityUnits.Watt) -> LuminosityDto:
+        """
+        Get a new instance of Luminosity DTO representing the current unit.
+
+        :param hold_in_unit: The specific Luminosity unit to store the Luminosity value in the DTO representation.
+        :type hold_in_unit: LuminosityUnits
+        :return: A new instance of LuminosityDto.
+        :rtype: LuminosityDto
+        """
+        return LuminosityDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: LuminosityUnits = LuminosityUnits.Watt):
+        """
+        Get a Luminosity DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Luminosity unit to store the Luminosity value in the DTO representation.
+        :type hold_in_unit: LuminosityUnits
+        :return: JSON object represents Luminosity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Watt"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(luminosity_dto: LuminosityDto):
+        """
+        Obtain a new instance of Luminosity from a DTO unit object.
+
+        :param luminosity_dto: The Luminosity DTO representation.
+        :type luminosity_dto: LuminosityDto
+        :return: A new instance of Luminosity.
+        :rtype: Luminosity
+        """
+        return Luminosity(luminosity_dto.value, luminosity_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Luminosity from a DTO unit json representation.
+
+        :param data: The Luminosity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Watt"}
+        :return: A new instance of Luminosity.
+        :rtype: Luminosity
+        """
+        return Luminosity.from_dto(LuminosityDto.from_json(data))
 
     def __convert_from_base(self, from_unit: LuminosityUnits) -> float:
         value = self._value
@@ -590,54 +690,62 @@ class Luminosity(AbstractMeasure):
         return self.__petawatts
 
     
-    def to_string(self, unit: LuminosityUnits = LuminosityUnits.Watt) -> str:
+    def to_string(self, unit: LuminosityUnits = LuminosityUnits.Watt, fractional_digits: int = None) -> str:
         """
-        Format the Luminosity to string.
-        Note! the default format for Luminosity is Watt.
-        To specify the unit format set the 'unit' parameter.
+        Format the Luminosity to a string.
+        
+        Note: the default format for Luminosity is Watt.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Luminosity. Default is 'Watt'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == LuminosityUnits.Watt:
-            return f"""{self.watts} W"""
+            return f"""{super()._truncate_fraction_digits(self.watts, fractional_digits)} W"""
         
         if unit == LuminosityUnits.SolarLuminosity:
-            return f"""{self.solar_luminosities} L⊙"""
+            return f"""{super()._truncate_fraction_digits(self.solar_luminosities, fractional_digits)} L⊙"""
         
         if unit == LuminosityUnits.Femtowatt:
-            return f"""{self.femtowatts} fW"""
+            return f"""{super()._truncate_fraction_digits(self.femtowatts, fractional_digits)} fW"""
         
         if unit == LuminosityUnits.Picowatt:
-            return f"""{self.picowatts} pW"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts, fractional_digits)} pW"""
         
         if unit == LuminosityUnits.Nanowatt:
-            return f"""{self.nanowatts} nW"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts, fractional_digits)} nW"""
         
         if unit == LuminosityUnits.Microwatt:
-            return f"""{self.microwatts} μW"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts, fractional_digits)} μW"""
         
         if unit == LuminosityUnits.Milliwatt:
-            return f"""{self.milliwatts} mW"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts, fractional_digits)} mW"""
         
         if unit == LuminosityUnits.Deciwatt:
-            return f"""{self.deciwatts} dW"""
+            return f"""{super()._truncate_fraction_digits(self.deciwatts, fractional_digits)} dW"""
         
         if unit == LuminosityUnits.Decawatt:
-            return f"""{self.decawatts} daW"""
+            return f"""{super()._truncate_fraction_digits(self.decawatts, fractional_digits)} daW"""
         
         if unit == LuminosityUnits.Kilowatt:
-            return f"""{self.kilowatts} kW"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts, fractional_digits)} kW"""
         
         if unit == LuminosityUnits.Megawatt:
-            return f"""{self.megawatts} MW"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts, fractional_digits)} MW"""
         
         if unit == LuminosityUnits.Gigawatt:
-            return f"""{self.gigawatts} GW"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts, fractional_digits)} GW"""
         
         if unit == LuminosityUnits.Terawatt:
-            return f"""{self.terawatts} TW"""
+            return f"""{super()._truncate_fraction_digits(self.terawatts, fractional_digits)} TW"""
         
         if unit == LuminosityUnits.Petawatt:
-            return f"""{self.petawatts} PW"""
+            return f"""{super()._truncate_fraction_digits(self.petawatts, fractional_digits)} PW"""
         
         return f'{self._value}'
 

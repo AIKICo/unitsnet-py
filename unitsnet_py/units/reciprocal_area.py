@@ -10,61 +10,111 @@ class ReciprocalAreaUnits(Enum):
             ReciprocalAreaUnits enumeration
         """
         
-        InverseSquareMeter = 'inverse_square_meter'
+        InverseSquareMeter = 'InverseSquareMeter'
         """
             
         """
         
-        InverseSquareKilometer = 'inverse_square_kilometer'
+        InverseSquareKilometer = 'InverseSquareKilometer'
         """
             
         """
         
-        InverseSquareDecimeter = 'inverse_square_decimeter'
+        InverseSquareDecimeter = 'InverseSquareDecimeter'
         """
             
         """
         
-        InverseSquareCentimeter = 'inverse_square_centimeter'
+        InverseSquareCentimeter = 'InverseSquareCentimeter'
         """
             
         """
         
-        InverseSquareMillimeter = 'inverse_square_millimeter'
+        InverseSquareMillimeter = 'InverseSquareMillimeter'
         """
             
         """
         
-        InverseSquareMicrometer = 'inverse_square_micrometer'
+        InverseSquareMicrometer = 'InverseSquareMicrometer'
         """
             
         """
         
-        InverseSquareMile = 'inverse_square_mile'
+        InverseSquareMile = 'InverseSquareMile'
         """
             
         """
         
-        InverseSquareYard = 'inverse_square_yard'
+        InverseSquareYard = 'InverseSquareYard'
         """
             
         """
         
-        InverseSquareFoot = 'inverse_square_foot'
+        InverseSquareFoot = 'InverseSquareFoot'
         """
             
         """
         
-        InverseUsSurveySquareFoot = 'inverse_us_survey_square_foot'
+        InverseUsSurveySquareFoot = 'InverseUsSurveySquareFoot'
         """
             
         """
         
-        InverseSquareInch = 'inverse_square_inch'
+        InverseSquareInch = 'InverseSquareInch'
         """
             
         """
         
+
+class ReciprocalAreaDto:
+    """
+    A DTO representation of a ReciprocalArea
+
+    Attributes:
+        value (float): The value of the ReciprocalArea.
+        unit (ReciprocalAreaUnits): The specific unit that the ReciprocalArea value is representing.
+    """
+
+    def __init__(self, value: float, unit: ReciprocalAreaUnits):
+        """
+        Create a new DTO representation of a ReciprocalArea
+
+        Parameters:
+            value (float): The value of the ReciprocalArea.
+            unit (ReciprocalAreaUnits): The specific unit that the ReciprocalArea value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ReciprocalArea
+        """
+        self.unit: ReciprocalAreaUnits = unit
+        """
+        The specific unit that the ReciprocalArea value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ReciprocalArea DTO JSON object representing the current unit.
+
+        :return: JSON object represents ReciprocalArea DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "InverseSquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ReciprocalArea DTO from a json representation.
+
+        :param data: The ReciprocalArea DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "InverseSquareMeter"}
+        :return: A new instance of ReciprocalAreaDto.
+        :rtype: ReciprocalAreaDto
+        """
+        return ReciprocalAreaDto(value=data["value"], unit=ReciprocalAreaUnits(data["unit"]))
+
 
 class ReciprocalArea(AbstractMeasure):
     """
@@ -75,8 +125,10 @@ class ReciprocalArea(AbstractMeasure):
         from_unit (ReciprocalAreaUnits): The ReciprocalArea unit to create from, The default unit is InverseSquareMeter
     """
     def __init__(self, value: float, from_unit: ReciprocalAreaUnits = ReciprocalAreaUnits.InverseSquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__inverse_square_meters = None
@@ -104,6 +156,54 @@ class ReciprocalArea(AbstractMeasure):
 
     def convert(self, unit: ReciprocalAreaUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ReciprocalAreaUnits = ReciprocalAreaUnits.InverseSquareMeter) -> ReciprocalAreaDto:
+        """
+        Get a new instance of ReciprocalArea DTO representing the current unit.
+
+        :param hold_in_unit: The specific ReciprocalArea unit to store the ReciprocalArea value in the DTO representation.
+        :type hold_in_unit: ReciprocalAreaUnits
+        :return: A new instance of ReciprocalAreaDto.
+        :rtype: ReciprocalAreaDto
+        """
+        return ReciprocalAreaDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ReciprocalAreaUnits = ReciprocalAreaUnits.InverseSquareMeter):
+        """
+        Get a ReciprocalArea DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ReciprocalArea unit to store the ReciprocalArea value in the DTO representation.
+        :type hold_in_unit: ReciprocalAreaUnits
+        :return: JSON object represents ReciprocalArea DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "InverseSquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(reciprocal_area_dto: ReciprocalAreaDto):
+        """
+        Obtain a new instance of ReciprocalArea from a DTO unit object.
+
+        :param reciprocal_area_dto: The ReciprocalArea DTO representation.
+        :type reciprocal_area_dto: ReciprocalAreaDto
+        :return: A new instance of ReciprocalArea.
+        :rtype: ReciprocalArea
+        """
+        return ReciprocalArea(reciprocal_area_dto.value, reciprocal_area_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ReciprocalArea from a DTO unit json representation.
+
+        :param data: The ReciprocalArea DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "InverseSquareMeter"}
+        :return: A new instance of ReciprocalArea.
+        :rtype: ReciprocalArea
+        """
+        return ReciprocalArea.from_dto(ReciprocalAreaDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ReciprocalAreaUnits) -> float:
         value = self._value
@@ -473,45 +573,53 @@ class ReciprocalArea(AbstractMeasure):
         return self.__inverse_square_inches
 
     
-    def to_string(self, unit: ReciprocalAreaUnits = ReciprocalAreaUnits.InverseSquareMeter) -> str:
+    def to_string(self, unit: ReciprocalAreaUnits = ReciprocalAreaUnits.InverseSquareMeter, fractional_digits: int = None) -> str:
         """
-        Format the ReciprocalArea to string.
-        Note! the default format for ReciprocalArea is InverseSquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the ReciprocalArea to a string.
+        
+        Note: the default format for ReciprocalArea is InverseSquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ReciprocalArea. Default is 'InverseSquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ReciprocalAreaUnits.InverseSquareMeter:
-            return f"""{self.inverse_square_meters} m⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_meters, fractional_digits)} m⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareKilometer:
-            return f"""{self.inverse_square_kilometers} km⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_kilometers, fractional_digits)} km⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareDecimeter:
-            return f"""{self.inverse_square_decimeters} dm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_decimeters, fractional_digits)} dm⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareCentimeter:
-            return f"""{self.inverse_square_centimeters} cm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_centimeters, fractional_digits)} cm⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareMillimeter:
-            return f"""{self.inverse_square_millimeters} mm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_millimeters, fractional_digits)} mm⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareMicrometer:
-            return f"""{self.inverse_square_micrometers} µm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_micrometers, fractional_digits)} µm⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareMile:
-            return f"""{self.inverse_square_miles} mi⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_miles, fractional_digits)} mi⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareYard:
-            return f"""{self.inverse_square_yards} yd⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_yards, fractional_digits)} yd⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseSquareFoot:
-            return f"""{self.inverse_square_feet} ft⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_feet, fractional_digits)} ft⁻²"""
         
         if unit == ReciprocalAreaUnits.InverseUsSurveySquareFoot:
-            return f"""{self.inverse_us_survey_square_feet} ft⁻² (US)"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_us_survey_square_feet, fractional_digits)} ft⁻² (US)"""
         
         if unit == ReciprocalAreaUnits.InverseSquareInch:
-            return f"""{self.inverse_square_inches} in⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_square_inches, fractional_digits)} in⁻²"""
         
         return f'{self._value}'
 

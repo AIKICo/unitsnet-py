@@ -10,51 +10,101 @@ class MolarFlowUnits(Enum):
             MolarFlowUnits enumeration
         """
         
-        MolePerSecond = 'mole_per_second'
+        MolePerSecond = 'MolePerSecond'
         """
             
         """
         
-        MolePerMinute = 'mole_per_minute'
+        MolePerMinute = 'MolePerMinute'
         """
             
         """
         
-        MolePerHour = 'mole_per_hour'
+        MolePerHour = 'MolePerHour'
         """
             
         """
         
-        PoundMolePerSecond = 'pound_mole_per_second'
+        PoundMolePerSecond = 'PoundMolePerSecond'
         """
             
         """
         
-        PoundMolePerMinute = 'pound_mole_per_minute'
+        PoundMolePerMinute = 'PoundMolePerMinute'
         """
             
         """
         
-        PoundMolePerHour = 'pound_mole_per_hour'
+        PoundMolePerHour = 'PoundMolePerHour'
         """
             
         """
         
-        KilomolePerSecond = 'kilomole_per_second'
+        KilomolePerSecond = 'KilomolePerSecond'
         """
             
         """
         
-        KilomolePerMinute = 'kilomole_per_minute'
+        KilomolePerMinute = 'KilomolePerMinute'
         """
             
         """
         
-        KilomolePerHour = 'kilomole_per_hour'
+        KilomolePerHour = 'KilomolePerHour'
         """
             
         """
         
+
+class MolarFlowDto:
+    """
+    A DTO representation of a MolarFlow
+
+    Attributes:
+        value (float): The value of the MolarFlow.
+        unit (MolarFlowUnits): The specific unit that the MolarFlow value is representing.
+    """
+
+    def __init__(self, value: float, unit: MolarFlowUnits):
+        """
+        Create a new DTO representation of a MolarFlow
+
+        Parameters:
+            value (float): The value of the MolarFlow.
+            unit (MolarFlowUnits): The specific unit that the MolarFlow value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the MolarFlow
+        """
+        self.unit: MolarFlowUnits = unit
+        """
+        The specific unit that the MolarFlow value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a MolarFlow DTO JSON object representing the current unit.
+
+        :return: JSON object represents MolarFlow DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MolePerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of MolarFlow DTO from a json representation.
+
+        :param data: The MolarFlow DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MolePerSecond"}
+        :return: A new instance of MolarFlowDto.
+        :rtype: MolarFlowDto
+        """
+        return MolarFlowDto(value=data["value"], unit=MolarFlowUnits(data["unit"]))
+
 
 class MolarFlow(AbstractMeasure):
     """
@@ -65,8 +115,10 @@ class MolarFlow(AbstractMeasure):
         from_unit (MolarFlowUnits): The MolarFlow unit to create from, The default unit is MolePerSecond
     """
     def __init__(self, value: float, from_unit: MolarFlowUnits = MolarFlowUnits.MolePerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__moles_per_second = None
@@ -90,6 +142,54 @@ class MolarFlow(AbstractMeasure):
 
     def convert(self, unit: MolarFlowUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: MolarFlowUnits = MolarFlowUnits.MolePerSecond) -> MolarFlowDto:
+        """
+        Get a new instance of MolarFlow DTO representing the current unit.
+
+        :param hold_in_unit: The specific MolarFlow unit to store the MolarFlow value in the DTO representation.
+        :type hold_in_unit: MolarFlowUnits
+        :return: A new instance of MolarFlowDto.
+        :rtype: MolarFlowDto
+        """
+        return MolarFlowDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: MolarFlowUnits = MolarFlowUnits.MolePerSecond):
+        """
+        Get a MolarFlow DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific MolarFlow unit to store the MolarFlow value in the DTO representation.
+        :type hold_in_unit: MolarFlowUnits
+        :return: JSON object represents MolarFlow DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MolePerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(molar_flow_dto: MolarFlowDto):
+        """
+        Obtain a new instance of MolarFlow from a DTO unit object.
+
+        :param molar_flow_dto: The MolarFlow DTO representation.
+        :type molar_flow_dto: MolarFlowDto
+        :return: A new instance of MolarFlow.
+        :rtype: MolarFlow
+        """
+        return MolarFlow(molar_flow_dto.value, molar_flow_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of MolarFlow from a DTO unit json representation.
+
+        :param data: The MolarFlow DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MolePerSecond"}
+        :return: A new instance of MolarFlow.
+        :rtype: MolarFlow
+        """
+        return MolarFlow.from_dto(MolarFlowDto.from_json(data))
 
     def __convert_from_base(self, from_unit: MolarFlowUnits) -> float:
         value = self._value
@@ -395,39 +495,47 @@ class MolarFlow(AbstractMeasure):
         return self.__kilomoles_per_hour
 
     
-    def to_string(self, unit: MolarFlowUnits = MolarFlowUnits.MolePerSecond) -> str:
+    def to_string(self, unit: MolarFlowUnits = MolarFlowUnits.MolePerSecond, fractional_digits: int = None) -> str:
         """
-        Format the MolarFlow to string.
-        Note! the default format for MolarFlow is MolePerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the MolarFlow to a string.
+        
+        Note: the default format for MolarFlow is MolePerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the MolarFlow. Default is 'MolePerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == MolarFlowUnits.MolePerSecond:
-            return f"""{self.moles_per_second} mol/s"""
+            return f"""{super()._truncate_fraction_digits(self.moles_per_second, fractional_digits)} mol/s"""
         
         if unit == MolarFlowUnits.MolePerMinute:
-            return f"""{self.moles_per_minute} mol/min"""
+            return f"""{super()._truncate_fraction_digits(self.moles_per_minute, fractional_digits)} mol/min"""
         
         if unit == MolarFlowUnits.MolePerHour:
-            return f"""{self.moles_per_hour} kmol/h"""
+            return f"""{super()._truncate_fraction_digits(self.moles_per_hour, fractional_digits)} kmol/h"""
         
         if unit == MolarFlowUnits.PoundMolePerSecond:
-            return f"""{self.pound_moles_per_second} lbmol/s"""
+            return f"""{super()._truncate_fraction_digits(self.pound_moles_per_second, fractional_digits)} lbmol/s"""
         
         if unit == MolarFlowUnits.PoundMolePerMinute:
-            return f"""{self.pound_moles_per_minute} lbmol/min"""
+            return f"""{super()._truncate_fraction_digits(self.pound_moles_per_minute, fractional_digits)} lbmol/min"""
         
         if unit == MolarFlowUnits.PoundMolePerHour:
-            return f"""{self.pound_moles_per_hour} lbmol/h"""
+            return f"""{super()._truncate_fraction_digits(self.pound_moles_per_hour, fractional_digits)} lbmol/h"""
         
         if unit == MolarFlowUnits.KilomolePerSecond:
-            return f"""{self.kilomoles_per_second} kmol/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilomoles_per_second, fractional_digits)} kmol/s"""
         
         if unit == MolarFlowUnits.KilomolePerMinute:
-            return f"""{self.kilomoles_per_minute} kmol/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilomoles_per_minute, fractional_digits)} kmol/min"""
         
         if unit == MolarFlowUnits.KilomolePerHour:
-            return f"""{self.kilomoles_per_hour} kkmol/h"""
+            return f"""{super()._truncate_fraction_digits(self.kilomoles_per_hour, fractional_digits)} kkmol/h"""
         
         return f'{self._value}'
 

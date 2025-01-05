@@ -10,36 +10,86 @@ class RatioUnits(Enum):
             RatioUnits enumeration
         """
         
-        DecimalFraction = 'decimal_fraction'
+        DecimalFraction = 'DecimalFraction'
         """
             
         """
         
-        Percent = 'percent'
+        Percent = 'Percent'
         """
             
         """
         
-        PartPerThousand = 'part_per_thousand'
+        PartPerThousand = 'PartPerThousand'
         """
             
         """
         
-        PartPerMillion = 'part_per_million'
+        PartPerMillion = 'PartPerMillion'
         """
             
         """
         
-        PartPerBillion = 'part_per_billion'
+        PartPerBillion = 'PartPerBillion'
         """
             
         """
         
-        PartPerTrillion = 'part_per_trillion'
+        PartPerTrillion = 'PartPerTrillion'
         """
             
         """
         
+
+class RatioDto:
+    """
+    A DTO representation of a Ratio
+
+    Attributes:
+        value (float): The value of the Ratio.
+        unit (RatioUnits): The specific unit that the Ratio value is representing.
+    """
+
+    def __init__(self, value: float, unit: RatioUnits):
+        """
+        Create a new DTO representation of a Ratio
+
+        Parameters:
+            value (float): The value of the Ratio.
+            unit (RatioUnits): The specific unit that the Ratio value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Ratio
+        """
+        self.unit: RatioUnits = unit
+        """
+        The specific unit that the Ratio value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Ratio DTO JSON object representing the current unit.
+
+        :return: JSON object represents Ratio DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "DecimalFraction"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Ratio DTO from a json representation.
+
+        :param data: The Ratio DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "DecimalFraction"}
+        :return: A new instance of RatioDto.
+        :rtype: RatioDto
+        """
+        return RatioDto(value=data["value"], unit=RatioUnits(data["unit"]))
+
 
 class Ratio(AbstractMeasure):
     """
@@ -50,8 +100,10 @@ class Ratio(AbstractMeasure):
         from_unit (RatioUnits): The Ratio unit to create from, The default unit is DecimalFraction
     """
     def __init__(self, value: float, from_unit: RatioUnits = RatioUnits.DecimalFraction):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__decimal_fractions = None
@@ -69,6 +121,54 @@ class Ratio(AbstractMeasure):
 
     def convert(self, unit: RatioUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: RatioUnits = RatioUnits.DecimalFraction) -> RatioDto:
+        """
+        Get a new instance of Ratio DTO representing the current unit.
+
+        :param hold_in_unit: The specific Ratio unit to store the Ratio value in the DTO representation.
+        :type hold_in_unit: RatioUnits
+        :return: A new instance of RatioDto.
+        :rtype: RatioDto
+        """
+        return RatioDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: RatioUnits = RatioUnits.DecimalFraction):
+        """
+        Get a Ratio DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Ratio unit to store the Ratio value in the DTO representation.
+        :type hold_in_unit: RatioUnits
+        :return: JSON object represents Ratio DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "DecimalFraction"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(ratio_dto: RatioDto):
+        """
+        Obtain a new instance of Ratio from a DTO unit object.
+
+        :param ratio_dto: The Ratio DTO representation.
+        :type ratio_dto: RatioDto
+        :return: A new instance of Ratio.
+        :rtype: Ratio
+        """
+        return Ratio(ratio_dto.value, ratio_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Ratio from a DTO unit json representation.
+
+        :param data: The Ratio DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "DecimalFraction"}
+        :return: A new instance of Ratio.
+        :rtype: Ratio
+        """
+        return Ratio.from_dto(RatioDto.from_json(data))
 
     def __convert_from_base(self, from_unit: RatioUnits) -> float:
         value = self._value
@@ -278,30 +378,38 @@ class Ratio(AbstractMeasure):
         return self.__parts_per_trillion
 
     
-    def to_string(self, unit: RatioUnits = RatioUnits.DecimalFraction) -> str:
+    def to_string(self, unit: RatioUnits = RatioUnits.DecimalFraction, fractional_digits: int = None) -> str:
         """
-        Format the Ratio to string.
-        Note! the default format for Ratio is DecimalFraction.
-        To specify the unit format set the 'unit' parameter.
+        Format the Ratio to a string.
+        
+        Note: the default format for Ratio is DecimalFraction.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Ratio. Default is 'DecimalFraction'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == RatioUnits.DecimalFraction:
-            return f"""{self.decimal_fractions} """
+            return f"""{super()._truncate_fraction_digits(self.decimal_fractions, fractional_digits)} """
         
         if unit == RatioUnits.Percent:
-            return f"""{self.percent} %"""
+            return f"""{super()._truncate_fraction_digits(self.percent, fractional_digits)} %"""
         
         if unit == RatioUnits.PartPerThousand:
-            return f"""{self.parts_per_thousand} ‰"""
+            return f"""{super()._truncate_fraction_digits(self.parts_per_thousand, fractional_digits)} ‰"""
         
         if unit == RatioUnits.PartPerMillion:
-            return f"""{self.parts_per_million} ppm"""
+            return f"""{super()._truncate_fraction_digits(self.parts_per_million, fractional_digits)} ppm"""
         
         if unit == RatioUnits.PartPerBillion:
-            return f"""{self.parts_per_billion} ppb"""
+            return f"""{super()._truncate_fraction_digits(self.parts_per_billion, fractional_digits)} ppb"""
         
         if unit == RatioUnits.PartPerTrillion:
-            return f"""{self.parts_per_trillion} ppt"""
+            return f"""{super()._truncate_fraction_digits(self.parts_per_trillion, fractional_digits)} ppt"""
         
         return f'{self._value}'
 

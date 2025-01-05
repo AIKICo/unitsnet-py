@@ -7,15 +7,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Generate units
         run: |
-          pip install poetry
-          poetry export -f requirements.txt > requirements.txt
-          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
           python units_generator/generate_package.py
 
       - name: Test units
@@ -26,11 +24,15 @@ jobs:
         if: github.ref == 'refs/heads/main'
         id: update_version
         run: |
-          old_version=$(poetry version | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $NF}')
-          poetry version patch
-          version=$(poetry version | sed 's/\x1b\[[0-9;]*m//g' | awk '{print $NF}')
-          sed -i 's|'$old_version'|'$version'|g' setup.py
-          echo "VERSION=$version" >> $GITHUB_OUTPUT
+          VERSION=$(python setup.py --version)
+          DEFINITION_VERSION=$(grep -oP "(?<=definition_version = ')[^']+" setup.py)
+          CURRENT_DEFINITION=$(python ./scripts/definition-version.py)
+          NEXT_VERSION=$(python ./scripts/next-package-version.py $VERSION $DEFINITION_VERSION $CURRENT_DEFINITION)
+
+          sed -i 's|'$VERSION'|'$NEXT_VERSION'|g' setup.py
+          sed -i "s/definition_version = '[^']*'/definition_version = '$CURRENT_DEFINITION'/" setup.py
+          
+          echo "VERSION=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
       - name: Get version info
         id: version_info
@@ -39,6 +41,7 @@ jobs:
           echo "BODY=$body" >> $GITHUB_OUTPUT
 
       - name: Commit and push version
+        if: github.ref == 'refs/heads/main'
         uses: devops-infra/action-commit-push@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +59,7 @@ jobs:
       - name: Create Release
         if: github.ref == 'refs/heads/main'
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

@@ -10,36 +10,86 @@ class WarpingMomentOfInertiaUnits(Enum):
             WarpingMomentOfInertiaUnits enumeration
         """
         
-        MeterToTheSixth = 'meter_to_the_sixth'
+        MeterToTheSixth = 'MeterToTheSixth'
         """
             
         """
         
-        DecimeterToTheSixth = 'decimeter_to_the_sixth'
+        DecimeterToTheSixth = 'DecimeterToTheSixth'
         """
             
         """
         
-        CentimeterToTheSixth = 'centimeter_to_the_sixth'
+        CentimeterToTheSixth = 'CentimeterToTheSixth'
         """
             
         """
         
-        MillimeterToTheSixth = 'millimeter_to_the_sixth'
+        MillimeterToTheSixth = 'MillimeterToTheSixth'
         """
             
         """
         
-        FootToTheSixth = 'foot_to_the_sixth'
+        FootToTheSixth = 'FootToTheSixth'
         """
             
         """
         
-        InchToTheSixth = 'inch_to_the_sixth'
+        InchToTheSixth = 'InchToTheSixth'
         """
             
         """
         
+
+class WarpingMomentOfInertiaDto:
+    """
+    A DTO representation of a WarpingMomentOfInertia
+
+    Attributes:
+        value (float): The value of the WarpingMomentOfInertia.
+        unit (WarpingMomentOfInertiaUnits): The specific unit that the WarpingMomentOfInertia value is representing.
+    """
+
+    def __init__(self, value: float, unit: WarpingMomentOfInertiaUnits):
+        """
+        Create a new DTO representation of a WarpingMomentOfInertia
+
+        Parameters:
+            value (float): The value of the WarpingMomentOfInertia.
+            unit (WarpingMomentOfInertiaUnits): The specific unit that the WarpingMomentOfInertia value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the WarpingMomentOfInertia
+        """
+        self.unit: WarpingMomentOfInertiaUnits = unit
+        """
+        The specific unit that the WarpingMomentOfInertia value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a WarpingMomentOfInertia DTO JSON object representing the current unit.
+
+        :return: JSON object represents WarpingMomentOfInertia DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterToTheSixth"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of WarpingMomentOfInertia DTO from a json representation.
+
+        :param data: The WarpingMomentOfInertia DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterToTheSixth"}
+        :return: A new instance of WarpingMomentOfInertiaDto.
+        :rtype: WarpingMomentOfInertiaDto
+        """
+        return WarpingMomentOfInertiaDto(value=data["value"], unit=WarpingMomentOfInertiaUnits(data["unit"]))
+
 
 class WarpingMomentOfInertia(AbstractMeasure):
     """
@@ -50,8 +100,10 @@ class WarpingMomentOfInertia(AbstractMeasure):
         from_unit (WarpingMomentOfInertiaUnits): The WarpingMomentOfInertia unit to create from, The default unit is MeterToTheSixth
     """
     def __init__(self, value: float, from_unit: WarpingMomentOfInertiaUnits = WarpingMomentOfInertiaUnits.MeterToTheSixth):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__meters_to_the_sixth = None
@@ -69,6 +121,54 @@ class WarpingMomentOfInertia(AbstractMeasure):
 
     def convert(self, unit: WarpingMomentOfInertiaUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: WarpingMomentOfInertiaUnits = WarpingMomentOfInertiaUnits.MeterToTheSixth) -> WarpingMomentOfInertiaDto:
+        """
+        Get a new instance of WarpingMomentOfInertia DTO representing the current unit.
+
+        :param hold_in_unit: The specific WarpingMomentOfInertia unit to store the WarpingMomentOfInertia value in the DTO representation.
+        :type hold_in_unit: WarpingMomentOfInertiaUnits
+        :return: A new instance of WarpingMomentOfInertiaDto.
+        :rtype: WarpingMomentOfInertiaDto
+        """
+        return WarpingMomentOfInertiaDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: WarpingMomentOfInertiaUnits = WarpingMomentOfInertiaUnits.MeterToTheSixth):
+        """
+        Get a WarpingMomentOfInertia DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific WarpingMomentOfInertia unit to store the WarpingMomentOfInertia value in the DTO representation.
+        :type hold_in_unit: WarpingMomentOfInertiaUnits
+        :return: JSON object represents WarpingMomentOfInertia DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterToTheSixth"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(warping_moment_of_inertia_dto: WarpingMomentOfInertiaDto):
+        """
+        Obtain a new instance of WarpingMomentOfInertia from a DTO unit object.
+
+        :param warping_moment_of_inertia_dto: The WarpingMomentOfInertia DTO representation.
+        :type warping_moment_of_inertia_dto: WarpingMomentOfInertiaDto
+        :return: A new instance of WarpingMomentOfInertia.
+        :rtype: WarpingMomentOfInertia
+        """
+        return WarpingMomentOfInertia(warping_moment_of_inertia_dto.value, warping_moment_of_inertia_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of WarpingMomentOfInertia from a DTO unit json representation.
+
+        :param data: The WarpingMomentOfInertia DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterToTheSixth"}
+        :return: A new instance of WarpingMomentOfInertia.
+        :rtype: WarpingMomentOfInertia
+        """
+        return WarpingMomentOfInertia.from_dto(WarpingMomentOfInertiaDto.from_json(data))
 
     def __convert_from_base(self, from_unit: WarpingMomentOfInertiaUnits) -> float:
         value = self._value
@@ -278,30 +378,38 @@ class WarpingMomentOfInertia(AbstractMeasure):
         return self.__inches_to_the_sixth
 
     
-    def to_string(self, unit: WarpingMomentOfInertiaUnits = WarpingMomentOfInertiaUnits.MeterToTheSixth) -> str:
+    def to_string(self, unit: WarpingMomentOfInertiaUnits = WarpingMomentOfInertiaUnits.MeterToTheSixth, fractional_digits: int = None) -> str:
         """
-        Format the WarpingMomentOfInertia to string.
-        Note! the default format for WarpingMomentOfInertia is MeterToTheSixth.
-        To specify the unit format set the 'unit' parameter.
+        Format the WarpingMomentOfInertia to a string.
+        
+        Note: the default format for WarpingMomentOfInertia is MeterToTheSixth.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the WarpingMomentOfInertia. Default is 'MeterToTheSixth'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == WarpingMomentOfInertiaUnits.MeterToTheSixth:
-            return f"""{self.meters_to_the_sixth} m⁶"""
+            return f"""{super()._truncate_fraction_digits(self.meters_to_the_sixth, fractional_digits)} m⁶"""
         
         if unit == WarpingMomentOfInertiaUnits.DecimeterToTheSixth:
-            return f"""{self.decimeters_to_the_sixth} dm⁶"""
+            return f"""{super()._truncate_fraction_digits(self.decimeters_to_the_sixth, fractional_digits)} dm⁶"""
         
         if unit == WarpingMomentOfInertiaUnits.CentimeterToTheSixth:
-            return f"""{self.centimeters_to_the_sixth} cm⁶"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_to_the_sixth, fractional_digits)} cm⁶"""
         
         if unit == WarpingMomentOfInertiaUnits.MillimeterToTheSixth:
-            return f"""{self.millimeters_to_the_sixth} mm⁶"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_to_the_sixth, fractional_digits)} mm⁶"""
         
         if unit == WarpingMomentOfInertiaUnits.FootToTheSixth:
-            return f"""{self.feet_to_the_sixth} ft⁶"""
+            return f"""{super()._truncate_fraction_digits(self.feet_to_the_sixth, fractional_digits)} ft⁶"""
         
         if unit == WarpingMomentOfInertiaUnits.InchToTheSixth:
-            return f"""{self.inches_to_the_sixth} in⁶"""
+            return f"""{super()._truncate_fraction_digits(self.inches_to_the_sixth, fractional_digits)} in⁶"""
         
         return f'{self._value}'
 

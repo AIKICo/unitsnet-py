@@ -10,131 +10,181 @@ class LinearPowerDensityUnits(Enum):
             LinearPowerDensityUnits enumeration
         """
         
-        WattPerMeter = 'watt_per_meter'
+        WattPerMeter = 'WattPerMeter'
         """
             
         """
         
-        WattPerCentimeter = 'watt_per_centimeter'
+        WattPerCentimeter = 'WattPerCentimeter'
         """
             
         """
         
-        WattPerMillimeter = 'watt_per_millimeter'
+        WattPerMillimeter = 'WattPerMillimeter'
         """
             
         """
         
-        WattPerInch = 'watt_per_inch'
+        WattPerInch = 'WattPerInch'
         """
             
         """
         
-        WattPerFoot = 'watt_per_foot'
+        WattPerFoot = 'WattPerFoot'
         """
             
         """
         
-        MilliwattPerMeter = 'milliwatt_per_meter'
+        MilliwattPerMeter = 'MilliwattPerMeter'
         """
             
         """
         
-        KilowattPerMeter = 'kilowatt_per_meter'
+        KilowattPerMeter = 'KilowattPerMeter'
         """
             
         """
         
-        MegawattPerMeter = 'megawatt_per_meter'
+        MegawattPerMeter = 'MegawattPerMeter'
         """
             
         """
         
-        GigawattPerMeter = 'gigawatt_per_meter'
+        GigawattPerMeter = 'GigawattPerMeter'
         """
             
         """
         
-        MilliwattPerCentimeter = 'milliwatt_per_centimeter'
+        MilliwattPerCentimeter = 'MilliwattPerCentimeter'
         """
             
         """
         
-        KilowattPerCentimeter = 'kilowatt_per_centimeter'
+        KilowattPerCentimeter = 'KilowattPerCentimeter'
         """
             
         """
         
-        MegawattPerCentimeter = 'megawatt_per_centimeter'
+        MegawattPerCentimeter = 'MegawattPerCentimeter'
         """
             
         """
         
-        GigawattPerCentimeter = 'gigawatt_per_centimeter'
+        GigawattPerCentimeter = 'GigawattPerCentimeter'
         """
             
         """
         
-        MilliwattPerMillimeter = 'milliwatt_per_millimeter'
+        MilliwattPerMillimeter = 'MilliwattPerMillimeter'
         """
             
         """
         
-        KilowattPerMillimeter = 'kilowatt_per_millimeter'
+        KilowattPerMillimeter = 'KilowattPerMillimeter'
         """
             
         """
         
-        MegawattPerMillimeter = 'megawatt_per_millimeter'
+        MegawattPerMillimeter = 'MegawattPerMillimeter'
         """
             
         """
         
-        GigawattPerMillimeter = 'gigawatt_per_millimeter'
+        GigawattPerMillimeter = 'GigawattPerMillimeter'
         """
             
         """
         
-        MilliwattPerInch = 'milliwatt_per_inch'
+        MilliwattPerInch = 'MilliwattPerInch'
         """
             
         """
         
-        KilowattPerInch = 'kilowatt_per_inch'
+        KilowattPerInch = 'KilowattPerInch'
         """
             
         """
         
-        MegawattPerInch = 'megawatt_per_inch'
+        MegawattPerInch = 'MegawattPerInch'
         """
             
         """
         
-        GigawattPerInch = 'gigawatt_per_inch'
+        GigawattPerInch = 'GigawattPerInch'
         """
             
         """
         
-        MilliwattPerFoot = 'milliwatt_per_foot'
+        MilliwattPerFoot = 'MilliwattPerFoot'
         """
             
         """
         
-        KilowattPerFoot = 'kilowatt_per_foot'
+        KilowattPerFoot = 'KilowattPerFoot'
         """
             
         """
         
-        MegawattPerFoot = 'megawatt_per_foot'
+        MegawattPerFoot = 'MegawattPerFoot'
         """
             
         """
         
-        GigawattPerFoot = 'gigawatt_per_foot'
+        GigawattPerFoot = 'GigawattPerFoot'
         """
             
         """
         
+
+class LinearPowerDensityDto:
+    """
+    A DTO representation of a LinearPowerDensity
+
+    Attributes:
+        value (float): The value of the LinearPowerDensity.
+        unit (LinearPowerDensityUnits): The specific unit that the LinearPowerDensity value is representing.
+    """
+
+    def __init__(self, value: float, unit: LinearPowerDensityUnits):
+        """
+        Create a new DTO representation of a LinearPowerDensity
+
+        Parameters:
+            value (float): The value of the LinearPowerDensity.
+            unit (LinearPowerDensityUnits): The specific unit that the LinearPowerDensity value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the LinearPowerDensity
+        """
+        self.unit: LinearPowerDensityUnits = unit
+        """
+        The specific unit that the LinearPowerDensity value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a LinearPowerDensity DTO JSON object representing the current unit.
+
+        :return: JSON object represents LinearPowerDensity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of LinearPowerDensity DTO from a json representation.
+
+        :param data: The LinearPowerDensity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerMeter"}
+        :return: A new instance of LinearPowerDensityDto.
+        :rtype: LinearPowerDensityDto
+        """
+        return LinearPowerDensityDto(value=data["value"], unit=LinearPowerDensityUnits(data["unit"]))
+
 
 class LinearPowerDensity(AbstractMeasure):
     """
@@ -145,8 +195,10 @@ class LinearPowerDensity(AbstractMeasure):
         from_unit (LinearPowerDensityUnits): The LinearPowerDensity unit to create from, The default unit is WattPerMeter
     """
     def __init__(self, value: float, from_unit: LinearPowerDensityUnits = LinearPowerDensityUnits.WattPerMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__watts_per_meter = None
@@ -202,6 +254,54 @@ class LinearPowerDensity(AbstractMeasure):
 
     def convert(self, unit: LinearPowerDensityUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: LinearPowerDensityUnits = LinearPowerDensityUnits.WattPerMeter) -> LinearPowerDensityDto:
+        """
+        Get a new instance of LinearPowerDensity DTO representing the current unit.
+
+        :param hold_in_unit: The specific LinearPowerDensity unit to store the LinearPowerDensity value in the DTO representation.
+        :type hold_in_unit: LinearPowerDensityUnits
+        :return: A new instance of LinearPowerDensityDto.
+        :rtype: LinearPowerDensityDto
+        """
+        return LinearPowerDensityDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: LinearPowerDensityUnits = LinearPowerDensityUnits.WattPerMeter):
+        """
+        Get a LinearPowerDensity DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific LinearPowerDensity unit to store the LinearPowerDensity value in the DTO representation.
+        :type hold_in_unit: LinearPowerDensityUnits
+        :return: JSON object represents LinearPowerDensity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(linear_power_density_dto: LinearPowerDensityDto):
+        """
+        Obtain a new instance of LinearPowerDensity from a DTO unit object.
+
+        :param linear_power_density_dto: The LinearPowerDensity DTO representation.
+        :type linear_power_density_dto: LinearPowerDensityDto
+        :return: A new instance of LinearPowerDensity.
+        :rtype: LinearPowerDensity
+        """
+        return LinearPowerDensity(linear_power_density_dto.value, linear_power_density_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of LinearPowerDensity from a DTO unit json representation.
+
+        :param data: The LinearPowerDensity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerMeter"}
+        :return: A new instance of LinearPowerDensity.
+        :rtype: LinearPowerDensity
+        """
+        return LinearPowerDensity.from_dto(LinearPowerDensityDto.from_json(data))
 
     def __convert_from_base(self, from_unit: LinearPowerDensityUnits) -> float:
         value = self._value
@@ -1019,87 +1119,95 @@ class LinearPowerDensity(AbstractMeasure):
         return self.__gigawatts_per_foot
 
     
-    def to_string(self, unit: LinearPowerDensityUnits = LinearPowerDensityUnits.WattPerMeter) -> str:
+    def to_string(self, unit: LinearPowerDensityUnits = LinearPowerDensityUnits.WattPerMeter, fractional_digits: int = None) -> str:
         """
-        Format the LinearPowerDensity to string.
-        Note! the default format for LinearPowerDensity is WattPerMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the LinearPowerDensity to a string.
+        
+        Note: the default format for LinearPowerDensity is WattPerMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the LinearPowerDensity. Default is 'WattPerMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == LinearPowerDensityUnits.WattPerMeter:
-            return f"""{self.watts_per_meter} W/m"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_meter, fractional_digits)} W/m"""
         
         if unit == LinearPowerDensityUnits.WattPerCentimeter:
-            return f"""{self.watts_per_centimeter} W/cm"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_centimeter, fractional_digits)} W/cm"""
         
         if unit == LinearPowerDensityUnits.WattPerMillimeter:
-            return f"""{self.watts_per_millimeter} W/mm"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_millimeter, fractional_digits)} W/mm"""
         
         if unit == LinearPowerDensityUnits.WattPerInch:
-            return f"""{self.watts_per_inch} W/in"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_inch, fractional_digits)} W/in"""
         
         if unit == LinearPowerDensityUnits.WattPerFoot:
-            return f"""{self.watts_per_foot} W/ft"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_foot, fractional_digits)} W/ft"""
         
         if unit == LinearPowerDensityUnits.MilliwattPerMeter:
-            return f"""{self.milliwatts_per_meter} mW/m"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_meter, fractional_digits)} mW/m"""
         
         if unit == LinearPowerDensityUnits.KilowattPerMeter:
-            return f"""{self.kilowatts_per_meter} kW/m"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_meter, fractional_digits)} kW/m"""
         
         if unit == LinearPowerDensityUnits.MegawattPerMeter:
-            return f"""{self.megawatts_per_meter} MW/m"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_meter, fractional_digits)} MW/m"""
         
         if unit == LinearPowerDensityUnits.GigawattPerMeter:
-            return f"""{self.gigawatts_per_meter} GW/m"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_meter, fractional_digits)} GW/m"""
         
         if unit == LinearPowerDensityUnits.MilliwattPerCentimeter:
-            return f"""{self.milliwatts_per_centimeter} mW/cm"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_centimeter, fractional_digits)} mW/cm"""
         
         if unit == LinearPowerDensityUnits.KilowattPerCentimeter:
-            return f"""{self.kilowatts_per_centimeter} kW/cm"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_centimeter, fractional_digits)} kW/cm"""
         
         if unit == LinearPowerDensityUnits.MegawattPerCentimeter:
-            return f"""{self.megawatts_per_centimeter} MW/cm"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_centimeter, fractional_digits)} MW/cm"""
         
         if unit == LinearPowerDensityUnits.GigawattPerCentimeter:
-            return f"""{self.gigawatts_per_centimeter} GW/cm"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_centimeter, fractional_digits)} GW/cm"""
         
         if unit == LinearPowerDensityUnits.MilliwattPerMillimeter:
-            return f"""{self.milliwatts_per_millimeter} mW/mm"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_millimeter, fractional_digits)} mW/mm"""
         
         if unit == LinearPowerDensityUnits.KilowattPerMillimeter:
-            return f"""{self.kilowatts_per_millimeter} kW/mm"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_millimeter, fractional_digits)} kW/mm"""
         
         if unit == LinearPowerDensityUnits.MegawattPerMillimeter:
-            return f"""{self.megawatts_per_millimeter} MW/mm"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_millimeter, fractional_digits)} MW/mm"""
         
         if unit == LinearPowerDensityUnits.GigawattPerMillimeter:
-            return f"""{self.gigawatts_per_millimeter} GW/mm"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_millimeter, fractional_digits)} GW/mm"""
         
         if unit == LinearPowerDensityUnits.MilliwattPerInch:
-            return f"""{self.milliwatts_per_inch} mW/in"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_inch, fractional_digits)} mW/in"""
         
         if unit == LinearPowerDensityUnits.KilowattPerInch:
-            return f"""{self.kilowatts_per_inch} kW/in"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_inch, fractional_digits)} kW/in"""
         
         if unit == LinearPowerDensityUnits.MegawattPerInch:
-            return f"""{self.megawatts_per_inch} MW/in"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_inch, fractional_digits)} MW/in"""
         
         if unit == LinearPowerDensityUnits.GigawattPerInch:
-            return f"""{self.gigawatts_per_inch} GW/in"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_inch, fractional_digits)} GW/in"""
         
         if unit == LinearPowerDensityUnits.MilliwattPerFoot:
-            return f"""{self.milliwatts_per_foot} mW/ft"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_foot, fractional_digits)} mW/ft"""
         
         if unit == LinearPowerDensityUnits.KilowattPerFoot:
-            return f"""{self.kilowatts_per_foot} kW/ft"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_foot, fractional_digits)} kW/ft"""
         
         if unit == LinearPowerDensityUnits.MegawattPerFoot:
-            return f"""{self.megawatts_per_foot} MW/ft"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_foot, fractional_digits)} MW/ft"""
         
         if unit == LinearPowerDensityUnits.GigawattPerFoot:
-            return f"""{self.gigawatts_per_foot} GW/ft"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_foot, fractional_digits)} GW/ft"""
         
         return f'{self._value}'
 

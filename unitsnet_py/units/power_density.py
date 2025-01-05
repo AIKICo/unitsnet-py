@@ -10,226 +10,276 @@ class PowerDensityUnits(Enum):
             PowerDensityUnits enumeration
         """
         
-        WattPerCubicMeter = 'watt_per_cubic_meter'
+        WattPerCubicMeter = 'WattPerCubicMeter'
         """
             
         """
         
-        WattPerCubicInch = 'watt_per_cubic_inch'
+        WattPerCubicInch = 'WattPerCubicInch'
         """
             
         """
         
-        WattPerCubicFoot = 'watt_per_cubic_foot'
+        WattPerCubicFoot = 'WattPerCubicFoot'
         """
             
         """
         
-        WattPerLiter = 'watt_per_liter'
+        WattPerLiter = 'WattPerLiter'
         """
             
         """
         
-        PicowattPerCubicMeter = 'picowatt_per_cubic_meter'
+        PicowattPerCubicMeter = 'PicowattPerCubicMeter'
         """
             
         """
         
-        NanowattPerCubicMeter = 'nanowatt_per_cubic_meter'
+        NanowattPerCubicMeter = 'NanowattPerCubicMeter'
         """
             
         """
         
-        MicrowattPerCubicMeter = 'microwatt_per_cubic_meter'
+        MicrowattPerCubicMeter = 'MicrowattPerCubicMeter'
         """
             
         """
         
-        MilliwattPerCubicMeter = 'milliwatt_per_cubic_meter'
+        MilliwattPerCubicMeter = 'MilliwattPerCubicMeter'
         """
             
         """
         
-        DeciwattPerCubicMeter = 'deciwatt_per_cubic_meter'
+        DeciwattPerCubicMeter = 'DeciwattPerCubicMeter'
         """
             
         """
         
-        DecawattPerCubicMeter = 'decawatt_per_cubic_meter'
+        DecawattPerCubicMeter = 'DecawattPerCubicMeter'
         """
             
         """
         
-        KilowattPerCubicMeter = 'kilowatt_per_cubic_meter'
+        KilowattPerCubicMeter = 'KilowattPerCubicMeter'
         """
             
         """
         
-        MegawattPerCubicMeter = 'megawatt_per_cubic_meter'
+        MegawattPerCubicMeter = 'MegawattPerCubicMeter'
         """
             
         """
         
-        GigawattPerCubicMeter = 'gigawatt_per_cubic_meter'
+        GigawattPerCubicMeter = 'GigawattPerCubicMeter'
         """
             
         """
         
-        TerawattPerCubicMeter = 'terawatt_per_cubic_meter'
+        TerawattPerCubicMeter = 'TerawattPerCubicMeter'
         """
             
         """
         
-        PicowattPerCubicInch = 'picowatt_per_cubic_inch'
+        PicowattPerCubicInch = 'PicowattPerCubicInch'
         """
             
         """
         
-        NanowattPerCubicInch = 'nanowatt_per_cubic_inch'
+        NanowattPerCubicInch = 'NanowattPerCubicInch'
         """
             
         """
         
-        MicrowattPerCubicInch = 'microwatt_per_cubic_inch'
+        MicrowattPerCubicInch = 'MicrowattPerCubicInch'
         """
             
         """
         
-        MilliwattPerCubicInch = 'milliwatt_per_cubic_inch'
+        MilliwattPerCubicInch = 'MilliwattPerCubicInch'
         """
             
         """
         
-        DeciwattPerCubicInch = 'deciwatt_per_cubic_inch'
+        DeciwattPerCubicInch = 'DeciwattPerCubicInch'
         """
             
         """
         
-        DecawattPerCubicInch = 'decawatt_per_cubic_inch'
+        DecawattPerCubicInch = 'DecawattPerCubicInch'
         """
             
         """
         
-        KilowattPerCubicInch = 'kilowatt_per_cubic_inch'
+        KilowattPerCubicInch = 'KilowattPerCubicInch'
         """
             
         """
         
-        MegawattPerCubicInch = 'megawatt_per_cubic_inch'
+        MegawattPerCubicInch = 'MegawattPerCubicInch'
         """
             
         """
         
-        GigawattPerCubicInch = 'gigawatt_per_cubic_inch'
+        GigawattPerCubicInch = 'GigawattPerCubicInch'
         """
             
         """
         
-        TerawattPerCubicInch = 'terawatt_per_cubic_inch'
+        TerawattPerCubicInch = 'TerawattPerCubicInch'
         """
             
         """
         
-        PicowattPerCubicFoot = 'picowatt_per_cubic_foot'
+        PicowattPerCubicFoot = 'PicowattPerCubicFoot'
         """
             
         """
         
-        NanowattPerCubicFoot = 'nanowatt_per_cubic_foot'
+        NanowattPerCubicFoot = 'NanowattPerCubicFoot'
         """
             
         """
         
-        MicrowattPerCubicFoot = 'microwatt_per_cubic_foot'
+        MicrowattPerCubicFoot = 'MicrowattPerCubicFoot'
         """
             
         """
         
-        MilliwattPerCubicFoot = 'milliwatt_per_cubic_foot'
+        MilliwattPerCubicFoot = 'MilliwattPerCubicFoot'
         """
             
         """
         
-        DeciwattPerCubicFoot = 'deciwatt_per_cubic_foot'
+        DeciwattPerCubicFoot = 'DeciwattPerCubicFoot'
         """
             
         """
         
-        DecawattPerCubicFoot = 'decawatt_per_cubic_foot'
+        DecawattPerCubicFoot = 'DecawattPerCubicFoot'
         """
             
         """
         
-        KilowattPerCubicFoot = 'kilowatt_per_cubic_foot'
+        KilowattPerCubicFoot = 'KilowattPerCubicFoot'
         """
             
         """
         
-        MegawattPerCubicFoot = 'megawatt_per_cubic_foot'
+        MegawattPerCubicFoot = 'MegawattPerCubicFoot'
         """
             
         """
         
-        GigawattPerCubicFoot = 'gigawatt_per_cubic_foot'
+        GigawattPerCubicFoot = 'GigawattPerCubicFoot'
         """
             
         """
         
-        TerawattPerCubicFoot = 'terawatt_per_cubic_foot'
+        TerawattPerCubicFoot = 'TerawattPerCubicFoot'
         """
             
         """
         
-        PicowattPerLiter = 'picowatt_per_liter'
+        PicowattPerLiter = 'PicowattPerLiter'
         """
             
         """
         
-        NanowattPerLiter = 'nanowatt_per_liter'
+        NanowattPerLiter = 'NanowattPerLiter'
         """
             
         """
         
-        MicrowattPerLiter = 'microwatt_per_liter'
+        MicrowattPerLiter = 'MicrowattPerLiter'
         """
             
         """
         
-        MilliwattPerLiter = 'milliwatt_per_liter'
+        MilliwattPerLiter = 'MilliwattPerLiter'
         """
             
         """
         
-        DeciwattPerLiter = 'deciwatt_per_liter'
+        DeciwattPerLiter = 'DeciwattPerLiter'
         """
             
         """
         
-        DecawattPerLiter = 'decawatt_per_liter'
+        DecawattPerLiter = 'DecawattPerLiter'
         """
             
         """
         
-        KilowattPerLiter = 'kilowatt_per_liter'
+        KilowattPerLiter = 'KilowattPerLiter'
         """
             
         """
         
-        MegawattPerLiter = 'megawatt_per_liter'
+        MegawattPerLiter = 'MegawattPerLiter'
         """
             
         """
         
-        GigawattPerLiter = 'gigawatt_per_liter'
+        GigawattPerLiter = 'GigawattPerLiter'
         """
             
         """
         
-        TerawattPerLiter = 'terawatt_per_liter'
+        TerawattPerLiter = 'TerawattPerLiter'
         """
             
         """
         
+
+class PowerDensityDto:
+    """
+    A DTO representation of a PowerDensity
+
+    Attributes:
+        value (float): The value of the PowerDensity.
+        unit (PowerDensityUnits): The specific unit that the PowerDensity value is representing.
+    """
+
+    def __init__(self, value: float, unit: PowerDensityUnits):
+        """
+        Create a new DTO representation of a PowerDensity
+
+        Parameters:
+            value (float): The value of the PowerDensity.
+            unit (PowerDensityUnits): The specific unit that the PowerDensity value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the PowerDensity
+        """
+        self.unit: PowerDensityUnits = unit
+        """
+        The specific unit that the PowerDensity value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a PowerDensity DTO JSON object representing the current unit.
+
+        :return: JSON object represents PowerDensity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerCubicMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of PowerDensity DTO from a json representation.
+
+        :param data: The PowerDensity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerCubicMeter"}
+        :return: A new instance of PowerDensityDto.
+        :rtype: PowerDensityDto
+        """
+        return PowerDensityDto(value=data["value"], unit=PowerDensityUnits(data["unit"]))
+
 
 class PowerDensity(AbstractMeasure):
     """
@@ -240,8 +290,10 @@ class PowerDensity(AbstractMeasure):
         from_unit (PowerDensityUnits): The PowerDensity unit to create from, The default unit is WattPerCubicMeter
     """
     def __init__(self, value: float, from_unit: PowerDensityUnits = PowerDensityUnits.WattPerCubicMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__watts_per_cubic_meter = None
@@ -335,6 +387,54 @@ class PowerDensity(AbstractMeasure):
 
     def convert(self, unit: PowerDensityUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: PowerDensityUnits = PowerDensityUnits.WattPerCubicMeter) -> PowerDensityDto:
+        """
+        Get a new instance of PowerDensity DTO representing the current unit.
+
+        :param hold_in_unit: The specific PowerDensity unit to store the PowerDensity value in the DTO representation.
+        :type hold_in_unit: PowerDensityUnits
+        :return: A new instance of PowerDensityDto.
+        :rtype: PowerDensityDto
+        """
+        return PowerDensityDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: PowerDensityUnits = PowerDensityUnits.WattPerCubicMeter):
+        """
+        Get a PowerDensity DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific PowerDensity unit to store the PowerDensity value in the DTO representation.
+        :type hold_in_unit: PowerDensityUnits
+        :return: JSON object represents PowerDensity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerCubicMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(power_density_dto: PowerDensityDto):
+        """
+        Obtain a new instance of PowerDensity from a DTO unit object.
+
+        :param power_density_dto: The PowerDensity DTO representation.
+        :type power_density_dto: PowerDensityDto
+        :return: A new instance of PowerDensity.
+        :rtype: PowerDensity
+        """
+        return PowerDensity(power_density_dto.value, power_density_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of PowerDensity from a DTO unit json representation.
+
+        :param data: The PowerDensity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerCubicMeter"}
+        :return: A new instance of PowerDensity.
+        :rtype: PowerDensity
+        """
+        return PowerDensity.from_dto(PowerDensityDto.from_json(data))
 
     def __convert_from_base(self, from_unit: PowerDensityUnits) -> float:
         value = self._value
@@ -1760,144 +1860,152 @@ class PowerDensity(AbstractMeasure):
         return self.__terawatts_per_liter
 
     
-    def to_string(self, unit: PowerDensityUnits = PowerDensityUnits.WattPerCubicMeter) -> str:
+    def to_string(self, unit: PowerDensityUnits = PowerDensityUnits.WattPerCubicMeter, fractional_digits: int = None) -> str:
         """
-        Format the PowerDensity to string.
-        Note! the default format for PowerDensity is WattPerCubicMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the PowerDensity to a string.
+        
+        Note: the default format for PowerDensity is WattPerCubicMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the PowerDensity. Default is 'WattPerCubicMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == PowerDensityUnits.WattPerCubicMeter:
-            return f"""{self.watts_per_cubic_meter} W/m³"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_cubic_meter, fractional_digits)} W/m³"""
         
         if unit == PowerDensityUnits.WattPerCubicInch:
-            return f"""{self.watts_per_cubic_inch} W/in³"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_cubic_inch, fractional_digits)} W/in³"""
         
         if unit == PowerDensityUnits.WattPerCubicFoot:
-            return f"""{self.watts_per_cubic_foot} W/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_cubic_foot, fractional_digits)} W/ft³"""
         
         if unit == PowerDensityUnits.WattPerLiter:
-            return f"""{self.watts_per_liter} W/l"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_liter, fractional_digits)} W/l"""
         
         if unit == PowerDensityUnits.PicowattPerCubicMeter:
-            return f"""{self.picowatts_per_cubic_meter} pW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts_per_cubic_meter, fractional_digits)} pW/m³"""
         
         if unit == PowerDensityUnits.NanowattPerCubicMeter:
-            return f"""{self.nanowatts_per_cubic_meter} nW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts_per_cubic_meter, fractional_digits)} nW/m³"""
         
         if unit == PowerDensityUnits.MicrowattPerCubicMeter:
-            return f"""{self.microwatts_per_cubic_meter} μW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts_per_cubic_meter, fractional_digits)} μW/m³"""
         
         if unit == PowerDensityUnits.MilliwattPerCubicMeter:
-            return f"""{self.milliwatts_per_cubic_meter} mW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_cubic_meter, fractional_digits)} mW/m³"""
         
         if unit == PowerDensityUnits.DeciwattPerCubicMeter:
-            return f"""{self.deciwatts_per_cubic_meter} dW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.deciwatts_per_cubic_meter, fractional_digits)} dW/m³"""
         
         if unit == PowerDensityUnits.DecawattPerCubicMeter:
-            return f"""{self.decawatts_per_cubic_meter} daW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.decawatts_per_cubic_meter, fractional_digits)} daW/m³"""
         
         if unit == PowerDensityUnits.KilowattPerCubicMeter:
-            return f"""{self.kilowatts_per_cubic_meter} kW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_cubic_meter, fractional_digits)} kW/m³"""
         
         if unit == PowerDensityUnits.MegawattPerCubicMeter:
-            return f"""{self.megawatts_per_cubic_meter} MW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_cubic_meter, fractional_digits)} MW/m³"""
         
         if unit == PowerDensityUnits.GigawattPerCubicMeter:
-            return f"""{self.gigawatts_per_cubic_meter} GW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_cubic_meter, fractional_digits)} GW/m³"""
         
         if unit == PowerDensityUnits.TerawattPerCubicMeter:
-            return f"""{self.terawatts_per_cubic_meter} TW/m³"""
+            return f"""{super()._truncate_fraction_digits(self.terawatts_per_cubic_meter, fractional_digits)} TW/m³"""
         
         if unit == PowerDensityUnits.PicowattPerCubicInch:
-            return f"""{self.picowatts_per_cubic_inch} pW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts_per_cubic_inch, fractional_digits)} pW/in³"""
         
         if unit == PowerDensityUnits.NanowattPerCubicInch:
-            return f"""{self.nanowatts_per_cubic_inch} nW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts_per_cubic_inch, fractional_digits)} nW/in³"""
         
         if unit == PowerDensityUnits.MicrowattPerCubicInch:
-            return f"""{self.microwatts_per_cubic_inch} μW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts_per_cubic_inch, fractional_digits)} μW/in³"""
         
         if unit == PowerDensityUnits.MilliwattPerCubicInch:
-            return f"""{self.milliwatts_per_cubic_inch} mW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_cubic_inch, fractional_digits)} mW/in³"""
         
         if unit == PowerDensityUnits.DeciwattPerCubicInch:
-            return f"""{self.deciwatts_per_cubic_inch} dW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.deciwatts_per_cubic_inch, fractional_digits)} dW/in³"""
         
         if unit == PowerDensityUnits.DecawattPerCubicInch:
-            return f"""{self.decawatts_per_cubic_inch} daW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.decawatts_per_cubic_inch, fractional_digits)} daW/in³"""
         
         if unit == PowerDensityUnits.KilowattPerCubicInch:
-            return f"""{self.kilowatts_per_cubic_inch} kW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_cubic_inch, fractional_digits)} kW/in³"""
         
         if unit == PowerDensityUnits.MegawattPerCubicInch:
-            return f"""{self.megawatts_per_cubic_inch} MW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_cubic_inch, fractional_digits)} MW/in³"""
         
         if unit == PowerDensityUnits.GigawattPerCubicInch:
-            return f"""{self.gigawatts_per_cubic_inch} GW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_cubic_inch, fractional_digits)} GW/in³"""
         
         if unit == PowerDensityUnits.TerawattPerCubicInch:
-            return f"""{self.terawatts_per_cubic_inch} TW/in³"""
+            return f"""{super()._truncate_fraction_digits(self.terawatts_per_cubic_inch, fractional_digits)} TW/in³"""
         
         if unit == PowerDensityUnits.PicowattPerCubicFoot:
-            return f"""{self.picowatts_per_cubic_foot} pW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts_per_cubic_foot, fractional_digits)} pW/ft³"""
         
         if unit == PowerDensityUnits.NanowattPerCubicFoot:
-            return f"""{self.nanowatts_per_cubic_foot} nW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts_per_cubic_foot, fractional_digits)} nW/ft³"""
         
         if unit == PowerDensityUnits.MicrowattPerCubicFoot:
-            return f"""{self.microwatts_per_cubic_foot} μW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts_per_cubic_foot, fractional_digits)} μW/ft³"""
         
         if unit == PowerDensityUnits.MilliwattPerCubicFoot:
-            return f"""{self.milliwatts_per_cubic_foot} mW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_cubic_foot, fractional_digits)} mW/ft³"""
         
         if unit == PowerDensityUnits.DeciwattPerCubicFoot:
-            return f"""{self.deciwatts_per_cubic_foot} dW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.deciwatts_per_cubic_foot, fractional_digits)} dW/ft³"""
         
         if unit == PowerDensityUnits.DecawattPerCubicFoot:
-            return f"""{self.decawatts_per_cubic_foot} daW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.decawatts_per_cubic_foot, fractional_digits)} daW/ft³"""
         
         if unit == PowerDensityUnits.KilowattPerCubicFoot:
-            return f"""{self.kilowatts_per_cubic_foot} kW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_cubic_foot, fractional_digits)} kW/ft³"""
         
         if unit == PowerDensityUnits.MegawattPerCubicFoot:
-            return f"""{self.megawatts_per_cubic_foot} MW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_cubic_foot, fractional_digits)} MW/ft³"""
         
         if unit == PowerDensityUnits.GigawattPerCubicFoot:
-            return f"""{self.gigawatts_per_cubic_foot} GW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_cubic_foot, fractional_digits)} GW/ft³"""
         
         if unit == PowerDensityUnits.TerawattPerCubicFoot:
-            return f"""{self.terawatts_per_cubic_foot} TW/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.terawatts_per_cubic_foot, fractional_digits)} TW/ft³"""
         
         if unit == PowerDensityUnits.PicowattPerLiter:
-            return f"""{self.picowatts_per_liter} pW/l"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts_per_liter, fractional_digits)} pW/l"""
         
         if unit == PowerDensityUnits.NanowattPerLiter:
-            return f"""{self.nanowatts_per_liter} nW/l"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts_per_liter, fractional_digits)} nW/l"""
         
         if unit == PowerDensityUnits.MicrowattPerLiter:
-            return f"""{self.microwatts_per_liter} μW/l"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts_per_liter, fractional_digits)} μW/l"""
         
         if unit == PowerDensityUnits.MilliwattPerLiter:
-            return f"""{self.milliwatts_per_liter} mW/l"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_liter, fractional_digits)} mW/l"""
         
         if unit == PowerDensityUnits.DeciwattPerLiter:
-            return f"""{self.deciwatts_per_liter} dW/l"""
+            return f"""{super()._truncate_fraction_digits(self.deciwatts_per_liter, fractional_digits)} dW/l"""
         
         if unit == PowerDensityUnits.DecawattPerLiter:
-            return f"""{self.decawatts_per_liter} daW/l"""
+            return f"""{super()._truncate_fraction_digits(self.decawatts_per_liter, fractional_digits)} daW/l"""
         
         if unit == PowerDensityUnits.KilowattPerLiter:
-            return f"""{self.kilowatts_per_liter} kW/l"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_liter, fractional_digits)} kW/l"""
         
         if unit == PowerDensityUnits.MegawattPerLiter:
-            return f"""{self.megawatts_per_liter} MW/l"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_liter, fractional_digits)} MW/l"""
         
         if unit == PowerDensityUnits.GigawattPerLiter:
-            return f"""{self.gigawatts_per_liter} GW/l"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts_per_liter, fractional_digits)} GW/l"""
         
         if unit == PowerDensityUnits.TerawattPerLiter:
-            return f"""{self.terawatts_per_liter} TW/l"""
+            return f"""{super()._truncate_fraction_digits(self.terawatts_per_liter, fractional_digits)} TW/l"""
         
         return f'{self._value}'
 

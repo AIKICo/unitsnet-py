@@ -10,76 +10,126 @@ class IrradianceUnits(Enum):
             IrradianceUnits enumeration
         """
         
-        WattPerSquareMeter = 'watt_per_square_meter'
+        WattPerSquareMeter = 'WattPerSquareMeter'
         """
             
         """
         
-        WattPerSquareCentimeter = 'watt_per_square_centimeter'
+        WattPerSquareCentimeter = 'WattPerSquareCentimeter'
         """
             
         """
         
-        PicowattPerSquareMeter = 'picowatt_per_square_meter'
+        PicowattPerSquareMeter = 'PicowattPerSquareMeter'
         """
             
         """
         
-        NanowattPerSquareMeter = 'nanowatt_per_square_meter'
+        NanowattPerSquareMeter = 'NanowattPerSquareMeter'
         """
             
         """
         
-        MicrowattPerSquareMeter = 'microwatt_per_square_meter'
+        MicrowattPerSquareMeter = 'MicrowattPerSquareMeter'
         """
             
         """
         
-        MilliwattPerSquareMeter = 'milliwatt_per_square_meter'
+        MilliwattPerSquareMeter = 'MilliwattPerSquareMeter'
         """
             
         """
         
-        KilowattPerSquareMeter = 'kilowatt_per_square_meter'
+        KilowattPerSquareMeter = 'KilowattPerSquareMeter'
         """
             
         """
         
-        MegawattPerSquareMeter = 'megawatt_per_square_meter'
+        MegawattPerSquareMeter = 'MegawattPerSquareMeter'
         """
             
         """
         
-        PicowattPerSquareCentimeter = 'picowatt_per_square_centimeter'
+        PicowattPerSquareCentimeter = 'PicowattPerSquareCentimeter'
         """
             
         """
         
-        NanowattPerSquareCentimeter = 'nanowatt_per_square_centimeter'
+        NanowattPerSquareCentimeter = 'NanowattPerSquareCentimeter'
         """
             
         """
         
-        MicrowattPerSquareCentimeter = 'microwatt_per_square_centimeter'
+        MicrowattPerSquareCentimeter = 'MicrowattPerSquareCentimeter'
         """
             
         """
         
-        MilliwattPerSquareCentimeter = 'milliwatt_per_square_centimeter'
+        MilliwattPerSquareCentimeter = 'MilliwattPerSquareCentimeter'
         """
             
         """
         
-        KilowattPerSquareCentimeter = 'kilowatt_per_square_centimeter'
+        KilowattPerSquareCentimeter = 'KilowattPerSquareCentimeter'
         """
             
         """
         
-        MegawattPerSquareCentimeter = 'megawatt_per_square_centimeter'
+        MegawattPerSquareCentimeter = 'MegawattPerSquareCentimeter'
         """
             
         """
         
+
+class IrradianceDto:
+    """
+    A DTO representation of a Irradiance
+
+    Attributes:
+        value (float): The value of the Irradiance.
+        unit (IrradianceUnits): The specific unit that the Irradiance value is representing.
+    """
+
+    def __init__(self, value: float, unit: IrradianceUnits):
+        """
+        Create a new DTO representation of a Irradiance
+
+        Parameters:
+            value (float): The value of the Irradiance.
+            unit (IrradianceUnits): The specific unit that the Irradiance value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Irradiance
+        """
+        self.unit: IrradianceUnits = unit
+        """
+        The specific unit that the Irradiance value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Irradiance DTO JSON object representing the current unit.
+
+        :return: JSON object represents Irradiance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerSquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Irradiance DTO from a json representation.
+
+        :param data: The Irradiance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerSquareMeter"}
+        :return: A new instance of IrradianceDto.
+        :rtype: IrradianceDto
+        """
+        return IrradianceDto(value=data["value"], unit=IrradianceUnits(data["unit"]))
+
 
 class Irradiance(AbstractMeasure):
     """
@@ -90,8 +140,10 @@ class Irradiance(AbstractMeasure):
         from_unit (IrradianceUnits): The Irradiance unit to create from, The default unit is WattPerSquareMeter
     """
     def __init__(self, value: float, from_unit: IrradianceUnits = IrradianceUnits.WattPerSquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__watts_per_square_meter = None
@@ -125,6 +177,54 @@ class Irradiance(AbstractMeasure):
 
     def convert(self, unit: IrradianceUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: IrradianceUnits = IrradianceUnits.WattPerSquareMeter) -> IrradianceDto:
+        """
+        Get a new instance of Irradiance DTO representing the current unit.
+
+        :param hold_in_unit: The specific Irradiance unit to store the Irradiance value in the DTO representation.
+        :type hold_in_unit: IrradianceUnits
+        :return: A new instance of IrradianceDto.
+        :rtype: IrradianceDto
+        """
+        return IrradianceDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: IrradianceUnits = IrradianceUnits.WattPerSquareMeter):
+        """
+        Get a Irradiance DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Irradiance unit to store the Irradiance value in the DTO representation.
+        :type hold_in_unit: IrradianceUnits
+        :return: JSON object represents Irradiance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerSquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(irradiance_dto: IrradianceDto):
+        """
+        Obtain a new instance of Irradiance from a DTO unit object.
+
+        :param irradiance_dto: The Irradiance DTO representation.
+        :type irradiance_dto: IrradianceDto
+        :return: A new instance of Irradiance.
+        :rtype: Irradiance
+        """
+        return Irradiance(irradiance_dto.value, irradiance_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Irradiance from a DTO unit json representation.
+
+        :param data: The Irradiance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerSquareMeter"}
+        :return: A new instance of Irradiance.
+        :rtype: Irradiance
+        """
+        return Irradiance.from_dto(IrradianceDto.from_json(data))
 
     def __convert_from_base(self, from_unit: IrradianceUnits) -> float:
         value = self._value
@@ -590,54 +690,62 @@ class Irradiance(AbstractMeasure):
         return self.__megawatts_per_square_centimeter
 
     
-    def to_string(self, unit: IrradianceUnits = IrradianceUnits.WattPerSquareMeter) -> str:
+    def to_string(self, unit: IrradianceUnits = IrradianceUnits.WattPerSquareMeter, fractional_digits: int = None) -> str:
         """
-        Format the Irradiance to string.
-        Note! the default format for Irradiance is WattPerSquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the Irradiance to a string.
+        
+        Note: the default format for Irradiance is WattPerSquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Irradiance. Default is 'WattPerSquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == IrradianceUnits.WattPerSquareMeter:
-            return f"""{self.watts_per_square_meter} W/m²"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_square_meter, fractional_digits)} W/m²"""
         
         if unit == IrradianceUnits.WattPerSquareCentimeter:
-            return f"""{self.watts_per_square_centimeter} W/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_square_centimeter, fractional_digits)} W/cm²"""
         
         if unit == IrradianceUnits.PicowattPerSquareMeter:
-            return f"""{self.picowatts_per_square_meter} pW/m²"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts_per_square_meter, fractional_digits)} pW/m²"""
         
         if unit == IrradianceUnits.NanowattPerSquareMeter:
-            return f"""{self.nanowatts_per_square_meter} nW/m²"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts_per_square_meter, fractional_digits)} nW/m²"""
         
         if unit == IrradianceUnits.MicrowattPerSquareMeter:
-            return f"""{self.microwatts_per_square_meter} μW/m²"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts_per_square_meter, fractional_digits)} μW/m²"""
         
         if unit == IrradianceUnits.MilliwattPerSquareMeter:
-            return f"""{self.milliwatts_per_square_meter} mW/m²"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_square_meter, fractional_digits)} mW/m²"""
         
         if unit == IrradianceUnits.KilowattPerSquareMeter:
-            return f"""{self.kilowatts_per_square_meter} kW/m²"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_square_meter, fractional_digits)} kW/m²"""
         
         if unit == IrradianceUnits.MegawattPerSquareMeter:
-            return f"""{self.megawatts_per_square_meter} MW/m²"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_square_meter, fractional_digits)} MW/m²"""
         
         if unit == IrradianceUnits.PicowattPerSquareCentimeter:
-            return f"""{self.picowatts_per_square_centimeter} pW/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts_per_square_centimeter, fractional_digits)} pW/cm²"""
         
         if unit == IrradianceUnits.NanowattPerSquareCentimeter:
-            return f"""{self.nanowatts_per_square_centimeter} nW/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts_per_square_centimeter, fractional_digits)} nW/cm²"""
         
         if unit == IrradianceUnits.MicrowattPerSquareCentimeter:
-            return f"""{self.microwatts_per_square_centimeter} μW/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts_per_square_centimeter, fractional_digits)} μW/cm²"""
         
         if unit == IrradianceUnits.MilliwattPerSquareCentimeter:
-            return f"""{self.milliwatts_per_square_centimeter} mW/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts_per_square_centimeter, fractional_digits)} mW/cm²"""
         
         if unit == IrradianceUnits.KilowattPerSquareCentimeter:
-            return f"""{self.kilowatts_per_square_centimeter} kW/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts_per_square_centimeter, fractional_digits)} kW/cm²"""
         
         if unit == IrradianceUnits.MegawattPerSquareCentimeter:
-            return f"""{self.megawatts_per_square_centimeter} MW/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts_per_square_centimeter, fractional_digits)} MW/cm²"""
         
         return f'{self._value}'
 

@@ -10,31 +10,81 @@ class HeatTransferCoefficientUnits(Enum):
             HeatTransferCoefficientUnits enumeration
         """
         
-        WattPerSquareMeterKelvin = 'watt_per_square_meter_kelvin'
+        WattPerSquareMeterKelvin = 'WattPerSquareMeterKelvin'
         """
             
         """
         
-        WattPerSquareMeterCelsius = 'watt_per_square_meter_celsius'
+        WattPerSquareMeterCelsius = 'WattPerSquareMeterCelsius'
         """
             
         """
         
-        BtuPerHourSquareFootDegreeFahrenheit = 'btu_per_hour_square_foot_degree_fahrenheit'
+        BtuPerHourSquareFootDegreeFahrenheit = 'BtuPerHourSquareFootDegreeFahrenheit'
         """
             
         """
         
-        CaloriePerHourSquareMeterDegreeCelsius = 'calorie_per_hour_square_meter_degree_celsius'
+        CaloriePerHourSquareMeterDegreeCelsius = 'CaloriePerHourSquareMeterDegreeCelsius'
         """
             
         """
         
-        KilocaloriePerHourSquareMeterDegreeCelsius = 'kilocalorie_per_hour_square_meter_degree_celsius'
+        KilocaloriePerHourSquareMeterDegreeCelsius = 'KilocaloriePerHourSquareMeterDegreeCelsius'
         """
             
         """
         
+
+class HeatTransferCoefficientDto:
+    """
+    A DTO representation of a HeatTransferCoefficient
+
+    Attributes:
+        value (float): The value of the HeatTransferCoefficient.
+        unit (HeatTransferCoefficientUnits): The specific unit that the HeatTransferCoefficient value is representing.
+    """
+
+    def __init__(self, value: float, unit: HeatTransferCoefficientUnits):
+        """
+        Create a new DTO representation of a HeatTransferCoefficient
+
+        Parameters:
+            value (float): The value of the HeatTransferCoefficient.
+            unit (HeatTransferCoefficientUnits): The specific unit that the HeatTransferCoefficient value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the HeatTransferCoefficient
+        """
+        self.unit: HeatTransferCoefficientUnits = unit
+        """
+        The specific unit that the HeatTransferCoefficient value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a HeatTransferCoefficient DTO JSON object representing the current unit.
+
+        :return: JSON object represents HeatTransferCoefficient DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerSquareMeterKelvin"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of HeatTransferCoefficient DTO from a json representation.
+
+        :param data: The HeatTransferCoefficient DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerSquareMeterKelvin"}
+        :return: A new instance of HeatTransferCoefficientDto.
+        :rtype: HeatTransferCoefficientDto
+        """
+        return HeatTransferCoefficientDto(value=data["value"], unit=HeatTransferCoefficientUnits(data["unit"]))
+
 
 class HeatTransferCoefficient(AbstractMeasure):
     """
@@ -45,8 +95,10 @@ class HeatTransferCoefficient(AbstractMeasure):
         from_unit (HeatTransferCoefficientUnits): The HeatTransferCoefficient unit to create from, The default unit is WattPerSquareMeterKelvin
     """
     def __init__(self, value: float, from_unit: HeatTransferCoefficientUnits = HeatTransferCoefficientUnits.WattPerSquareMeterKelvin):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__watts_per_square_meter_kelvin = None
@@ -62,6 +114,54 @@ class HeatTransferCoefficient(AbstractMeasure):
 
     def convert(self, unit: HeatTransferCoefficientUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: HeatTransferCoefficientUnits = HeatTransferCoefficientUnits.WattPerSquareMeterKelvin) -> HeatTransferCoefficientDto:
+        """
+        Get a new instance of HeatTransferCoefficient DTO representing the current unit.
+
+        :param hold_in_unit: The specific HeatTransferCoefficient unit to store the HeatTransferCoefficient value in the DTO representation.
+        :type hold_in_unit: HeatTransferCoefficientUnits
+        :return: A new instance of HeatTransferCoefficientDto.
+        :rtype: HeatTransferCoefficientDto
+        """
+        return HeatTransferCoefficientDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: HeatTransferCoefficientUnits = HeatTransferCoefficientUnits.WattPerSquareMeterKelvin):
+        """
+        Get a HeatTransferCoefficient DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific HeatTransferCoefficient unit to store the HeatTransferCoefficient value in the DTO representation.
+        :type hold_in_unit: HeatTransferCoefficientUnits
+        :return: JSON object represents HeatTransferCoefficient DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "WattPerSquareMeterKelvin"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(heat_transfer_coefficient_dto: HeatTransferCoefficientDto):
+        """
+        Obtain a new instance of HeatTransferCoefficient from a DTO unit object.
+
+        :param heat_transfer_coefficient_dto: The HeatTransferCoefficient DTO representation.
+        :type heat_transfer_coefficient_dto: HeatTransferCoefficientDto
+        :return: A new instance of HeatTransferCoefficient.
+        :rtype: HeatTransferCoefficient
+        """
+        return HeatTransferCoefficient(heat_transfer_coefficient_dto.value, heat_transfer_coefficient_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of HeatTransferCoefficient from a DTO unit json representation.
+
+        :param data: The HeatTransferCoefficient DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "WattPerSquareMeterKelvin"}
+        :return: A new instance of HeatTransferCoefficient.
+        :rtype: HeatTransferCoefficient
+        """
+        return HeatTransferCoefficient.from_dto(HeatTransferCoefficientDto.from_json(data))
 
     def __convert_from_base(self, from_unit: HeatTransferCoefficientUnits) -> float:
         value = self._value
@@ -239,27 +339,35 @@ class HeatTransferCoefficient(AbstractMeasure):
         return self.__kilocalories_per_hour_square_meter_degree_celsius
 
     
-    def to_string(self, unit: HeatTransferCoefficientUnits = HeatTransferCoefficientUnits.WattPerSquareMeterKelvin) -> str:
+    def to_string(self, unit: HeatTransferCoefficientUnits = HeatTransferCoefficientUnits.WattPerSquareMeterKelvin, fractional_digits: int = None) -> str:
         """
-        Format the HeatTransferCoefficient to string.
-        Note! the default format for HeatTransferCoefficient is WattPerSquareMeterKelvin.
-        To specify the unit format set the 'unit' parameter.
+        Format the HeatTransferCoefficient to a string.
+        
+        Note: the default format for HeatTransferCoefficient is WattPerSquareMeterKelvin.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the HeatTransferCoefficient. Default is 'WattPerSquareMeterKelvin'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == HeatTransferCoefficientUnits.WattPerSquareMeterKelvin:
-            return f"""{self.watts_per_square_meter_kelvin} W/m²·K"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_square_meter_kelvin, fractional_digits)} W/m²·K"""
         
         if unit == HeatTransferCoefficientUnits.WattPerSquareMeterCelsius:
-            return f"""{self.watts_per_square_meter_celsius} W/m²·°C"""
+            return f"""{super()._truncate_fraction_digits(self.watts_per_square_meter_celsius, fractional_digits)} W/m²·°C"""
         
         if unit == HeatTransferCoefficientUnits.BtuPerHourSquareFootDegreeFahrenheit:
-            return f"""{self.btus_per_hour_square_foot_degree_fahrenheit} Btu/h·ft²·°F"""
+            return f"""{super()._truncate_fraction_digits(self.btus_per_hour_square_foot_degree_fahrenheit, fractional_digits)} Btu/h·ft²·°F"""
         
         if unit == HeatTransferCoefficientUnits.CaloriePerHourSquareMeterDegreeCelsius:
-            return f"""{self.calories_per_hour_square_meter_degree_celsius} kcal/h·m²·°C"""
+            return f"""{super()._truncate_fraction_digits(self.calories_per_hour_square_meter_degree_celsius, fractional_digits)} kcal/h·m²·°C"""
         
         if unit == HeatTransferCoefficientUnits.KilocaloriePerHourSquareMeterDegreeCelsius:
-            return f"""{self.kilocalories_per_hour_square_meter_degree_celsius} kkcal/h·m²·°C"""
+            return f"""{super()._truncate_fraction_digits(self.kilocalories_per_hour_square_meter_degree_celsius, fractional_digits)} kkcal/h·m²·°C"""
         
         return f'{self._value}'
 

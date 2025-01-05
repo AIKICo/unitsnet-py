@@ -10,61 +10,111 @@ class JerkUnits(Enum):
             JerkUnits enumeration
         """
         
-        MeterPerSecondCubed = 'meter_per_second_cubed'
+        MeterPerSecondCubed = 'MeterPerSecondCubed'
         """
             
         """
         
-        InchPerSecondCubed = 'inch_per_second_cubed'
+        InchPerSecondCubed = 'InchPerSecondCubed'
         """
             
         """
         
-        FootPerSecondCubed = 'foot_per_second_cubed'
+        FootPerSecondCubed = 'FootPerSecondCubed'
         """
             
         """
         
-        StandardGravitiesPerSecond = 'standard_gravities_per_second'
+        StandardGravitiesPerSecond = 'StandardGravitiesPerSecond'
         """
             
         """
         
-        NanometerPerSecondCubed = 'nanometer_per_second_cubed'
+        NanometerPerSecondCubed = 'NanometerPerSecondCubed'
         """
             
         """
         
-        MicrometerPerSecondCubed = 'micrometer_per_second_cubed'
+        MicrometerPerSecondCubed = 'MicrometerPerSecondCubed'
         """
             
         """
         
-        MillimeterPerSecondCubed = 'millimeter_per_second_cubed'
+        MillimeterPerSecondCubed = 'MillimeterPerSecondCubed'
         """
             
         """
         
-        CentimeterPerSecondCubed = 'centimeter_per_second_cubed'
+        CentimeterPerSecondCubed = 'CentimeterPerSecondCubed'
         """
             
         """
         
-        DecimeterPerSecondCubed = 'decimeter_per_second_cubed'
+        DecimeterPerSecondCubed = 'DecimeterPerSecondCubed'
         """
             
         """
         
-        KilometerPerSecondCubed = 'kilometer_per_second_cubed'
+        KilometerPerSecondCubed = 'KilometerPerSecondCubed'
         """
             
         """
         
-        MillistandardGravitiesPerSecond = 'millistandard_gravities_per_second'
+        MillistandardGravitiesPerSecond = 'MillistandardGravitiesPerSecond'
         """
             
         """
         
+
+class JerkDto:
+    """
+    A DTO representation of a Jerk
+
+    Attributes:
+        value (float): The value of the Jerk.
+        unit (JerkUnits): The specific unit that the Jerk value is representing.
+    """
+
+    def __init__(self, value: float, unit: JerkUnits):
+        """
+        Create a new DTO representation of a Jerk
+
+        Parameters:
+            value (float): The value of the Jerk.
+            unit (JerkUnits): The specific unit that the Jerk value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Jerk
+        """
+        self.unit: JerkUnits = unit
+        """
+        The specific unit that the Jerk value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Jerk DTO JSON object representing the current unit.
+
+        :return: JSON object represents Jerk DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterPerSecondCubed"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Jerk DTO from a json representation.
+
+        :param data: The Jerk DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterPerSecondCubed"}
+        :return: A new instance of JerkDto.
+        :rtype: JerkDto
+        """
+        return JerkDto(value=data["value"], unit=JerkUnits(data["unit"]))
+
 
 class Jerk(AbstractMeasure):
     """
@@ -75,8 +125,10 @@ class Jerk(AbstractMeasure):
         from_unit (JerkUnits): The Jerk unit to create from, The default unit is MeterPerSecondCubed
     """
     def __init__(self, value: float, from_unit: JerkUnits = JerkUnits.MeterPerSecondCubed):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__meters_per_second_cubed = None
@@ -104,6 +156,54 @@ class Jerk(AbstractMeasure):
 
     def convert(self, unit: JerkUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: JerkUnits = JerkUnits.MeterPerSecondCubed) -> JerkDto:
+        """
+        Get a new instance of Jerk DTO representing the current unit.
+
+        :param hold_in_unit: The specific Jerk unit to store the Jerk value in the DTO representation.
+        :type hold_in_unit: JerkUnits
+        :return: A new instance of JerkDto.
+        :rtype: JerkDto
+        """
+        return JerkDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: JerkUnits = JerkUnits.MeterPerSecondCubed):
+        """
+        Get a Jerk DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Jerk unit to store the Jerk value in the DTO representation.
+        :type hold_in_unit: JerkUnits
+        :return: JSON object represents Jerk DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterPerSecondCubed"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(jerk_dto: JerkDto):
+        """
+        Obtain a new instance of Jerk from a DTO unit object.
+
+        :param jerk_dto: The Jerk DTO representation.
+        :type jerk_dto: JerkDto
+        :return: A new instance of Jerk.
+        :rtype: Jerk
+        """
+        return Jerk(jerk_dto.value, jerk_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Jerk from a DTO unit json representation.
+
+        :param data: The Jerk DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterPerSecondCubed"}
+        :return: A new instance of Jerk.
+        :rtype: Jerk
+        """
+        return Jerk.from_dto(JerkDto.from_json(data))
 
     def __convert_from_base(self, from_unit: JerkUnits) -> float:
         value = self._value
@@ -473,45 +573,53 @@ class Jerk(AbstractMeasure):
         return self.__millistandard_gravities_per_second
 
     
-    def to_string(self, unit: JerkUnits = JerkUnits.MeterPerSecondCubed) -> str:
+    def to_string(self, unit: JerkUnits = JerkUnits.MeterPerSecondCubed, fractional_digits: int = None) -> str:
         """
-        Format the Jerk to string.
-        Note! the default format for Jerk is MeterPerSecondCubed.
-        To specify the unit format set the 'unit' parameter.
+        Format the Jerk to a string.
+        
+        Note: the default format for Jerk is MeterPerSecondCubed.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Jerk. Default is 'MeterPerSecondCubed'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == JerkUnits.MeterPerSecondCubed:
-            return f"""{self.meters_per_second_cubed} m/s³"""
+            return f"""{super()._truncate_fraction_digits(self.meters_per_second_cubed, fractional_digits)} m/s³"""
         
         if unit == JerkUnits.InchPerSecondCubed:
-            return f"""{self.inches_per_second_cubed} in/s³"""
+            return f"""{super()._truncate_fraction_digits(self.inches_per_second_cubed, fractional_digits)} in/s³"""
         
         if unit == JerkUnits.FootPerSecondCubed:
-            return f"""{self.feet_per_second_cubed} ft/s³"""
+            return f"""{super()._truncate_fraction_digits(self.feet_per_second_cubed, fractional_digits)} ft/s³"""
         
         if unit == JerkUnits.StandardGravitiesPerSecond:
-            return f"""{self.standard_gravities_per_second} g/s"""
+            return f"""{super()._truncate_fraction_digits(self.standard_gravities_per_second, fractional_digits)} g/s"""
         
         if unit == JerkUnits.NanometerPerSecondCubed:
-            return f"""{self.nanometers_per_second_cubed} nm/s³"""
+            return f"""{super()._truncate_fraction_digits(self.nanometers_per_second_cubed, fractional_digits)} nm/s³"""
         
         if unit == JerkUnits.MicrometerPerSecondCubed:
-            return f"""{self.micrometers_per_second_cubed} μm/s³"""
+            return f"""{super()._truncate_fraction_digits(self.micrometers_per_second_cubed, fractional_digits)} μm/s³"""
         
         if unit == JerkUnits.MillimeterPerSecondCubed:
-            return f"""{self.millimeters_per_second_cubed} mm/s³"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_per_second_cubed, fractional_digits)} mm/s³"""
         
         if unit == JerkUnits.CentimeterPerSecondCubed:
-            return f"""{self.centimeters_per_second_cubed} cm/s³"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_per_second_cubed, fractional_digits)} cm/s³"""
         
         if unit == JerkUnits.DecimeterPerSecondCubed:
-            return f"""{self.decimeters_per_second_cubed} dm/s³"""
+            return f"""{super()._truncate_fraction_digits(self.decimeters_per_second_cubed, fractional_digits)} dm/s³"""
         
         if unit == JerkUnits.KilometerPerSecondCubed:
-            return f"""{self.kilometers_per_second_cubed} km/s³"""
+            return f"""{super()._truncate_fraction_digits(self.kilometers_per_second_cubed, fractional_digits)} km/s³"""
         
         if unit == JerkUnits.MillistandardGravitiesPerSecond:
-            return f"""{self.millistandard_gravities_per_second} mg/s"""
+            return f"""{super()._truncate_fraction_digits(self.millistandard_gravities_per_second, fractional_digits)} mg/s"""
         
         return f'{self._value}'
 

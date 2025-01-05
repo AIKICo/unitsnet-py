@@ -10,206 +10,266 @@ class LengthUnits(Enum):
             LengthUnits enumeration
         """
         
-        Meter = 'meter'
+        Meter = 'Meter'
         """
             
         """
         
-        Mile = 'mile'
+        Mile = 'Mile'
         """
             The statute mile was standardised between the British Commonwealth and the United States by an international agreement in 1959, when it was formally redefined with respect to SI units as exactly 1,609.344 metres.
         """
         
-        Yard = 'yard'
+        Yard = 'Yard'
         """
             The yard (symbol: yd) is an English unit of length in both the British imperial and US customary systems of measurement equalling 3 feet (or 36 inches). Since 1959 the yard has been by international agreement standardized as exactly 0.9144 meter. A distance of 1,760 yards is equal to 1 mile.
         """
         
-        Foot = 'foot'
+        Foot = 'Foot'
         """
             
         """
         
-        UsSurveyFoot = 'us_survey_foot'
+        UsSurveyFoot = 'UsSurveyFoot'
         """
             In the United States, the foot was defined as 12 inches, with the inch being defined by the Mendenhall Order of 1893 as 39.37 inches = 1 m. This makes a U.S. survey foot exactly 1200/3937 meters.
         """
         
-        Inch = 'inch'
+        Inch = 'Inch'
         """
             
         """
         
-        Mil = 'mil'
+        Mil = 'Mil'
         """
             
         """
         
-        NauticalMile = 'nautical_mile'
+        NauticalMile = 'NauticalMile'
         """
             
         """
         
-        Fathom = 'fathom'
+        Fathom = 'Fathom'
         """
             
         """
         
-        Shackle = 'shackle'
+        Shackle = 'Shackle'
         """
             
         """
         
-        Microinch = 'microinch'
+        Microinch = 'Microinch'
         """
             
         """
         
-        PrinterPoint = 'printer_point'
+        PrinterPoint = 'PrinterPoint'
         """
             
         """
         
-        DtpPoint = 'dtp_point'
+        DtpPoint = 'DtpPoint'
         """
             
         """
         
-        PrinterPica = 'printer_pica'
+        PrinterPica = 'PrinterPica'
         """
             
         """
         
-        DtpPica = 'dtp_pica'
+        DtpPica = 'DtpPica'
         """
             
         """
         
-        Twip = 'twip'
+        Twip = 'Twip'
         """
             
         """
         
-        Hand = 'hand'
+        Hand = 'Hand'
         """
             
         """
         
-        AstronomicalUnit = 'astronomical_unit'
+        AstronomicalUnit = 'AstronomicalUnit'
         """
             One Astronomical Unit is the distance from the solar system Star, the sun, to planet Earth.
         """
         
-        Parsec = 'parsec'
+        Parsec = 'Parsec'
         """
             A parsec is defined as the distance at which one astronomical unit (AU) subtends an angle of one arcsecond.
         """
         
-        LightYear = 'light_year'
+        LightYear = 'LightYear'
         """
             A Light Year (ly) is the distance that light travel during an Earth year, ie 365 days.
         """
         
-        SolarRadius = 'solar_radius'
+        SolarRadius = 'SolarRadius'
         """
             Solar radius is a ratio unit to the radius of the solar system star, the sun.
         """
         
-        Chain = 'chain'
+        Chain = 'Chain'
         """
             
         """
         
-        Angstrom = 'angstrom'
+        Angstrom = 'Angstrom'
         """
             Angstrom is a metric unit of length equal to 1e-10 meter
         """
         
-        DataMile = 'data_mile'
+        DataMile = 'DataMile'
         """
             In radar-related subjects and in JTIDS, a data mile is a unit of distance equal to 6000 feet (1.8288 kilometres or 0.987 nautical miles).
         """
         
-        Femtometer = 'femtometer'
+        Femtometer = 'Femtometer'
         """
             
         """
         
-        Picometer = 'picometer'
+        Picometer = 'Picometer'
         """
             
         """
         
-        Nanometer = 'nanometer'
+        Nanometer = 'Nanometer'
         """
             
         """
         
-        Micrometer = 'micrometer'
+        Micrometer = 'Micrometer'
         """
             
         """
         
-        Millimeter = 'millimeter'
+        Millimeter = 'Millimeter'
         """
             
         """
         
-        Centimeter = 'centimeter'
+        Centimeter = 'Centimeter'
         """
             
         """
         
-        Decimeter = 'decimeter'
+        Decimeter = 'Decimeter'
         """
             
         """
         
-        Decameter = 'decameter'
+        Decameter = 'Decameter'
         """
             
         """
         
-        Hectometer = 'hectometer'
+        Hectometer = 'Hectometer'
         """
             
         """
         
-        Kilometer = 'kilometer'
+        Kilometer = 'Kilometer'
         """
             
         """
         
-        Megameter = 'megameter'
+        Megameter = 'Megameter'
         """
             
         """
         
-        Kilofoot = 'kilofoot'
+        Gigameter = 'Gigameter'
         """
             
         """
         
-        Kiloparsec = 'kiloparsec'
+        Kiloyard = 'Kiloyard'
         """
             
         """
         
-        Megaparsec = 'megaparsec'
+        Kilofoot = 'Kilofoot'
         """
             
         """
         
-        KilolightYear = 'kilolight_year'
+        Kiloparsec = 'Kiloparsec'
         """
             
         """
         
-        MegalightYear = 'megalight_year'
+        Megaparsec = 'Megaparsec'
         """
             
         """
         
+        KilolightYear = 'KilolightYear'
+        """
+            
+        """
+        
+        MegalightYear = 'MegalightYear'
+        """
+            
+        """
+        
+
+class LengthDto:
+    """
+    A DTO representation of a Length
+
+    Attributes:
+        value (float): The value of the Length.
+        unit (LengthUnits): The specific unit that the Length value is representing.
+    """
+
+    def __init__(self, value: float, unit: LengthUnits):
+        """
+        Create a new DTO representation of a Length
+
+        Parameters:
+            value (float): The value of the Length.
+            unit (LengthUnits): The specific unit that the Length value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Length
+        """
+        self.unit: LengthUnits = unit
+        """
+        The specific unit that the Length value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Length DTO JSON object representing the current unit.
+
+        :return: JSON object represents Length DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Meter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Length DTO from a json representation.
+
+        :param data: The Length DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Meter"}
+        :return: A new instance of LengthDto.
+        :rtype: LengthDto
+        """
+        return LengthDto(value=data["value"], unit=LengthUnits(data["unit"]))
+
 
 class Length(AbstractMeasure):
     """
@@ -220,8 +280,10 @@ class Length(AbstractMeasure):
         from_unit (LengthUnits): The Length unit to create from, The default unit is Meter
     """
     def __init__(self, value: float, from_unit: LengthUnits = LengthUnits.Meter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__meters = None
@@ -294,6 +356,10 @@ class Length(AbstractMeasure):
         
         self.__megameters = None
         
+        self.__gigameters = None
+        
+        self.__kiloyards = None
+        
         self.__kilofeet = None
         
         self.__kiloparsecs = None
@@ -307,6 +373,54 @@ class Length(AbstractMeasure):
 
     def convert(self, unit: LengthUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: LengthUnits = LengthUnits.Meter) -> LengthDto:
+        """
+        Get a new instance of Length DTO representing the current unit.
+
+        :param hold_in_unit: The specific Length unit to store the Length value in the DTO representation.
+        :type hold_in_unit: LengthUnits
+        :return: A new instance of LengthDto.
+        :rtype: LengthDto
+        """
+        return LengthDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: LengthUnits = LengthUnits.Meter):
+        """
+        Get a Length DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Length unit to store the Length value in the DTO representation.
+        :type hold_in_unit: LengthUnits
+        :return: JSON object represents Length DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Meter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(length_dto: LengthDto):
+        """
+        Obtain a new instance of Length from a DTO unit object.
+
+        :param length_dto: The Length DTO representation.
+        :type length_dto: LengthDto
+        :return: A new instance of Length.
+        :rtype: Length
+        """
+        return Length(length_dto.value, length_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Length from a DTO unit json representation.
+
+        :param data: The Length DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Meter"}
+        :return: A new instance of Length.
+        :rtype: Length
+        """
+        return Length.from_dto(LengthDto.from_json(data))
 
     def __convert_from_base(self, from_unit: LengthUnits) -> float:
         value = self._value
@@ -372,7 +486,7 @@ class Length(AbstractMeasure):
             return (value / 9.46073047258e15)
         
         if from_unit == LengthUnits.SolarRadius:
-            return (value / 6.95510000e+08)
+            return (value / 6.95700e8)
         
         if from_unit == LengthUnits.Chain:
             return (value / 20.1168)
@@ -415,6 +529,12 @@ class Length(AbstractMeasure):
         
         if from_unit == LengthUnits.Megameter:
             return ((value) / 1000000.0)
+        
+        if from_unit == LengthUnits.Gigameter:
+            return ((value) / 1000000000.0)
+        
+        if from_unit == LengthUnits.Kiloyard:
+            return ((value / 0.9144) / 1000.0)
         
         if from_unit == LengthUnits.Kilofoot:
             return ((value / 0.3048) / 1000.0)
@@ -497,7 +617,7 @@ class Length(AbstractMeasure):
             return (value * 9.46073047258e15)
         
         if to_unit == LengthUnits.SolarRadius:
-            return (value * 6.95510000e+08)
+            return (value * 6.95700e8)
         
         if to_unit == LengthUnits.Chain:
             return (value * 20.1168)
@@ -540,6 +660,12 @@ class Length(AbstractMeasure):
         
         if to_unit == LengthUnits.Megameter:
             return ((value) * 1000000.0)
+        
+        if to_unit == LengthUnits.Gigameter:
+            return ((value) * 1000000000.0)
+        
+        if to_unit == LengthUnits.Kiloyard:
+            return ((value * 0.9144) * 1000.0)
         
         if to_unit == LengthUnits.Kilofoot:
             return ((value * 0.3048) * 1000.0)
@@ -1090,6 +1216,36 @@ class Length(AbstractMeasure):
 
     
     @staticmethod
+    def from_gigameters(gigameters: float):
+        """
+        Create a new instance of Length from a value in gigameters.
+
+        
+
+        :param meters: The Length value in gigameters.
+        :type gigameters: float
+        :return: A new instance of Length.
+        :rtype: Length
+        """
+        return Length(gigameters, LengthUnits.Gigameter)
+
+    
+    @staticmethod
+    def from_kiloyards(kiloyards: float):
+        """
+        Create a new instance of Length from a value in kiloyards.
+
+        
+
+        :param meters: The Length value in kiloyards.
+        :type kiloyards: float
+        :return: A new instance of Length.
+        :rtype: Length
+        """
+        return Length(kiloyards, LengthUnits.Kiloyard)
+
+    
+    @staticmethod
     def from_kilofeet(kilofeet: float):
         """
         Create a new instance of Length from a value in kilofeet.
@@ -1550,6 +1706,28 @@ class Length(AbstractMeasure):
 
     
     @property
+    def gigameters(self) -> float:
+        """
+        
+        """
+        if self.__gigameters != None:
+            return self.__gigameters
+        self.__gigameters = self.__convert_from_base(LengthUnits.Gigameter)
+        return self.__gigameters
+
+    
+    @property
+    def kiloyards(self) -> float:
+        """
+        
+        """
+        if self.__kiloyards != None:
+            return self.__kiloyards
+        self.__kiloyards = self.__convert_from_base(LengthUnits.Kiloyard)
+        return self.__kiloyards
+
+    
+    @property
     def kilofeet(self) -> float:
         """
         
@@ -1604,132 +1782,146 @@ class Length(AbstractMeasure):
         return self.__megalight_years
 
     
-    def to_string(self, unit: LengthUnits = LengthUnits.Meter) -> str:
+    def to_string(self, unit: LengthUnits = LengthUnits.Meter, fractional_digits: int = None) -> str:
         """
-        Format the Length to string.
-        Note! the default format for Length is Meter.
-        To specify the unit format set the 'unit' parameter.
+        Format the Length to a string.
+        
+        Note: the default format for Length is Meter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Length. Default is 'Meter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == LengthUnits.Meter:
-            return f"""{self.meters} m"""
+            return f"""{super()._truncate_fraction_digits(self.meters, fractional_digits)} m"""
         
         if unit == LengthUnits.Mile:
-            return f"""{self.miles} mi"""
+            return f"""{super()._truncate_fraction_digits(self.miles, fractional_digits)} mi"""
         
         if unit == LengthUnits.Yard:
-            return f"""{self.yards} yd"""
+            return f"""{super()._truncate_fraction_digits(self.yards, fractional_digits)} yd"""
         
         if unit == LengthUnits.Foot:
-            return f"""{self.feet} ft"""
+            return f"""{super()._truncate_fraction_digits(self.feet, fractional_digits)} ft"""
         
         if unit == LengthUnits.UsSurveyFoot:
-            return f"""{self.us_survey_feet} ftUS"""
+            return f"""{super()._truncate_fraction_digits(self.us_survey_feet, fractional_digits)} ftUS"""
         
         if unit == LengthUnits.Inch:
-            return f"""{self.inches} in"""
+            return f"""{super()._truncate_fraction_digits(self.inches, fractional_digits)} in"""
         
         if unit == LengthUnits.Mil:
-            return f"""{self.mils} mil"""
+            return f"""{super()._truncate_fraction_digits(self.mils, fractional_digits)} mil"""
         
         if unit == LengthUnits.NauticalMile:
-            return f"""{self.nautical_miles} NM"""
+            return f"""{super()._truncate_fraction_digits(self.nautical_miles, fractional_digits)} NM"""
         
         if unit == LengthUnits.Fathom:
-            return f"""{self.fathoms} fathom"""
+            return f"""{super()._truncate_fraction_digits(self.fathoms, fractional_digits)} fathom"""
         
         if unit == LengthUnits.Shackle:
-            return f"""{self.shackles} shackle"""
+            return f"""{super()._truncate_fraction_digits(self.shackles, fractional_digits)} shackle"""
         
         if unit == LengthUnits.Microinch:
-            return f"""{self.microinches} µin"""
+            return f"""{super()._truncate_fraction_digits(self.microinches, fractional_digits)} µin"""
         
         if unit == LengthUnits.PrinterPoint:
-            return f"""{self.printer_points} pt"""
+            return f"""{super()._truncate_fraction_digits(self.printer_points, fractional_digits)} pt"""
         
         if unit == LengthUnits.DtpPoint:
-            return f"""{self.dtp_points} pt"""
+            return f"""{super()._truncate_fraction_digits(self.dtp_points, fractional_digits)} pt"""
         
         if unit == LengthUnits.PrinterPica:
-            return f"""{self.printer_picas} pica"""
+            return f"""{super()._truncate_fraction_digits(self.printer_picas, fractional_digits)} pica"""
         
         if unit == LengthUnits.DtpPica:
-            return f"""{self.dtp_picas} pica"""
+            return f"""{super()._truncate_fraction_digits(self.dtp_picas, fractional_digits)} pica"""
         
         if unit == LengthUnits.Twip:
-            return f"""{self.twips} twip"""
+            return f"""{super()._truncate_fraction_digits(self.twips, fractional_digits)} twip"""
         
         if unit == LengthUnits.Hand:
-            return f"""{self.hands} h"""
+            return f"""{super()._truncate_fraction_digits(self.hands, fractional_digits)} h"""
         
         if unit == LengthUnits.AstronomicalUnit:
-            return f"""{self.astronomical_units} au"""
+            return f"""{super()._truncate_fraction_digits(self.astronomical_units, fractional_digits)} au"""
         
         if unit == LengthUnits.Parsec:
-            return f"""{self.parsecs} pc"""
+            return f"""{super()._truncate_fraction_digits(self.parsecs, fractional_digits)} pc"""
         
         if unit == LengthUnits.LightYear:
-            return f"""{self.light_years} ly"""
+            return f"""{super()._truncate_fraction_digits(self.light_years, fractional_digits)} ly"""
         
         if unit == LengthUnits.SolarRadius:
-            return f"""{self.solar_radiuses} R⊙"""
+            return f"""{super()._truncate_fraction_digits(self.solar_radiuses, fractional_digits)} R⊙"""
         
         if unit == LengthUnits.Chain:
-            return f"""{self.chains} ch"""
+            return f"""{super()._truncate_fraction_digits(self.chains, fractional_digits)} ch"""
         
         if unit == LengthUnits.Angstrom:
-            return f"""{self.angstroms} Å"""
+            return f"""{super()._truncate_fraction_digits(self.angstroms, fractional_digits)} Å"""
         
         if unit == LengthUnits.DataMile:
-            return f"""{self.data_miles} DM"""
+            return f"""{super()._truncate_fraction_digits(self.data_miles, fractional_digits)} DM"""
         
         if unit == LengthUnits.Femtometer:
-            return f"""{self.femtometers} fm"""
+            return f"""{super()._truncate_fraction_digits(self.femtometers, fractional_digits)} fm"""
         
         if unit == LengthUnits.Picometer:
-            return f"""{self.picometers} pm"""
+            return f"""{super()._truncate_fraction_digits(self.picometers, fractional_digits)} pm"""
         
         if unit == LengthUnits.Nanometer:
-            return f"""{self.nanometers} nm"""
+            return f"""{super()._truncate_fraction_digits(self.nanometers, fractional_digits)} nm"""
         
         if unit == LengthUnits.Micrometer:
-            return f"""{self.micrometers} μm"""
+            return f"""{super()._truncate_fraction_digits(self.micrometers, fractional_digits)} μm"""
         
         if unit == LengthUnits.Millimeter:
-            return f"""{self.millimeters} mm"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters, fractional_digits)} mm"""
         
         if unit == LengthUnits.Centimeter:
-            return f"""{self.centimeters} cm"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters, fractional_digits)} cm"""
         
         if unit == LengthUnits.Decimeter:
-            return f"""{self.decimeters} dm"""
+            return f"""{super()._truncate_fraction_digits(self.decimeters, fractional_digits)} dm"""
         
         if unit == LengthUnits.Decameter:
-            return f"""{self.decameters} dam"""
+            return f"""{super()._truncate_fraction_digits(self.decameters, fractional_digits)} dam"""
         
         if unit == LengthUnits.Hectometer:
-            return f"""{self.hectometers} hm"""
+            return f"""{super()._truncate_fraction_digits(self.hectometers, fractional_digits)} hm"""
         
         if unit == LengthUnits.Kilometer:
-            return f"""{self.kilometers} km"""
+            return f"""{super()._truncate_fraction_digits(self.kilometers, fractional_digits)} km"""
         
         if unit == LengthUnits.Megameter:
-            return f"""{self.megameters} Mm"""
+            return f"""{super()._truncate_fraction_digits(self.megameters, fractional_digits)} Mm"""
+        
+        if unit == LengthUnits.Gigameter:
+            return f"""{super()._truncate_fraction_digits(self.gigameters, fractional_digits)} Gm"""
+        
+        if unit == LengthUnits.Kiloyard:
+            return f"""{super()._truncate_fraction_digits(self.kiloyards, fractional_digits)} kyd"""
         
         if unit == LengthUnits.Kilofoot:
-            return f"""{self.kilofeet} kft"""
+            return f"""{super()._truncate_fraction_digits(self.kilofeet, fractional_digits)} kft"""
         
         if unit == LengthUnits.Kiloparsec:
-            return f"""{self.kiloparsecs} kpc"""
+            return f"""{super()._truncate_fraction_digits(self.kiloparsecs, fractional_digits)} kpc"""
         
         if unit == LengthUnits.Megaparsec:
-            return f"""{self.megaparsecs} Mpc"""
+            return f"""{super()._truncate_fraction_digits(self.megaparsecs, fractional_digits)} Mpc"""
         
         if unit == LengthUnits.KilolightYear:
-            return f"""{self.kilolight_years} kly"""
+            return f"""{super()._truncate_fraction_digits(self.kilolight_years, fractional_digits)} kly"""
         
         if unit == LengthUnits.MegalightYear:
-            return f"""{self.megalight_years} Mly"""
+            return f"""{super()._truncate_fraction_digits(self.megalight_years, fractional_digits)} Mly"""
         
         return f'{self._value}'
 
@@ -1845,6 +2037,12 @@ class Length(AbstractMeasure):
         
         if unit_abbreviation == LengthUnits.Megameter:
             return """Mm"""
+        
+        if unit_abbreviation == LengthUnits.Gigameter:
+            return """Gm"""
+        
+        if unit_abbreviation == LengthUnits.Kiloyard:
+            return """kyd"""
         
         if unit_abbreviation == LengthUnits.Kilofoot:
             return """kft"""

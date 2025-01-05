@@ -10,76 +10,186 @@ class InformationUnits(Enum):
             InformationUnits enumeration
         """
         
-        Byte = 'byte'
+        Byte = 'Byte'
         """
             
         """
         
-        Bit = 'bit'
+        Bit = 'Bit'
         """
             
         """
         
-        Kilobyte = 'kilobyte'
+        Kilobyte = 'Kilobyte'
         """
             
         """
         
-        Megabyte = 'megabyte'
+        Megabyte = 'Megabyte'
         """
             
         """
         
-        Gigabyte = 'gigabyte'
+        Gigabyte = 'Gigabyte'
         """
             
         """
         
-        Terabyte = 'terabyte'
+        Terabyte = 'Terabyte'
         """
             
         """
         
-        Petabyte = 'petabyte'
+        Petabyte = 'Petabyte'
         """
             
         """
         
-        Exabyte = 'exabyte'
+        Exabyte = 'Exabyte'
         """
             
         """
         
-        Kilobit = 'kilobit'
+        Kibibyte = 'Kibibyte'
         """
             
         """
         
-        Megabit = 'megabit'
+        Mebibyte = 'Mebibyte'
         """
             
         """
         
-        Gigabit = 'gigabit'
+        Gibibyte = 'Gibibyte'
         """
             
         """
         
-        Terabit = 'terabit'
+        Tebibyte = 'Tebibyte'
         """
             
         """
         
-        Petabit = 'petabit'
+        Pebibyte = 'Pebibyte'
         """
             
         """
         
-        Exabit = 'exabit'
+        Exbibyte = 'Exbibyte'
         """
             
         """
         
+        Kilobit = 'Kilobit'
+        """
+            
+        """
+        
+        Megabit = 'Megabit'
+        """
+            
+        """
+        
+        Gigabit = 'Gigabit'
+        """
+            
+        """
+        
+        Terabit = 'Terabit'
+        """
+            
+        """
+        
+        Petabit = 'Petabit'
+        """
+            
+        """
+        
+        Exabit = 'Exabit'
+        """
+            
+        """
+        
+        Kibibit = 'Kibibit'
+        """
+            
+        """
+        
+        Mebibit = 'Mebibit'
+        """
+            
+        """
+        
+        Gibibit = 'Gibibit'
+        """
+            
+        """
+        
+        Tebibit = 'Tebibit'
+        """
+            
+        """
+        
+        Pebibit = 'Pebibit'
+        """
+            
+        """
+        
+        Exbibit = 'Exbibit'
+        """
+            
+        """
+        
+
+class InformationDto:
+    """
+    A DTO representation of a Information
+
+    Attributes:
+        value (float): The value of the Information.
+        unit (InformationUnits): The specific unit that the Information value is representing.
+    """
+
+    def __init__(self, value: float, unit: InformationUnits):
+        """
+        Create a new DTO representation of a Information
+
+        Parameters:
+            value (float): The value of the Information.
+            unit (InformationUnits): The specific unit that the Information value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Information
+        """
+        self.unit: InformationUnits = unit
+        """
+        The specific unit that the Information value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Information DTO JSON object representing the current unit.
+
+        :return: JSON object represents Information DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Bit"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Information DTO from a json representation.
+
+        :param data: The Information DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Bit"}
+        :return: A new instance of InformationDto.
+        :rtype: InformationDto
+        """
+        return InformationDto(value=data["value"], unit=InformationUnits(data["unit"]))
+
 
 class Information(AbstractMeasure):
     """
@@ -90,8 +200,10 @@ class Information(AbstractMeasure):
         from_unit (InformationUnits): The Information unit to create from, The default unit is Bit
     """
     def __init__(self, value: float, from_unit: InformationUnits = InformationUnits.Bit):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__bytes = None
@@ -110,6 +222,18 @@ class Information(AbstractMeasure):
         
         self.__exabytes = None
         
+        self.__kibibytes = None
+        
+        self.__mebibytes = None
+        
+        self.__gibibytes = None
+        
+        self.__tebibytes = None
+        
+        self.__pebibytes = None
+        
+        self.__exbibytes = None
+        
         self.__kilobits = None
         
         self.__megabits = None
@@ -122,9 +246,69 @@ class Information(AbstractMeasure):
         
         self.__exabits = None
         
+        self.__kibibits = None
+        
+        self.__mebibits = None
+        
+        self.__gibibits = None
+        
+        self.__tebibits = None
+        
+        self.__pebibits = None
+        
+        self.__exbibits = None
+        
 
     def convert(self, unit: InformationUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: InformationUnits = InformationUnits.Bit) -> InformationDto:
+        """
+        Get a new instance of Information DTO representing the current unit.
+
+        :param hold_in_unit: The specific Information unit to store the Information value in the DTO representation.
+        :type hold_in_unit: InformationUnits
+        :return: A new instance of InformationDto.
+        :rtype: InformationDto
+        """
+        return InformationDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: InformationUnits = InformationUnits.Bit):
+        """
+        Get a Information DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Information unit to store the Information value in the DTO representation.
+        :type hold_in_unit: InformationUnits
+        :return: JSON object represents Information DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Bit"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(information_dto: InformationDto):
+        """
+        Obtain a new instance of Information from a DTO unit object.
+
+        :param information_dto: The Information DTO representation.
+        :type information_dto: InformationDto
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(information_dto.value, information_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Information from a DTO unit json representation.
+
+        :param data: The Information DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Bit"}
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information.from_dto(InformationDto.from_json(data))
 
     def __convert_from_base(self, from_unit: InformationUnits) -> float:
         value = self._value
@@ -153,6 +337,24 @@ class Information(AbstractMeasure):
         if from_unit == InformationUnits.Exabyte:
             return ((value / 8) / 1e+18)
         
+        if from_unit == InformationUnits.Kibibyte:
+            return ((value / 8) / 1024)
+        
+        if from_unit == InformationUnits.Mebibyte:
+            return ((value / 8) / 1048576)
+        
+        if from_unit == InformationUnits.Gibibyte:
+            return ((value / 8) / 1073741824)
+        
+        if from_unit == InformationUnits.Tebibyte:
+            return ((value / 8) / 1099511627776)
+        
+        if from_unit == InformationUnits.Pebibyte:
+            return ((value / 8) / 1125899906842624)
+        
+        if from_unit == InformationUnits.Exbibyte:
+            return ((value / 8) / 1152921504606846976)
+        
         if from_unit == InformationUnits.Kilobit:
             return ((value) / 1000.0)
         
@@ -170,6 +372,24 @@ class Information(AbstractMeasure):
         
         if from_unit == InformationUnits.Exabit:
             return ((value) / 1e+18)
+        
+        if from_unit == InformationUnits.Kibibit:
+            return ((value) / 1024)
+        
+        if from_unit == InformationUnits.Mebibit:
+            return ((value) / 1048576)
+        
+        if from_unit == InformationUnits.Gibibit:
+            return ((value) / 1073741824)
+        
+        if from_unit == InformationUnits.Tebibit:
+            return ((value) / 1099511627776)
+        
+        if from_unit == InformationUnits.Pebibit:
+            return ((value) / 1125899906842624)
+        
+        if from_unit == InformationUnits.Exbibit:
+            return ((value) / 1152921504606846976)
         
         return None
 
@@ -200,6 +420,24 @@ class Information(AbstractMeasure):
         if to_unit == InformationUnits.Exabyte:
             return ((value * 8) * 1e+18)
         
+        if to_unit == InformationUnits.Kibibyte:
+            return ((value * 8) * 1024)
+        
+        if to_unit == InformationUnits.Mebibyte:
+            return ((value * 8) * 1048576)
+        
+        if to_unit == InformationUnits.Gibibyte:
+            return ((value * 8) * 1073741824)
+        
+        if to_unit == InformationUnits.Tebibyte:
+            return ((value * 8) * 1099511627776)
+        
+        if to_unit == InformationUnits.Pebibyte:
+            return ((value * 8) * 1125899906842624)
+        
+        if to_unit == InformationUnits.Exbibyte:
+            return ((value * 8) * 1152921504606846976)
+        
         if to_unit == InformationUnits.Kilobit:
             return ((value) * 1000.0)
         
@@ -217,6 +455,24 @@ class Information(AbstractMeasure):
         
         if to_unit == InformationUnits.Exabit:
             return ((value) * 1e+18)
+        
+        if to_unit == InformationUnits.Kibibit:
+            return ((value) * 1024)
+        
+        if to_unit == InformationUnits.Mebibit:
+            return ((value) * 1048576)
+        
+        if to_unit == InformationUnits.Gibibit:
+            return ((value) * 1073741824)
+        
+        if to_unit == InformationUnits.Tebibit:
+            return ((value) * 1099511627776)
+        
+        if to_unit == InformationUnits.Pebibit:
+            return ((value) * 1125899906842624)
+        
+        if to_unit == InformationUnits.Exbibit:
+            return ((value) * 1152921504606846976)
         
         return None
 
@@ -347,6 +603,96 @@ class Information(AbstractMeasure):
 
     
     @staticmethod
+    def from_kibibytes(kibibytes: float):
+        """
+        Create a new instance of Information from a value in kibibytes.
+
+        
+
+        :param meters: The Information value in kibibytes.
+        :type kibibytes: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(kibibytes, InformationUnits.Kibibyte)
+
+    
+    @staticmethod
+    def from_mebibytes(mebibytes: float):
+        """
+        Create a new instance of Information from a value in mebibytes.
+
+        
+
+        :param meters: The Information value in mebibytes.
+        :type mebibytes: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(mebibytes, InformationUnits.Mebibyte)
+
+    
+    @staticmethod
+    def from_gibibytes(gibibytes: float):
+        """
+        Create a new instance of Information from a value in gibibytes.
+
+        
+
+        :param meters: The Information value in gibibytes.
+        :type gibibytes: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(gibibytes, InformationUnits.Gibibyte)
+
+    
+    @staticmethod
+    def from_tebibytes(tebibytes: float):
+        """
+        Create a new instance of Information from a value in tebibytes.
+
+        
+
+        :param meters: The Information value in tebibytes.
+        :type tebibytes: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(tebibytes, InformationUnits.Tebibyte)
+
+    
+    @staticmethod
+    def from_pebibytes(pebibytes: float):
+        """
+        Create a new instance of Information from a value in pebibytes.
+
+        
+
+        :param meters: The Information value in pebibytes.
+        :type pebibytes: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(pebibytes, InformationUnits.Pebibyte)
+
+    
+    @staticmethod
+    def from_exbibytes(exbibytes: float):
+        """
+        Create a new instance of Information from a value in exbibytes.
+
+        
+
+        :param meters: The Information value in exbibytes.
+        :type exbibytes: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(exbibytes, InformationUnits.Exbibyte)
+
+    
+    @staticmethod
     def from_kilobits(kilobits: float):
         """
         Create a new instance of Information from a value in kilobits.
@@ -434,6 +780,96 @@ class Information(AbstractMeasure):
         :rtype: Information
         """
         return Information(exabits, InformationUnits.Exabit)
+
+    
+    @staticmethod
+    def from_kibibits(kibibits: float):
+        """
+        Create a new instance of Information from a value in kibibits.
+
+        
+
+        :param meters: The Information value in kibibits.
+        :type kibibits: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(kibibits, InformationUnits.Kibibit)
+
+    
+    @staticmethod
+    def from_mebibits(mebibits: float):
+        """
+        Create a new instance of Information from a value in mebibits.
+
+        
+
+        :param meters: The Information value in mebibits.
+        :type mebibits: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(mebibits, InformationUnits.Mebibit)
+
+    
+    @staticmethod
+    def from_gibibits(gibibits: float):
+        """
+        Create a new instance of Information from a value in gibibits.
+
+        
+
+        :param meters: The Information value in gibibits.
+        :type gibibits: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(gibibits, InformationUnits.Gibibit)
+
+    
+    @staticmethod
+    def from_tebibits(tebibits: float):
+        """
+        Create a new instance of Information from a value in tebibits.
+
+        
+
+        :param meters: The Information value in tebibits.
+        :type tebibits: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(tebibits, InformationUnits.Tebibit)
+
+    
+    @staticmethod
+    def from_pebibits(pebibits: float):
+        """
+        Create a new instance of Information from a value in pebibits.
+
+        
+
+        :param meters: The Information value in pebibits.
+        :type pebibits: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(pebibits, InformationUnits.Pebibit)
+
+    
+    @staticmethod
+    def from_exbibits(exbibits: float):
+        """
+        Create a new instance of Information from a value in exbibits.
+
+        
+
+        :param meters: The Information value in exbibits.
+        :type exbibits: float
+        :return: A new instance of Information.
+        :rtype: Information
+        """
+        return Information(exbibits, InformationUnits.Exbibit)
 
     
     @property
@@ -525,6 +961,72 @@ class Information(AbstractMeasure):
 
     
     @property
+    def kibibytes(self) -> float:
+        """
+        
+        """
+        if self.__kibibytes != None:
+            return self.__kibibytes
+        self.__kibibytes = self.__convert_from_base(InformationUnits.Kibibyte)
+        return self.__kibibytes
+
+    
+    @property
+    def mebibytes(self) -> float:
+        """
+        
+        """
+        if self.__mebibytes != None:
+            return self.__mebibytes
+        self.__mebibytes = self.__convert_from_base(InformationUnits.Mebibyte)
+        return self.__mebibytes
+
+    
+    @property
+    def gibibytes(self) -> float:
+        """
+        
+        """
+        if self.__gibibytes != None:
+            return self.__gibibytes
+        self.__gibibytes = self.__convert_from_base(InformationUnits.Gibibyte)
+        return self.__gibibytes
+
+    
+    @property
+    def tebibytes(self) -> float:
+        """
+        
+        """
+        if self.__tebibytes != None:
+            return self.__tebibytes
+        self.__tebibytes = self.__convert_from_base(InformationUnits.Tebibyte)
+        return self.__tebibytes
+
+    
+    @property
+    def pebibytes(self) -> float:
+        """
+        
+        """
+        if self.__pebibytes != None:
+            return self.__pebibytes
+        self.__pebibytes = self.__convert_from_base(InformationUnits.Pebibyte)
+        return self.__pebibytes
+
+    
+    @property
+    def exbibytes(self) -> float:
+        """
+        
+        """
+        if self.__exbibytes != None:
+            return self.__exbibytes
+        self.__exbibytes = self.__convert_from_base(InformationUnits.Exbibyte)
+        return self.__exbibytes
+
+    
+    @property
     def kilobits(self) -> float:
         """
         
@@ -590,54 +1092,164 @@ class Information(AbstractMeasure):
         return self.__exabits
 
     
-    def to_string(self, unit: InformationUnits = InformationUnits.Bit) -> str:
+    @property
+    def kibibits(self) -> float:
         """
-        Format the Information to string.
-        Note! the default format for Information is Bit.
-        To specify the unit format set the 'unit' parameter.
+        
+        """
+        if self.__kibibits != None:
+            return self.__kibibits
+        self.__kibibits = self.__convert_from_base(InformationUnits.Kibibit)
+        return self.__kibibits
+
+    
+    @property
+    def mebibits(self) -> float:
+        """
+        
+        """
+        if self.__mebibits != None:
+            return self.__mebibits
+        self.__mebibits = self.__convert_from_base(InformationUnits.Mebibit)
+        return self.__mebibits
+
+    
+    @property
+    def gibibits(self) -> float:
+        """
+        
+        """
+        if self.__gibibits != None:
+            return self.__gibibits
+        self.__gibibits = self.__convert_from_base(InformationUnits.Gibibit)
+        return self.__gibibits
+
+    
+    @property
+    def tebibits(self) -> float:
+        """
+        
+        """
+        if self.__tebibits != None:
+            return self.__tebibits
+        self.__tebibits = self.__convert_from_base(InformationUnits.Tebibit)
+        return self.__tebibits
+
+    
+    @property
+    def pebibits(self) -> float:
+        """
+        
+        """
+        if self.__pebibits != None:
+            return self.__pebibits
+        self.__pebibits = self.__convert_from_base(InformationUnits.Pebibit)
+        return self.__pebibits
+
+    
+    @property
+    def exbibits(self) -> float:
+        """
+        
+        """
+        if self.__exbibits != None:
+            return self.__exbibits
+        self.__exbibits = self.__convert_from_base(InformationUnits.Exbibit)
+        return self.__exbibits
+
+    
+    def to_string(self, unit: InformationUnits = InformationUnits.Bit, fractional_digits: int = None) -> str:
+        """
+        Format the Information to a string.
+        
+        Note: the default format for Information is Bit.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Information. Default is 'Bit'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == InformationUnits.Byte:
-            return f"""{self.bytes} B"""
+            return f"""{super()._truncate_fraction_digits(self.bytes, fractional_digits)} B"""
         
         if unit == InformationUnits.Bit:
-            return f"""{self.bits} b"""
+            return f"""{super()._truncate_fraction_digits(self.bits, fractional_digits)} b"""
         
         if unit == InformationUnits.Kilobyte:
-            return f"""{self.kilobytes} kB"""
+            return f"""{super()._truncate_fraction_digits(self.kilobytes, fractional_digits)} kB"""
         
         if unit == InformationUnits.Megabyte:
-            return f"""{self.megabytes} MB"""
+            return f"""{super()._truncate_fraction_digits(self.megabytes, fractional_digits)} MB"""
         
         if unit == InformationUnits.Gigabyte:
-            return f"""{self.gigabytes} GB"""
+            return f"""{super()._truncate_fraction_digits(self.gigabytes, fractional_digits)} GB"""
         
         if unit == InformationUnits.Terabyte:
-            return f"""{self.terabytes} TB"""
+            return f"""{super()._truncate_fraction_digits(self.terabytes, fractional_digits)} TB"""
         
         if unit == InformationUnits.Petabyte:
-            return f"""{self.petabytes} PB"""
+            return f"""{super()._truncate_fraction_digits(self.petabytes, fractional_digits)} PB"""
         
         if unit == InformationUnits.Exabyte:
-            return f"""{self.exabytes} EB"""
+            return f"""{super()._truncate_fraction_digits(self.exabytes, fractional_digits)} EB"""
+        
+        if unit == InformationUnits.Kibibyte:
+            return f"""{super()._truncate_fraction_digits(self.kibibytes, fractional_digits)} KiBB"""
+        
+        if unit == InformationUnits.Mebibyte:
+            return f"""{super()._truncate_fraction_digits(self.mebibytes, fractional_digits)} MiBB"""
+        
+        if unit == InformationUnits.Gibibyte:
+            return f"""{super()._truncate_fraction_digits(self.gibibytes, fractional_digits)} GiBB"""
+        
+        if unit == InformationUnits.Tebibyte:
+            return f"""{super()._truncate_fraction_digits(self.tebibytes, fractional_digits)} TiBB"""
+        
+        if unit == InformationUnits.Pebibyte:
+            return f"""{super()._truncate_fraction_digits(self.pebibytes, fractional_digits)} PiBB"""
+        
+        if unit == InformationUnits.Exbibyte:
+            return f"""{super()._truncate_fraction_digits(self.exbibytes, fractional_digits)} EiBB"""
         
         if unit == InformationUnits.Kilobit:
-            return f"""{self.kilobits} kb"""
+            return f"""{super()._truncate_fraction_digits(self.kilobits, fractional_digits)} kb"""
         
         if unit == InformationUnits.Megabit:
-            return f"""{self.megabits} Mb"""
+            return f"""{super()._truncate_fraction_digits(self.megabits, fractional_digits)} Mb"""
         
         if unit == InformationUnits.Gigabit:
-            return f"""{self.gigabits} Gb"""
+            return f"""{super()._truncate_fraction_digits(self.gigabits, fractional_digits)} Gb"""
         
         if unit == InformationUnits.Terabit:
-            return f"""{self.terabits} Tb"""
+            return f"""{super()._truncate_fraction_digits(self.terabits, fractional_digits)} Tb"""
         
         if unit == InformationUnits.Petabit:
-            return f"""{self.petabits} Pb"""
+            return f"""{super()._truncate_fraction_digits(self.petabits, fractional_digits)} Pb"""
         
         if unit == InformationUnits.Exabit:
-            return f"""{self.exabits} Eb"""
+            return f"""{super()._truncate_fraction_digits(self.exabits, fractional_digits)} Eb"""
+        
+        if unit == InformationUnits.Kibibit:
+            return f"""{super()._truncate_fraction_digits(self.kibibits, fractional_digits)} KiBb"""
+        
+        if unit == InformationUnits.Mebibit:
+            return f"""{super()._truncate_fraction_digits(self.mebibits, fractional_digits)} MiBb"""
+        
+        if unit == InformationUnits.Gibibit:
+            return f"""{super()._truncate_fraction_digits(self.gibibits, fractional_digits)} GiBb"""
+        
+        if unit == InformationUnits.Tebibit:
+            return f"""{super()._truncate_fraction_digits(self.tebibits, fractional_digits)} TiBb"""
+        
+        if unit == InformationUnits.Pebibit:
+            return f"""{super()._truncate_fraction_digits(self.pebibits, fractional_digits)} PiBb"""
+        
+        if unit == InformationUnits.Exbibit:
+            return f"""{super()._truncate_fraction_digits(self.exbibits, fractional_digits)} EiBb"""
         
         return f'{self._value}'
 
@@ -673,6 +1285,24 @@ class Information(AbstractMeasure):
         if unit_abbreviation == InformationUnits.Exabyte:
             return """EB"""
         
+        if unit_abbreviation == InformationUnits.Kibibyte:
+            return """KiBB"""
+        
+        if unit_abbreviation == InformationUnits.Mebibyte:
+            return """MiBB"""
+        
+        if unit_abbreviation == InformationUnits.Gibibyte:
+            return """GiBB"""
+        
+        if unit_abbreviation == InformationUnits.Tebibyte:
+            return """TiBB"""
+        
+        if unit_abbreviation == InformationUnits.Pebibyte:
+            return """PiBB"""
+        
+        if unit_abbreviation == InformationUnits.Exbibyte:
+            return """EiBB"""
+        
         if unit_abbreviation == InformationUnits.Kilobit:
             return """kb"""
         
@@ -690,4 +1320,22 @@ class Information(AbstractMeasure):
         
         if unit_abbreviation == InformationUnits.Exabit:
             return """Eb"""
+        
+        if unit_abbreviation == InformationUnits.Kibibit:
+            return """KiBb"""
+        
+        if unit_abbreviation == InformationUnits.Mebibit:
+            return """MiBb"""
+        
+        if unit_abbreviation == InformationUnits.Gibibit:
+            return """GiBb"""
+        
+        if unit_abbreviation == InformationUnits.Tebibit:
+            return """TiBb"""
+        
+        if unit_abbreviation == InformationUnits.Pebibit:
+            return """PiBb"""
+        
+        if unit_abbreviation == InformationUnits.Exbibit:
+            return """EiBb"""
         
