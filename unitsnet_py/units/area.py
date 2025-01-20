@@ -10,76 +10,126 @@ class AreaUnits(Enum):
             AreaUnits enumeration
         """
         
-        SquareKilometer = 'square_kilometer'
+        SquareKilometer = 'SquareKilometer'
         """
             
         """
         
-        SquareMeter = 'square_meter'
+        SquareMeter = 'SquareMeter'
         """
             
         """
         
-        SquareDecimeter = 'square_decimeter'
+        SquareDecimeter = 'SquareDecimeter'
         """
             
         """
         
-        SquareCentimeter = 'square_centimeter'
+        SquareCentimeter = 'SquareCentimeter'
         """
             
         """
         
-        SquareMillimeter = 'square_millimeter'
+        SquareMillimeter = 'SquareMillimeter'
         """
             
         """
         
-        SquareMicrometer = 'square_micrometer'
+        SquareMicrometer = 'SquareMicrometer'
         """
             
         """
         
-        SquareMile = 'square_mile'
+        SquareMile = 'SquareMile'
         """
             The statute mile was standardised between the British Commonwealth and the United States by an international agreement in 1959, when it was formally redefined with respect to SI units as exactly 1,609.344 metres.
         """
         
-        SquareYard = 'square_yard'
+        SquareYard = 'SquareYard'
         """
             The yard (symbol: yd) is an English unit of length in both the British imperial and US customary systems of measurement equalling 3 feet (or 36 inches). Since 1959 the yard has been by international agreement standardized as exactly 0.9144 meter. A distance of 1,760 yards is equal to 1 mile.
         """
         
-        SquareFoot = 'square_foot'
+        SquareFoot = 'SquareFoot'
         """
             
         """
         
-        UsSurveySquareFoot = 'us_survey_square_foot'
+        UsSurveySquareFoot = 'UsSurveySquareFoot'
         """
             In the United States, the foot was defined as 12 inches, with the inch being defined by the Mendenhall Order of 1893 as 39.37 inches = 1 m. This makes a U.S. survey foot exactly 1200/3937 meters.
         """
         
-        SquareInch = 'square_inch'
+        SquareInch = 'SquareInch'
         """
             
         """
         
-        Acre = 'acre'
+        Acre = 'Acre'
         """
             Based upon the international yard and pound agreement of 1959, an acre may be declared as exactly 4,046.8564224 square metres.
         """
         
-        Hectare = 'hectare'
+        Hectare = 'Hectare'
         """
             
         """
         
-        SquareNauticalMile = 'square_nautical_mile'
+        SquareNauticalMile = 'SquareNauticalMile'
         """
             
         """
         
+
+class AreaDto:
+    """
+    A DTO representation of a Area
+
+    Attributes:
+        value (float): The value of the Area.
+        unit (AreaUnits): The specific unit that the Area value is representing.
+    """
+
+    def __init__(self, value: float, unit: AreaUnits):
+        """
+        Create a new DTO representation of a Area
+
+        Parameters:
+            value (float): The value of the Area.
+            unit (AreaUnits): The specific unit that the Area value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Area
+        """
+        self.unit: AreaUnits = unit
+        """
+        The specific unit that the Area value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Area DTO JSON object representing the current unit.
+
+        :return: JSON object represents Area DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "SquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Area DTO from a json representation.
+
+        :param data: The Area DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "SquareMeter"}
+        :return: A new instance of AreaDto.
+        :rtype: AreaDto
+        """
+        return AreaDto(value=data["value"], unit=AreaUnits(data["unit"]))
+
 
 class Area(AbstractMeasure):
     """
@@ -90,8 +140,10 @@ class Area(AbstractMeasure):
         from_unit (AreaUnits): The Area unit to create from, The default unit is SquareMeter
     """
     def __init__(self, value: float, from_unit: AreaUnits = AreaUnits.SquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__square_kilometers = None
@@ -125,6 +177,54 @@ class Area(AbstractMeasure):
 
     def convert(self, unit: AreaUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: AreaUnits = AreaUnits.SquareMeter) -> AreaDto:
+        """
+        Get a new instance of Area DTO representing the current unit.
+
+        :param hold_in_unit: The specific Area unit to store the Area value in the DTO representation.
+        :type hold_in_unit: AreaUnits
+        :return: A new instance of AreaDto.
+        :rtype: AreaDto
+        """
+        return AreaDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: AreaUnits = AreaUnits.SquareMeter):
+        """
+        Get a Area DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Area unit to store the Area value in the DTO representation.
+        :type hold_in_unit: AreaUnits
+        :return: JSON object represents Area DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "SquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(area_dto: AreaDto):
+        """
+        Obtain a new instance of Area from a DTO unit object.
+
+        :param area_dto: The Area DTO representation.
+        :type area_dto: AreaDto
+        :return: A new instance of Area.
+        :rtype: Area
+        """
+        return Area(area_dto.value, area_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Area from a DTO unit json representation.
+
+        :param data: The Area DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "SquareMeter"}
+        :return: A new instance of Area.
+        :rtype: Area
+        """
+        return Area.from_dto(AreaDto.from_json(data))
 
     def __convert_from_base(self, from_unit: AreaUnits) -> float:
         value = self._value
@@ -590,54 +690,62 @@ class Area(AbstractMeasure):
         return self.__square_nautical_miles
 
     
-    def to_string(self, unit: AreaUnits = AreaUnits.SquareMeter) -> str:
+    def to_string(self, unit: AreaUnits = AreaUnits.SquareMeter, fractional_digits: int = None) -> str:
         """
-        Format the Area to string.
-        Note! the default format for Area is SquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the Area to a string.
+        
+        Note: the default format for Area is SquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Area. Default is 'SquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == AreaUnits.SquareKilometer:
-            return f"""{self.square_kilometers} km²"""
+            return f"""{super()._truncate_fraction_digits(self.square_kilometers, fractional_digits)} km²"""
         
         if unit == AreaUnits.SquareMeter:
-            return f"""{self.square_meters} m²"""
+            return f"""{super()._truncate_fraction_digits(self.square_meters, fractional_digits)} m²"""
         
         if unit == AreaUnits.SquareDecimeter:
-            return f"""{self.square_decimeters} dm²"""
+            return f"""{super()._truncate_fraction_digits(self.square_decimeters, fractional_digits)} dm²"""
         
         if unit == AreaUnits.SquareCentimeter:
-            return f"""{self.square_centimeters} cm²"""
+            return f"""{super()._truncate_fraction_digits(self.square_centimeters, fractional_digits)} cm²"""
         
         if unit == AreaUnits.SquareMillimeter:
-            return f"""{self.square_millimeters} mm²"""
+            return f"""{super()._truncate_fraction_digits(self.square_millimeters, fractional_digits)} mm²"""
         
         if unit == AreaUnits.SquareMicrometer:
-            return f"""{self.square_micrometers} µm²"""
+            return f"""{super()._truncate_fraction_digits(self.square_micrometers, fractional_digits)} µm²"""
         
         if unit == AreaUnits.SquareMile:
-            return f"""{self.square_miles} mi²"""
+            return f"""{super()._truncate_fraction_digits(self.square_miles, fractional_digits)} mi²"""
         
         if unit == AreaUnits.SquareYard:
-            return f"""{self.square_yards} yd²"""
+            return f"""{super()._truncate_fraction_digits(self.square_yards, fractional_digits)} yd²"""
         
         if unit == AreaUnits.SquareFoot:
-            return f"""{self.square_feet} ft²"""
+            return f"""{super()._truncate_fraction_digits(self.square_feet, fractional_digits)} ft²"""
         
         if unit == AreaUnits.UsSurveySquareFoot:
-            return f"""{self.us_survey_square_feet} ft² (US)"""
+            return f"""{super()._truncate_fraction_digits(self.us_survey_square_feet, fractional_digits)} ft² (US)"""
         
         if unit == AreaUnits.SquareInch:
-            return f"""{self.square_inches} in²"""
+            return f"""{super()._truncate_fraction_digits(self.square_inches, fractional_digits)} in²"""
         
         if unit == AreaUnits.Acre:
-            return f"""{self.acres} ac"""
+            return f"""{super()._truncate_fraction_digits(self.acres, fractional_digits)} ac"""
         
         if unit == AreaUnits.Hectare:
-            return f"""{self.hectares} ha"""
+            return f"""{super()._truncate_fraction_digits(self.hectares, fractional_digits)} ha"""
         
         if unit == AreaUnits.SquareNauticalMile:
-            return f"""{self.square_nautical_miles} nmi²"""
+            return f"""{super()._truncate_fraction_digits(self.square_nautical_miles, fractional_digits)} nmi²"""
         
         return f'{self._value}'
 

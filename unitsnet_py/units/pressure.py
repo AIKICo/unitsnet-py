@@ -10,251 +10,301 @@ class PressureUnits(Enum):
             PressureUnits enumeration
         """
         
-        Pascal = 'pascal'
+        Pascal = 'Pascal'
         """
             
         """
         
-        Atmosphere = 'atmosphere'
+        Atmosphere = 'Atmosphere'
         """
             
         """
         
-        Bar = 'bar'
+        Bar = 'Bar'
         """
             
         """
         
-        KilogramForcePerSquareMeter = 'kilogram_force_per_square_meter'
+        KilogramForcePerSquareMeter = 'KilogramForcePerSquareMeter'
         """
             
         """
         
-        KilogramForcePerSquareCentimeter = 'kilogram_force_per_square_centimeter'
+        KilogramForcePerSquareCentimeter = 'KilogramForcePerSquareCentimeter'
         """
             
         """
         
-        KilogramForcePerSquareMillimeter = 'kilogram_force_per_square_millimeter'
+        KilogramForcePerSquareMillimeter = 'KilogramForcePerSquareMillimeter'
         """
             
         """
         
-        NewtonPerSquareMeter = 'newton_per_square_meter'
+        NewtonPerSquareMeter = 'NewtonPerSquareMeter'
         """
             
         """
         
-        NewtonPerSquareCentimeter = 'newton_per_square_centimeter'
+        NewtonPerSquareCentimeter = 'NewtonPerSquareCentimeter'
         """
             
         """
         
-        NewtonPerSquareMillimeter = 'newton_per_square_millimeter'
+        NewtonPerSquareMillimeter = 'NewtonPerSquareMillimeter'
         """
             
         """
         
-        TechnicalAtmosphere = 'technical_atmosphere'
+        TechnicalAtmosphere = 'TechnicalAtmosphere'
         """
             
         """
         
-        Torr = 'torr'
+        Torr = 'Torr'
         """
             
         """
         
-        PoundForcePerSquareInch = 'pound_force_per_square_inch'
+        PoundForcePerSquareInch = 'PoundForcePerSquareInch'
         """
             
         """
         
-        PoundForcePerSquareMil = 'pound_force_per_square_mil'
+        PoundForcePerSquareMil = 'PoundForcePerSquareMil'
         """
             
         """
         
-        PoundForcePerSquareFoot = 'pound_force_per_square_foot'
+        PoundForcePerSquareFoot = 'PoundForcePerSquareFoot'
         """
             
         """
         
-        TonneForcePerSquareMillimeter = 'tonne_force_per_square_millimeter'
+        TonneForcePerSquareMillimeter = 'TonneForcePerSquareMillimeter'
         """
             
         """
         
-        TonneForcePerSquareMeter = 'tonne_force_per_square_meter'
+        TonneForcePerSquareMeter = 'TonneForcePerSquareMeter'
         """
             
         """
         
-        MeterOfHead = 'meter_of_head'
+        MeterOfHead = 'MeterOfHead'
         """
             
         """
         
-        TonneForcePerSquareCentimeter = 'tonne_force_per_square_centimeter'
+        TonneForcePerSquareCentimeter = 'TonneForcePerSquareCentimeter'
         """
             
         """
         
-        FootOfHead = 'foot_of_head'
+        FootOfHead = 'FootOfHead'
         """
             
         """
         
-        MillimeterOfMercury = 'millimeter_of_mercury'
+        MillimeterOfMercury = 'MillimeterOfMercury'
         """
             
         """
         
-        InchOfMercury = 'inch_of_mercury'
+        InchOfMercury = 'InchOfMercury'
         """
             
         """
         
-        DynePerSquareCentimeter = 'dyne_per_square_centimeter'
+        DynePerSquareCentimeter = 'DynePerSquareCentimeter'
         """
             
         """
         
-        PoundPerInchSecondSquared = 'pound_per_inch_second_squared'
+        PoundPerInchSecondSquared = 'PoundPerInchSecondSquared'
         """
             
         """
         
-        MeterOfWaterColumn = 'meter_of_water_column'
+        MeterOfWaterColumn = 'MeterOfWaterColumn'
         """
             
         """
         
-        InchOfWaterColumn = 'inch_of_water_column'
+        InchOfWaterColumn = 'InchOfWaterColumn'
         """
             
         """
         
-        MeterOfElevation = 'meter_of_elevation'
+        MeterOfElevation = 'MeterOfElevation'
         """
             
         """
         
-        FootOfElevation = 'foot_of_elevation'
+        FootOfElevation = 'FootOfElevation'
         """
             
         """
         
-        Micropascal = 'micropascal'
+        Micropascal = 'Micropascal'
         """
             
         """
         
-        Millipascal = 'millipascal'
+        Millipascal = 'Millipascal'
         """
             
         """
         
-        Decapascal = 'decapascal'
+        Decapascal = 'Decapascal'
         """
             
         """
         
-        Hectopascal = 'hectopascal'
+        Hectopascal = 'Hectopascal'
         """
             
         """
         
-        Kilopascal = 'kilopascal'
+        Kilopascal = 'Kilopascal'
         """
             
         """
         
-        Megapascal = 'megapascal'
+        Megapascal = 'Megapascal'
         """
             
         """
         
-        Gigapascal = 'gigapascal'
+        Gigapascal = 'Gigapascal'
         """
             
         """
         
-        Microbar = 'microbar'
+        Microbar = 'Microbar'
         """
             
         """
         
-        Millibar = 'millibar'
+        Millibar = 'Millibar'
         """
             
         """
         
-        Centibar = 'centibar'
+        Centibar = 'Centibar'
         """
             
         """
         
-        Decibar = 'decibar'
+        Decibar = 'Decibar'
         """
             
         """
         
-        Kilobar = 'kilobar'
+        Kilobar = 'Kilobar'
         """
             
         """
         
-        Megabar = 'megabar'
+        Megabar = 'Megabar'
         """
             
         """
         
-        KilonewtonPerSquareMeter = 'kilonewton_per_square_meter'
+        KilonewtonPerSquareMeter = 'KilonewtonPerSquareMeter'
         """
             
         """
         
-        MeganewtonPerSquareMeter = 'meganewton_per_square_meter'
+        MeganewtonPerSquareMeter = 'MeganewtonPerSquareMeter'
         """
             
         """
         
-        KilonewtonPerSquareCentimeter = 'kilonewton_per_square_centimeter'
+        KilonewtonPerSquareCentimeter = 'KilonewtonPerSquareCentimeter'
         """
             
         """
         
-        KilonewtonPerSquareMillimeter = 'kilonewton_per_square_millimeter'
+        KilonewtonPerSquareMillimeter = 'KilonewtonPerSquareMillimeter'
         """
             
         """
         
-        KilopoundForcePerSquareInch = 'kilopound_force_per_square_inch'
+        KilopoundForcePerSquareInch = 'KilopoundForcePerSquareInch'
         """
             
         """
         
-        KilopoundForcePerSquareMil = 'kilopound_force_per_square_mil'
+        KilopoundForcePerSquareMil = 'KilopoundForcePerSquareMil'
         """
             
         """
         
-        KilopoundForcePerSquareFoot = 'kilopound_force_per_square_foot'
+        KilopoundForcePerSquareFoot = 'KilopoundForcePerSquareFoot'
         """
             
         """
         
-        MillimeterOfWaterColumn = 'millimeter_of_water_column'
+        MillimeterOfWaterColumn = 'MillimeterOfWaterColumn'
         """
             
         """
         
-        CentimeterOfWaterColumn = 'centimeter_of_water_column'
+        CentimeterOfWaterColumn = 'CentimeterOfWaterColumn'
         """
             
         """
         
+
+class PressureDto:
+    """
+    A DTO representation of a Pressure
+
+    Attributes:
+        value (float): The value of the Pressure.
+        unit (PressureUnits): The specific unit that the Pressure value is representing.
+    """
+
+    def __init__(self, value: float, unit: PressureUnits):
+        """
+        Create a new DTO representation of a Pressure
+
+        Parameters:
+            value (float): The value of the Pressure.
+            unit (PressureUnits): The specific unit that the Pressure value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Pressure
+        """
+        self.unit: PressureUnits = unit
+        """
+        The specific unit that the Pressure value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Pressure DTO JSON object representing the current unit.
+
+        :return: JSON object represents Pressure DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Pascal"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Pressure DTO from a json representation.
+
+        :param data: The Pressure DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Pascal"}
+        :return: A new instance of PressureDto.
+        :rtype: PressureDto
+        """
+        return PressureDto(value=data["value"], unit=PressureUnits(data["unit"]))
+
 
 class Pressure(AbstractMeasure):
     """
@@ -265,8 +315,10 @@ class Pressure(AbstractMeasure):
         from_unit (PressureUnits): The Pressure unit to create from, The default unit is Pascal
     """
     def __init__(self, value: float, from_unit: PressureUnits = PressureUnits.Pascal):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__pascals = None
@@ -370,6 +422,54 @@ class Pressure(AbstractMeasure):
 
     def convert(self, unit: PressureUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: PressureUnits = PressureUnits.Pascal) -> PressureDto:
+        """
+        Get a new instance of Pressure DTO representing the current unit.
+
+        :param hold_in_unit: The specific Pressure unit to store the Pressure value in the DTO representation.
+        :type hold_in_unit: PressureUnits
+        :return: A new instance of PressureDto.
+        :rtype: PressureDto
+        """
+        return PressureDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: PressureUnits = PressureUnits.Pascal):
+        """
+        Get a Pressure DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Pressure unit to store the Pressure value in the DTO representation.
+        :type hold_in_unit: PressureUnits
+        :return: JSON object represents Pressure DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Pascal"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(pressure_dto: PressureDto):
+        """
+        Obtain a new instance of Pressure from a DTO unit object.
+
+        :param pressure_dto: The Pressure DTO representation.
+        :type pressure_dto: PressureDto
+        :return: A new instance of Pressure.
+        :rtype: Pressure
+        """
+        return Pressure(pressure_dto.value, pressure_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Pressure from a DTO unit json representation.
+
+        :param data: The Pressure DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Pascal"}
+        :return: A new instance of Pressure.
+        :rtype: Pressure
+        """
+        return Pressure.from_dto(PressureDto.from_json(data))
 
     def __convert_from_base(self, from_unit: PressureUnits) -> float:
         value = self._value
@@ -1955,159 +2055,167 @@ class Pressure(AbstractMeasure):
         return self.__centimeters_of_water_column
 
     
-    def to_string(self, unit: PressureUnits = PressureUnits.Pascal) -> str:
+    def to_string(self, unit: PressureUnits = PressureUnits.Pascal, fractional_digits: int = None) -> str:
         """
-        Format the Pressure to string.
-        Note! the default format for Pressure is Pascal.
-        To specify the unit format set the 'unit' parameter.
+        Format the Pressure to a string.
+        
+        Note: the default format for Pressure is Pascal.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Pressure. Default is 'Pascal'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == PressureUnits.Pascal:
-            return f"""{self.pascals} Pa"""
+            return f"""{super()._truncate_fraction_digits(self.pascals, fractional_digits)} Pa"""
         
         if unit == PressureUnits.Atmosphere:
-            return f"""{self.atmospheres} atm"""
+            return f"""{super()._truncate_fraction_digits(self.atmospheres, fractional_digits)} atm"""
         
         if unit == PressureUnits.Bar:
-            return f"""{self.bars} bar"""
+            return f"""{super()._truncate_fraction_digits(self.bars, fractional_digits)} bar"""
         
         if unit == PressureUnits.KilogramForcePerSquareMeter:
-            return f"""{self.kilograms_force_per_square_meter} kgf/m²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force_per_square_meter, fractional_digits)} kgf/m²"""
         
         if unit == PressureUnits.KilogramForcePerSquareCentimeter:
-            return f"""{self.kilograms_force_per_square_centimeter} kgf/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force_per_square_centimeter, fractional_digits)} kgf/cm²"""
         
         if unit == PressureUnits.KilogramForcePerSquareMillimeter:
-            return f"""{self.kilograms_force_per_square_millimeter} kgf/mm²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force_per_square_millimeter, fractional_digits)} kgf/mm²"""
         
         if unit == PressureUnits.NewtonPerSquareMeter:
-            return f"""{self.newtons_per_square_meter} N/m²"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_square_meter, fractional_digits)} N/m²"""
         
         if unit == PressureUnits.NewtonPerSquareCentimeter:
-            return f"""{self.newtons_per_square_centimeter} N/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_square_centimeter, fractional_digits)} N/cm²"""
         
         if unit == PressureUnits.NewtonPerSquareMillimeter:
-            return f"""{self.newtons_per_square_millimeter} N/mm²"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_square_millimeter, fractional_digits)} N/mm²"""
         
         if unit == PressureUnits.TechnicalAtmosphere:
-            return f"""{self.technical_atmospheres} at"""
+            return f"""{super()._truncate_fraction_digits(self.technical_atmospheres, fractional_digits)} at"""
         
         if unit == PressureUnits.Torr:
-            return f"""{self.torrs} torr"""
+            return f"""{super()._truncate_fraction_digits(self.torrs, fractional_digits)} torr"""
         
         if unit == PressureUnits.PoundForcePerSquareInch:
-            return f"""{self.pounds_force_per_square_inch} psi"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_square_inch, fractional_digits)} psi"""
         
         if unit == PressureUnits.PoundForcePerSquareMil:
-            return f"""{self.pounds_force_per_square_mil} lb/mil²"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_square_mil, fractional_digits)} lb/mil²"""
         
         if unit == PressureUnits.PoundForcePerSquareFoot:
-            return f"""{self.pounds_force_per_square_foot} lb/ft²"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_square_foot, fractional_digits)} lb/ft²"""
         
         if unit == PressureUnits.TonneForcePerSquareMillimeter:
-            return f"""{self.tonnes_force_per_square_millimeter} tf/mm²"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force_per_square_millimeter, fractional_digits)} tf/mm²"""
         
         if unit == PressureUnits.TonneForcePerSquareMeter:
-            return f"""{self.tonnes_force_per_square_meter} tf/m²"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force_per_square_meter, fractional_digits)} tf/m²"""
         
         if unit == PressureUnits.MeterOfHead:
-            return f"""{self.meters_of_head} m of head"""
+            return f"""{super()._truncate_fraction_digits(self.meters_of_head, fractional_digits)} m of head"""
         
         if unit == PressureUnits.TonneForcePerSquareCentimeter:
-            return f"""{self.tonnes_force_per_square_centimeter} tf/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force_per_square_centimeter, fractional_digits)} tf/cm²"""
         
         if unit == PressureUnits.FootOfHead:
-            return f"""{self.feet_of_head} ft of head"""
+            return f"""{super()._truncate_fraction_digits(self.feet_of_head, fractional_digits)} ft of head"""
         
         if unit == PressureUnits.MillimeterOfMercury:
-            return f"""{self.millimeters_of_mercury} mmHg"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_of_mercury, fractional_digits)} mmHg"""
         
         if unit == PressureUnits.InchOfMercury:
-            return f"""{self.inches_of_mercury} inHg"""
+            return f"""{super()._truncate_fraction_digits(self.inches_of_mercury, fractional_digits)} inHg"""
         
         if unit == PressureUnits.DynePerSquareCentimeter:
-            return f"""{self.dynes_per_square_centimeter} dyn/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.dynes_per_square_centimeter, fractional_digits)} dyn/cm²"""
         
         if unit == PressureUnits.PoundPerInchSecondSquared:
-            return f"""{self.pounds_per_inch_second_squared} lbm/(in·s²)"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_inch_second_squared, fractional_digits)} lbm/(in·s²)"""
         
         if unit == PressureUnits.MeterOfWaterColumn:
-            return f"""{self.meters_of_water_column} mH₂O"""
+            return f"""{super()._truncate_fraction_digits(self.meters_of_water_column, fractional_digits)} mH₂O"""
         
         if unit == PressureUnits.InchOfWaterColumn:
-            return f"""{self.inches_of_water_column} inH2O"""
+            return f"""{super()._truncate_fraction_digits(self.inches_of_water_column, fractional_digits)} inH2O"""
         
         if unit == PressureUnits.MeterOfElevation:
-            return f"""{self.meters_of_elevation} m of elevation"""
+            return f"""{super()._truncate_fraction_digits(self.meters_of_elevation, fractional_digits)} m of elevation"""
         
         if unit == PressureUnits.FootOfElevation:
-            return f"""{self.feet_of_elevation} ft of elevation"""
+            return f"""{super()._truncate_fraction_digits(self.feet_of_elevation, fractional_digits)} ft of elevation"""
         
         if unit == PressureUnits.Micropascal:
-            return f"""{self.micropascals} μPa"""
+            return f"""{super()._truncate_fraction_digits(self.micropascals, fractional_digits)} μPa"""
         
         if unit == PressureUnits.Millipascal:
-            return f"""{self.millipascals} mPa"""
+            return f"""{super()._truncate_fraction_digits(self.millipascals, fractional_digits)} mPa"""
         
         if unit == PressureUnits.Decapascal:
-            return f"""{self.decapascals} daPa"""
+            return f"""{super()._truncate_fraction_digits(self.decapascals, fractional_digits)} daPa"""
         
         if unit == PressureUnits.Hectopascal:
-            return f"""{self.hectopascals} hPa"""
+            return f"""{super()._truncate_fraction_digits(self.hectopascals, fractional_digits)} hPa"""
         
         if unit == PressureUnits.Kilopascal:
-            return f"""{self.kilopascals} kPa"""
+            return f"""{super()._truncate_fraction_digits(self.kilopascals, fractional_digits)} kPa"""
         
         if unit == PressureUnits.Megapascal:
-            return f"""{self.megapascals} MPa"""
+            return f"""{super()._truncate_fraction_digits(self.megapascals, fractional_digits)} MPa"""
         
         if unit == PressureUnits.Gigapascal:
-            return f"""{self.gigapascals} GPa"""
+            return f"""{super()._truncate_fraction_digits(self.gigapascals, fractional_digits)} GPa"""
         
         if unit == PressureUnits.Microbar:
-            return f"""{self.microbars} μbar"""
+            return f"""{super()._truncate_fraction_digits(self.microbars, fractional_digits)} μbar"""
         
         if unit == PressureUnits.Millibar:
-            return f"""{self.millibars} mbar"""
+            return f"""{super()._truncate_fraction_digits(self.millibars, fractional_digits)} mbar"""
         
         if unit == PressureUnits.Centibar:
-            return f"""{self.centibars} cbar"""
+            return f"""{super()._truncate_fraction_digits(self.centibars, fractional_digits)} cbar"""
         
         if unit == PressureUnits.Decibar:
-            return f"""{self.decibars} dbar"""
+            return f"""{super()._truncate_fraction_digits(self.decibars, fractional_digits)} dbar"""
         
         if unit == PressureUnits.Kilobar:
-            return f"""{self.kilobars} kbar"""
+            return f"""{super()._truncate_fraction_digits(self.kilobars, fractional_digits)} kbar"""
         
         if unit == PressureUnits.Megabar:
-            return f"""{self.megabars} Mbar"""
+            return f"""{super()._truncate_fraction_digits(self.megabars, fractional_digits)} Mbar"""
         
         if unit == PressureUnits.KilonewtonPerSquareMeter:
-            return f"""{self.kilonewtons_per_square_meter} kN/m²"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_square_meter, fractional_digits)} kN/m²"""
         
         if unit == PressureUnits.MeganewtonPerSquareMeter:
-            return f"""{self.meganewtons_per_square_meter} MN/m²"""
+            return f"""{super()._truncate_fraction_digits(self.meganewtons_per_square_meter, fractional_digits)} MN/m²"""
         
         if unit == PressureUnits.KilonewtonPerSquareCentimeter:
-            return f"""{self.kilonewtons_per_square_centimeter} kN/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_square_centimeter, fractional_digits)} kN/cm²"""
         
         if unit == PressureUnits.KilonewtonPerSquareMillimeter:
-            return f"""{self.kilonewtons_per_square_millimeter} kN/mm²"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_square_millimeter, fractional_digits)} kN/mm²"""
         
         if unit == PressureUnits.KilopoundForcePerSquareInch:
-            return f"""{self.kilopounds_force_per_square_inch} kpsi"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_square_inch, fractional_digits)} kpsi"""
         
         if unit == PressureUnits.KilopoundForcePerSquareMil:
-            return f"""{self.kilopounds_force_per_square_mil} klb/mil²"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_square_mil, fractional_digits)} klb/mil²"""
         
         if unit == PressureUnits.KilopoundForcePerSquareFoot:
-            return f"""{self.kilopounds_force_per_square_foot} klb/ft²"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_square_foot, fractional_digits)} klb/ft²"""
         
         if unit == PressureUnits.MillimeterOfWaterColumn:
-            return f"""{self.millimeters_of_water_column} mmH₂O"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_of_water_column, fractional_digits)} mmH₂O"""
         
         if unit == PressureUnits.CentimeterOfWaterColumn:
-            return f"""{self.centimeters_of_water_column} cmH₂O"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_of_water_column, fractional_digits)} cmH₂O"""
         
         return f'{self._value}'
 

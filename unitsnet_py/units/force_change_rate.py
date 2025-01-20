@@ -10,81 +10,131 @@ class ForceChangeRateUnits(Enum):
             ForceChangeRateUnits enumeration
         """
         
-        NewtonPerMinute = 'newton_per_minute'
+        NewtonPerMinute = 'NewtonPerMinute'
         """
             
         """
         
-        NewtonPerSecond = 'newton_per_second'
+        NewtonPerSecond = 'NewtonPerSecond'
         """
             
         """
         
-        PoundForcePerMinute = 'pound_force_per_minute'
+        PoundForcePerMinute = 'PoundForcePerMinute'
         """
             
         """
         
-        PoundForcePerSecond = 'pound_force_per_second'
+        PoundForcePerSecond = 'PoundForcePerSecond'
         """
             
         """
         
-        DecanewtonPerMinute = 'decanewton_per_minute'
+        DecanewtonPerMinute = 'DecanewtonPerMinute'
         """
             
         """
         
-        KilonewtonPerMinute = 'kilonewton_per_minute'
+        KilonewtonPerMinute = 'KilonewtonPerMinute'
         """
             
         """
         
-        NanonewtonPerSecond = 'nanonewton_per_second'
+        NanonewtonPerSecond = 'NanonewtonPerSecond'
         """
             
         """
         
-        MicronewtonPerSecond = 'micronewton_per_second'
+        MicronewtonPerSecond = 'MicronewtonPerSecond'
         """
             
         """
         
-        MillinewtonPerSecond = 'millinewton_per_second'
+        MillinewtonPerSecond = 'MillinewtonPerSecond'
         """
             
         """
         
-        CentinewtonPerSecond = 'centinewton_per_second'
+        CentinewtonPerSecond = 'CentinewtonPerSecond'
         """
             
         """
         
-        DecinewtonPerSecond = 'decinewton_per_second'
+        DecinewtonPerSecond = 'DecinewtonPerSecond'
         """
             
         """
         
-        DecanewtonPerSecond = 'decanewton_per_second'
+        DecanewtonPerSecond = 'DecanewtonPerSecond'
         """
             
         """
         
-        KilonewtonPerSecond = 'kilonewton_per_second'
+        KilonewtonPerSecond = 'KilonewtonPerSecond'
         """
             
         """
         
-        KilopoundForcePerMinute = 'kilopound_force_per_minute'
+        KilopoundForcePerMinute = 'KilopoundForcePerMinute'
         """
             
         """
         
-        KilopoundForcePerSecond = 'kilopound_force_per_second'
+        KilopoundForcePerSecond = 'KilopoundForcePerSecond'
         """
             
         """
         
+
+class ForceChangeRateDto:
+    """
+    A DTO representation of a ForceChangeRate
+
+    Attributes:
+        value (float): The value of the ForceChangeRate.
+        unit (ForceChangeRateUnits): The specific unit that the ForceChangeRate value is representing.
+    """
+
+    def __init__(self, value: float, unit: ForceChangeRateUnits):
+        """
+        Create a new DTO representation of a ForceChangeRate
+
+        Parameters:
+            value (float): The value of the ForceChangeRate.
+            unit (ForceChangeRateUnits): The specific unit that the ForceChangeRate value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ForceChangeRate
+        """
+        self.unit: ForceChangeRateUnits = unit
+        """
+        The specific unit that the ForceChangeRate value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ForceChangeRate DTO JSON object representing the current unit.
+
+        :return: JSON object represents ForceChangeRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ForceChangeRate DTO from a json representation.
+
+        :param data: The ForceChangeRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonPerSecond"}
+        :return: A new instance of ForceChangeRateDto.
+        :rtype: ForceChangeRateDto
+        """
+        return ForceChangeRateDto(value=data["value"], unit=ForceChangeRateUnits(data["unit"]))
+
 
 class ForceChangeRate(AbstractMeasure):
     """
@@ -95,8 +145,10 @@ class ForceChangeRate(AbstractMeasure):
         from_unit (ForceChangeRateUnits): The ForceChangeRate unit to create from, The default unit is NewtonPerSecond
     """
     def __init__(self, value: float, from_unit: ForceChangeRateUnits = ForceChangeRateUnits.NewtonPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__newtons_per_minute = None
@@ -132,6 +184,54 @@ class ForceChangeRate(AbstractMeasure):
 
     def convert(self, unit: ForceChangeRateUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ForceChangeRateUnits = ForceChangeRateUnits.NewtonPerSecond) -> ForceChangeRateDto:
+        """
+        Get a new instance of ForceChangeRate DTO representing the current unit.
+
+        :param hold_in_unit: The specific ForceChangeRate unit to store the ForceChangeRate value in the DTO representation.
+        :type hold_in_unit: ForceChangeRateUnits
+        :return: A new instance of ForceChangeRateDto.
+        :rtype: ForceChangeRateDto
+        """
+        return ForceChangeRateDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ForceChangeRateUnits = ForceChangeRateUnits.NewtonPerSecond):
+        """
+        Get a ForceChangeRate DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ForceChangeRate unit to store the ForceChangeRate value in the DTO representation.
+        :type hold_in_unit: ForceChangeRateUnits
+        :return: JSON object represents ForceChangeRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(force_change_rate_dto: ForceChangeRateDto):
+        """
+        Obtain a new instance of ForceChangeRate from a DTO unit object.
+
+        :param force_change_rate_dto: The ForceChangeRate DTO representation.
+        :type force_change_rate_dto: ForceChangeRateDto
+        :return: A new instance of ForceChangeRate.
+        :rtype: ForceChangeRate
+        """
+        return ForceChangeRate(force_change_rate_dto.value, force_change_rate_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ForceChangeRate from a DTO unit json representation.
+
+        :param data: The ForceChangeRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonPerSecond"}
+        :return: A new instance of ForceChangeRate.
+        :rtype: ForceChangeRate
+        """
+        return ForceChangeRate.from_dto(ForceChangeRateDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ForceChangeRateUnits) -> float:
         value = self._value
@@ -629,57 +729,65 @@ class ForceChangeRate(AbstractMeasure):
         return self.__kilopounds_force_per_second
 
     
-    def to_string(self, unit: ForceChangeRateUnits = ForceChangeRateUnits.NewtonPerSecond) -> str:
+    def to_string(self, unit: ForceChangeRateUnits = ForceChangeRateUnits.NewtonPerSecond, fractional_digits: int = None) -> str:
         """
-        Format the ForceChangeRate to string.
-        Note! the default format for ForceChangeRate is NewtonPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the ForceChangeRate to a string.
+        
+        Note: the default format for ForceChangeRate is NewtonPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ForceChangeRate. Default is 'NewtonPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ForceChangeRateUnits.NewtonPerMinute:
-            return f"""{self.newtons_per_minute} N/min"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_minute, fractional_digits)} N/min"""
         
         if unit == ForceChangeRateUnits.NewtonPerSecond:
-            return f"""{self.newtons_per_second} N/s"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_second, fractional_digits)} N/s"""
         
         if unit == ForceChangeRateUnits.PoundForcePerMinute:
-            return f"""{self.pounds_force_per_minute} lbf/min"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_minute, fractional_digits)} lbf/min"""
         
         if unit == ForceChangeRateUnits.PoundForcePerSecond:
-            return f"""{self.pounds_force_per_second} lbf/s"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_second, fractional_digits)} lbf/s"""
         
         if unit == ForceChangeRateUnits.DecanewtonPerMinute:
-            return f"""{self.decanewtons_per_minute} daN/min"""
+            return f"""{super()._truncate_fraction_digits(self.decanewtons_per_minute, fractional_digits)} daN/min"""
         
         if unit == ForceChangeRateUnits.KilonewtonPerMinute:
-            return f"""{self.kilonewtons_per_minute} kN/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_minute, fractional_digits)} kN/min"""
         
         if unit == ForceChangeRateUnits.NanonewtonPerSecond:
-            return f"""{self.nanonewtons_per_second} nN/s"""
+            return f"""{super()._truncate_fraction_digits(self.nanonewtons_per_second, fractional_digits)} nN/s"""
         
         if unit == ForceChangeRateUnits.MicronewtonPerSecond:
-            return f"""{self.micronewtons_per_second} μN/s"""
+            return f"""{super()._truncate_fraction_digits(self.micronewtons_per_second, fractional_digits)} μN/s"""
         
         if unit == ForceChangeRateUnits.MillinewtonPerSecond:
-            return f"""{self.millinewtons_per_second} mN/s"""
+            return f"""{super()._truncate_fraction_digits(self.millinewtons_per_second, fractional_digits)} mN/s"""
         
         if unit == ForceChangeRateUnits.CentinewtonPerSecond:
-            return f"""{self.centinewtons_per_second} cN/s"""
+            return f"""{super()._truncate_fraction_digits(self.centinewtons_per_second, fractional_digits)} cN/s"""
         
         if unit == ForceChangeRateUnits.DecinewtonPerSecond:
-            return f"""{self.decinewtons_per_second} dN/s"""
+            return f"""{super()._truncate_fraction_digits(self.decinewtons_per_second, fractional_digits)} dN/s"""
         
         if unit == ForceChangeRateUnits.DecanewtonPerSecond:
-            return f"""{self.decanewtons_per_second} daN/s"""
+            return f"""{super()._truncate_fraction_digits(self.decanewtons_per_second, fractional_digits)} daN/s"""
         
         if unit == ForceChangeRateUnits.KilonewtonPerSecond:
-            return f"""{self.kilonewtons_per_second} kN/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_second, fractional_digits)} kN/s"""
         
         if unit == ForceChangeRateUnits.KilopoundForcePerMinute:
-            return f"""{self.kilopounds_force_per_minute} klbf/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_minute, fractional_digits)} klbf/min"""
         
         if unit == ForceChangeRateUnits.KilopoundForcePerSecond:
-            return f"""{self.kilopounds_force_per_second} klbf/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_second, fractional_digits)} klbf/s"""
         
         return f'{self._value}'
 

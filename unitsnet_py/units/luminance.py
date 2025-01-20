@@ -10,56 +10,106 @@ class LuminanceUnits(Enum):
             LuminanceUnits enumeration
         """
         
-        CandelaPerSquareMeter = 'candela_per_square_meter'
+        CandelaPerSquareMeter = 'CandelaPerSquareMeter'
         """
             
         """
         
-        CandelaPerSquareFoot = 'candela_per_square_foot'
+        CandelaPerSquareFoot = 'CandelaPerSquareFoot'
         """
             
         """
         
-        CandelaPerSquareInch = 'candela_per_square_inch'
+        CandelaPerSquareInch = 'CandelaPerSquareInch'
         """
             
         """
         
-        Nit = 'nit'
+        Nit = 'Nit'
         """
             
         """
         
-        NanocandelaPerSquareMeter = 'nanocandela_per_square_meter'
+        NanocandelaPerSquareMeter = 'NanocandelaPerSquareMeter'
         """
             
         """
         
-        MicrocandelaPerSquareMeter = 'microcandela_per_square_meter'
+        MicrocandelaPerSquareMeter = 'MicrocandelaPerSquareMeter'
         """
             
         """
         
-        MillicandelaPerSquareMeter = 'millicandela_per_square_meter'
+        MillicandelaPerSquareMeter = 'MillicandelaPerSquareMeter'
         """
             
         """
         
-        CenticandelaPerSquareMeter = 'centicandela_per_square_meter'
+        CenticandelaPerSquareMeter = 'CenticandelaPerSquareMeter'
         """
             
         """
         
-        DecicandelaPerSquareMeter = 'decicandela_per_square_meter'
+        DecicandelaPerSquareMeter = 'DecicandelaPerSquareMeter'
         """
             
         """
         
-        KilocandelaPerSquareMeter = 'kilocandela_per_square_meter'
+        KilocandelaPerSquareMeter = 'KilocandelaPerSquareMeter'
         """
             
         """
         
+
+class LuminanceDto:
+    """
+    A DTO representation of a Luminance
+
+    Attributes:
+        value (float): The value of the Luminance.
+        unit (LuminanceUnits): The specific unit that the Luminance value is representing.
+    """
+
+    def __init__(self, value: float, unit: LuminanceUnits):
+        """
+        Create a new DTO representation of a Luminance
+
+        Parameters:
+            value (float): The value of the Luminance.
+            unit (LuminanceUnits): The specific unit that the Luminance value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Luminance
+        """
+        self.unit: LuminanceUnits = unit
+        """
+        The specific unit that the Luminance value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Luminance DTO JSON object representing the current unit.
+
+        :return: JSON object represents Luminance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "CandelaPerSquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Luminance DTO from a json representation.
+
+        :param data: The Luminance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "CandelaPerSquareMeter"}
+        :return: A new instance of LuminanceDto.
+        :rtype: LuminanceDto
+        """
+        return LuminanceDto(value=data["value"], unit=LuminanceUnits(data["unit"]))
+
 
 class Luminance(AbstractMeasure):
     """
@@ -70,8 +120,10 @@ class Luminance(AbstractMeasure):
         from_unit (LuminanceUnits): The Luminance unit to create from, The default unit is CandelaPerSquareMeter
     """
     def __init__(self, value: float, from_unit: LuminanceUnits = LuminanceUnits.CandelaPerSquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__candelas_per_square_meter = None
@@ -97,6 +149,54 @@ class Luminance(AbstractMeasure):
 
     def convert(self, unit: LuminanceUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: LuminanceUnits = LuminanceUnits.CandelaPerSquareMeter) -> LuminanceDto:
+        """
+        Get a new instance of Luminance DTO representing the current unit.
+
+        :param hold_in_unit: The specific Luminance unit to store the Luminance value in the DTO representation.
+        :type hold_in_unit: LuminanceUnits
+        :return: A new instance of LuminanceDto.
+        :rtype: LuminanceDto
+        """
+        return LuminanceDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: LuminanceUnits = LuminanceUnits.CandelaPerSquareMeter):
+        """
+        Get a Luminance DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Luminance unit to store the Luminance value in the DTO representation.
+        :type hold_in_unit: LuminanceUnits
+        :return: JSON object represents Luminance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "CandelaPerSquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(luminance_dto: LuminanceDto):
+        """
+        Obtain a new instance of Luminance from a DTO unit object.
+
+        :param luminance_dto: The Luminance DTO representation.
+        :type luminance_dto: LuminanceDto
+        :return: A new instance of Luminance.
+        :rtype: Luminance
+        """
+        return Luminance(luminance_dto.value, luminance_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Luminance from a DTO unit json representation.
+
+        :param data: The Luminance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "CandelaPerSquareMeter"}
+        :return: A new instance of Luminance.
+        :rtype: Luminance
+        """
+        return Luminance.from_dto(LuminanceDto.from_json(data))
 
     def __convert_from_base(self, from_unit: LuminanceUnits) -> float:
         value = self._value
@@ -434,42 +534,50 @@ class Luminance(AbstractMeasure):
         return self.__kilocandelas_per_square_meter
 
     
-    def to_string(self, unit: LuminanceUnits = LuminanceUnits.CandelaPerSquareMeter) -> str:
+    def to_string(self, unit: LuminanceUnits = LuminanceUnits.CandelaPerSquareMeter, fractional_digits: int = None) -> str:
         """
-        Format the Luminance to string.
-        Note! the default format for Luminance is CandelaPerSquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the Luminance to a string.
+        
+        Note: the default format for Luminance is CandelaPerSquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Luminance. Default is 'CandelaPerSquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == LuminanceUnits.CandelaPerSquareMeter:
-            return f"""{self.candelas_per_square_meter} Cd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.candelas_per_square_meter, fractional_digits)} Cd/m²"""
         
         if unit == LuminanceUnits.CandelaPerSquareFoot:
-            return f"""{self.candelas_per_square_foot} Cd/ft²"""
+            return f"""{super()._truncate_fraction_digits(self.candelas_per_square_foot, fractional_digits)} Cd/ft²"""
         
         if unit == LuminanceUnits.CandelaPerSquareInch:
-            return f"""{self.candelas_per_square_inch} Cd/in²"""
+            return f"""{super()._truncate_fraction_digits(self.candelas_per_square_inch, fractional_digits)} Cd/in²"""
         
         if unit == LuminanceUnits.Nit:
-            return f"""{self.nits} nt"""
+            return f"""{super()._truncate_fraction_digits(self.nits, fractional_digits)} nt"""
         
         if unit == LuminanceUnits.NanocandelaPerSquareMeter:
-            return f"""{self.nanocandelas_per_square_meter} nCd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.nanocandelas_per_square_meter, fractional_digits)} nCd/m²"""
         
         if unit == LuminanceUnits.MicrocandelaPerSquareMeter:
-            return f"""{self.microcandelas_per_square_meter} μCd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.microcandelas_per_square_meter, fractional_digits)} μCd/m²"""
         
         if unit == LuminanceUnits.MillicandelaPerSquareMeter:
-            return f"""{self.millicandelas_per_square_meter} mCd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.millicandelas_per_square_meter, fractional_digits)} mCd/m²"""
         
         if unit == LuminanceUnits.CenticandelaPerSquareMeter:
-            return f"""{self.centicandelas_per_square_meter} cCd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.centicandelas_per_square_meter, fractional_digits)} cCd/m²"""
         
         if unit == LuminanceUnits.DecicandelaPerSquareMeter:
-            return f"""{self.decicandelas_per_square_meter} dCd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.decicandelas_per_square_meter, fractional_digits)} dCd/m²"""
         
         if unit == LuminanceUnits.KilocandelaPerSquareMeter:
-            return f"""{self.kilocandelas_per_square_meter} kCd/m²"""
+            return f"""{super()._truncate_fraction_digits(self.kilocandelas_per_square_meter, fractional_digits)} kCd/m²"""
         
         return f'{self._value}'
 

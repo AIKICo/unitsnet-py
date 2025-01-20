@@ -10,21 +10,71 @@ class LeakRateUnits(Enum):
             LeakRateUnits enumeration
         """
         
-        PascalCubicMeterPerSecond = 'pascal_cubic_meter_per_second'
+        PascalCubicMeterPerSecond = 'PascalCubicMeterPerSecond'
         """
             
         """
         
-        MillibarLiterPerSecond = 'millibar_liter_per_second'
+        MillibarLiterPerSecond = 'MillibarLiterPerSecond'
         """
             
         """
         
-        TorrLiterPerSecond = 'torr_liter_per_second'
+        TorrLiterPerSecond = 'TorrLiterPerSecond'
         """
             
         """
         
+
+class LeakRateDto:
+    """
+    A DTO representation of a LeakRate
+
+    Attributes:
+        value (float): The value of the LeakRate.
+        unit (LeakRateUnits): The specific unit that the LeakRate value is representing.
+    """
+
+    def __init__(self, value: float, unit: LeakRateUnits):
+        """
+        Create a new DTO representation of a LeakRate
+
+        Parameters:
+            value (float): The value of the LeakRate.
+            unit (LeakRateUnits): The specific unit that the LeakRate value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the LeakRate
+        """
+        self.unit: LeakRateUnits = unit
+        """
+        The specific unit that the LeakRate value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a LeakRate DTO JSON object representing the current unit.
+
+        :return: JSON object represents LeakRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "PascalCubicMeterPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of LeakRate DTO from a json representation.
+
+        :param data: The LeakRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "PascalCubicMeterPerSecond"}
+        :return: A new instance of LeakRateDto.
+        :rtype: LeakRateDto
+        """
+        return LeakRateDto(value=data["value"], unit=LeakRateUnits(data["unit"]))
+
 
 class LeakRate(AbstractMeasure):
     """
@@ -35,8 +85,10 @@ class LeakRate(AbstractMeasure):
         from_unit (LeakRateUnits): The LeakRate unit to create from, The default unit is PascalCubicMeterPerSecond
     """
     def __init__(self, value: float, from_unit: LeakRateUnits = LeakRateUnits.PascalCubicMeterPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__pascal_cubic_meters_per_second = None
@@ -48,6 +100,54 @@ class LeakRate(AbstractMeasure):
 
     def convert(self, unit: LeakRateUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: LeakRateUnits = LeakRateUnits.PascalCubicMeterPerSecond) -> LeakRateDto:
+        """
+        Get a new instance of LeakRate DTO representing the current unit.
+
+        :param hold_in_unit: The specific LeakRate unit to store the LeakRate value in the DTO representation.
+        :type hold_in_unit: LeakRateUnits
+        :return: A new instance of LeakRateDto.
+        :rtype: LeakRateDto
+        """
+        return LeakRateDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: LeakRateUnits = LeakRateUnits.PascalCubicMeterPerSecond):
+        """
+        Get a LeakRate DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific LeakRate unit to store the LeakRate value in the DTO representation.
+        :type hold_in_unit: LeakRateUnits
+        :return: JSON object represents LeakRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "PascalCubicMeterPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(leak_rate_dto: LeakRateDto):
+        """
+        Obtain a new instance of LeakRate from a DTO unit object.
+
+        :param leak_rate_dto: The LeakRate DTO representation.
+        :type leak_rate_dto: LeakRateDto
+        :return: A new instance of LeakRate.
+        :rtype: LeakRate
+        """
+        return LeakRate(leak_rate_dto.value, leak_rate_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of LeakRate from a DTO unit json representation.
+
+        :param data: The LeakRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "PascalCubicMeterPerSecond"}
+        :return: A new instance of LeakRate.
+        :rtype: LeakRate
+        """
+        return LeakRate.from_dto(LeakRateDto.from_json(data))
 
     def __convert_from_base(self, from_unit: LeakRateUnits) -> float:
         value = self._value
@@ -161,21 +261,29 @@ class LeakRate(AbstractMeasure):
         return self.__torr_liters_per_second
 
     
-    def to_string(self, unit: LeakRateUnits = LeakRateUnits.PascalCubicMeterPerSecond) -> str:
+    def to_string(self, unit: LeakRateUnits = LeakRateUnits.PascalCubicMeterPerSecond, fractional_digits: int = None) -> str:
         """
-        Format the LeakRate to string.
-        Note! the default format for LeakRate is PascalCubicMeterPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the LeakRate to a string.
+        
+        Note: the default format for LeakRate is PascalCubicMeterPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the LeakRate. Default is 'PascalCubicMeterPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == LeakRateUnits.PascalCubicMeterPerSecond:
-            return f"""{self.pascal_cubic_meters_per_second} Pa·m³/s"""
+            return f"""{super()._truncate_fraction_digits(self.pascal_cubic_meters_per_second, fractional_digits)} Pa·m³/s"""
         
         if unit == LeakRateUnits.MillibarLiterPerSecond:
-            return f"""{self.millibar_liters_per_second} mbar·l/s"""
+            return f"""{super()._truncate_fraction_digits(self.millibar_liters_per_second, fractional_digits)} mbar·l/s"""
         
         if unit == LeakRateUnits.TorrLiterPerSecond:
-            return f"""{self.torr_liters_per_second} Torr·l/s"""
+            return f"""{super()._truncate_fraction_digits(self.torr_liters_per_second, fractional_digits)} Torr·l/s"""
         
         return f'{self._value}'
 

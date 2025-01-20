@@ -10,41 +10,101 @@ class IrradiationUnits(Enum):
             IrradiationUnits enumeration
         """
         
-        JoulePerSquareMeter = 'joule_per_square_meter'
+        JoulePerSquareMeter = 'JoulePerSquareMeter'
         """
             
         """
         
-        JoulePerSquareCentimeter = 'joule_per_square_centimeter'
+        JoulePerSquareCentimeter = 'JoulePerSquareCentimeter'
         """
             
         """
         
-        JoulePerSquareMillimeter = 'joule_per_square_millimeter'
+        JoulePerSquareMillimeter = 'JoulePerSquareMillimeter'
         """
             
         """
         
-        WattHourPerSquareMeter = 'watt_hour_per_square_meter'
+        WattHourPerSquareMeter = 'WattHourPerSquareMeter'
         """
             
         """
         
-        KilojoulePerSquareMeter = 'kilojoule_per_square_meter'
+        BtuPerSquareFoot = 'BtuPerSquareFoot'
         """
             
         """
         
-        MillijoulePerSquareCentimeter = 'millijoule_per_square_centimeter'
+        KilojoulePerSquareMeter = 'KilojoulePerSquareMeter'
         """
             
         """
         
-        KilowattHourPerSquareMeter = 'kilowatt_hour_per_square_meter'
+        MillijoulePerSquareCentimeter = 'MillijoulePerSquareCentimeter'
         """
             
         """
         
+        KilowattHourPerSquareMeter = 'KilowattHourPerSquareMeter'
+        """
+            
+        """
+        
+        KilobtuPerSquareFoot = 'KilobtuPerSquareFoot'
+        """
+            
+        """
+        
+
+class IrradiationDto:
+    """
+    A DTO representation of a Irradiation
+
+    Attributes:
+        value (float): The value of the Irradiation.
+        unit (IrradiationUnits): The specific unit that the Irradiation value is representing.
+    """
+
+    def __init__(self, value: float, unit: IrradiationUnits):
+        """
+        Create a new DTO representation of a Irradiation
+
+        Parameters:
+            value (float): The value of the Irradiation.
+            unit (IrradiationUnits): The specific unit that the Irradiation value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Irradiation
+        """
+        self.unit: IrradiationUnits = unit
+        """
+        The specific unit that the Irradiation value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Irradiation DTO JSON object representing the current unit.
+
+        :return: JSON object represents Irradiation DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "JoulePerSquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Irradiation DTO from a json representation.
+
+        :param data: The Irradiation DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "JoulePerSquareMeter"}
+        :return: A new instance of IrradiationDto.
+        :rtype: IrradiationDto
+        """
+        return IrradiationDto(value=data["value"], unit=IrradiationUnits(data["unit"]))
+
 
 class Irradiation(AbstractMeasure):
     """
@@ -55,8 +115,10 @@ class Irradiation(AbstractMeasure):
         from_unit (IrradiationUnits): The Irradiation unit to create from, The default unit is JoulePerSquareMeter
     """
     def __init__(self, value: float, from_unit: IrradiationUnits = IrradiationUnits.JoulePerSquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__joules_per_square_meter = None
@@ -67,15 +129,67 @@ class Irradiation(AbstractMeasure):
         
         self.__watt_hours_per_square_meter = None
         
+        self.__btus_per_square_foot = None
+        
         self.__kilojoules_per_square_meter = None
         
         self.__millijoules_per_square_centimeter = None
         
         self.__kilowatt_hours_per_square_meter = None
         
+        self.__kilobtus_per_square_foot = None
+        
 
     def convert(self, unit: IrradiationUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: IrradiationUnits = IrradiationUnits.JoulePerSquareMeter) -> IrradiationDto:
+        """
+        Get a new instance of Irradiation DTO representing the current unit.
+
+        :param hold_in_unit: The specific Irradiation unit to store the Irradiation value in the DTO representation.
+        :type hold_in_unit: IrradiationUnits
+        :return: A new instance of IrradiationDto.
+        :rtype: IrradiationDto
+        """
+        return IrradiationDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: IrradiationUnits = IrradiationUnits.JoulePerSquareMeter):
+        """
+        Get a Irradiation DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Irradiation unit to store the Irradiation value in the DTO representation.
+        :type hold_in_unit: IrradiationUnits
+        :return: JSON object represents Irradiation DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "JoulePerSquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(irradiation_dto: IrradiationDto):
+        """
+        Obtain a new instance of Irradiation from a DTO unit object.
+
+        :param irradiation_dto: The Irradiation DTO representation.
+        :type irradiation_dto: IrradiationDto
+        :return: A new instance of Irradiation.
+        :rtype: Irradiation
+        """
+        return Irradiation(irradiation_dto.value, irradiation_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Irradiation from a DTO unit json representation.
+
+        :param data: The Irradiation DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "JoulePerSquareMeter"}
+        :return: A new instance of Irradiation.
+        :rtype: Irradiation
+        """
+        return Irradiation.from_dto(IrradiationDto.from_json(data))
 
     def __convert_from_base(self, from_unit: IrradiationUnits) -> float:
         value = self._value
@@ -92,6 +206,9 @@ class Irradiation(AbstractMeasure):
         if from_unit == IrradiationUnits.WattHourPerSquareMeter:
             return (value / 3600)
         
+        if from_unit == IrradiationUnits.BtuPerSquareFoot:
+            return (value / (52752792631 / 4645152))
+        
         if from_unit == IrradiationUnits.KilojoulePerSquareMeter:
             return ((value) / 1000.0)
         
@@ -100,6 +217,9 @@ class Irradiation(AbstractMeasure):
         
         if from_unit == IrradiationUnits.KilowattHourPerSquareMeter:
             return ((value / 3600) / 1000.0)
+        
+        if from_unit == IrradiationUnits.KilobtuPerSquareFoot:
+            return ((value / (52752792631 / 4645152)) / 1000.0)
         
         return None
 
@@ -118,6 +238,9 @@ class Irradiation(AbstractMeasure):
         if to_unit == IrradiationUnits.WattHourPerSquareMeter:
             return (value * 3600)
         
+        if to_unit == IrradiationUnits.BtuPerSquareFoot:
+            return (value * (52752792631 / 4645152))
+        
         if to_unit == IrradiationUnits.KilojoulePerSquareMeter:
             return ((value) * 1000.0)
         
@@ -126,6 +249,9 @@ class Irradiation(AbstractMeasure):
         
         if to_unit == IrradiationUnits.KilowattHourPerSquareMeter:
             return ((value * 3600) * 1000.0)
+        
+        if to_unit == IrradiationUnits.KilobtuPerSquareFoot:
+            return ((value * (52752792631 / 4645152)) * 1000.0)
         
         return None
 
@@ -196,6 +322,21 @@ class Irradiation(AbstractMeasure):
 
     
     @staticmethod
+    def from_btus_per_square_foot(btus_per_square_foot: float):
+        """
+        Create a new instance of Irradiation from a value in btus_per_square_foot.
+
+        
+
+        :param meters: The Irradiation value in btus_per_square_foot.
+        :type btus_per_square_foot: float
+        :return: A new instance of Irradiation.
+        :rtype: Irradiation
+        """
+        return Irradiation(btus_per_square_foot, IrradiationUnits.BtuPerSquareFoot)
+
+    
+    @staticmethod
     def from_kilojoules_per_square_meter(kilojoules_per_square_meter: float):
         """
         Create a new instance of Irradiation from a value in kilojoules_per_square_meter.
@@ -238,6 +379,21 @@ class Irradiation(AbstractMeasure):
         :rtype: Irradiation
         """
         return Irradiation(kilowatt_hours_per_square_meter, IrradiationUnits.KilowattHourPerSquareMeter)
+
+    
+    @staticmethod
+    def from_kilobtus_per_square_foot(kilobtus_per_square_foot: float):
+        """
+        Create a new instance of Irradiation from a value in kilobtus_per_square_foot.
+
+        
+
+        :param meters: The Irradiation value in kilobtus_per_square_foot.
+        :type kilobtus_per_square_foot: float
+        :return: A new instance of Irradiation.
+        :rtype: Irradiation
+        """
+        return Irradiation(kilobtus_per_square_foot, IrradiationUnits.KilobtuPerSquareFoot)
 
     
     @property
@@ -285,6 +441,17 @@ class Irradiation(AbstractMeasure):
 
     
     @property
+    def btus_per_square_foot(self) -> float:
+        """
+        
+        """
+        if self.__btus_per_square_foot != None:
+            return self.__btus_per_square_foot
+        self.__btus_per_square_foot = self.__convert_from_base(IrradiationUnits.BtuPerSquareFoot)
+        return self.__btus_per_square_foot
+
+    
+    @property
     def kilojoules_per_square_meter(self) -> float:
         """
         
@@ -317,33 +484,58 @@ class Irradiation(AbstractMeasure):
         return self.__kilowatt_hours_per_square_meter
 
     
-    def to_string(self, unit: IrradiationUnits = IrradiationUnits.JoulePerSquareMeter) -> str:
+    @property
+    def kilobtus_per_square_foot(self) -> float:
         """
-        Format the Irradiation to string.
-        Note! the default format for Irradiation is JoulePerSquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        
+        """
+        if self.__kilobtus_per_square_foot != None:
+            return self.__kilobtus_per_square_foot
+        self.__kilobtus_per_square_foot = self.__convert_from_base(IrradiationUnits.KilobtuPerSquareFoot)
+        return self.__kilobtus_per_square_foot
+
+    
+    def to_string(self, unit: IrradiationUnits = IrradiationUnits.JoulePerSquareMeter, fractional_digits: int = None) -> str:
+        """
+        Format the Irradiation to a string.
+        
+        Note: the default format for Irradiation is JoulePerSquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Irradiation. Default is 'JoulePerSquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == IrradiationUnits.JoulePerSquareMeter:
-            return f"""{self.joules_per_square_meter} J/m²"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_square_meter, fractional_digits)} J/m²"""
         
         if unit == IrradiationUnits.JoulePerSquareCentimeter:
-            return f"""{self.joules_per_square_centimeter} J/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_square_centimeter, fractional_digits)} J/cm²"""
         
         if unit == IrradiationUnits.JoulePerSquareMillimeter:
-            return f"""{self.joules_per_square_millimeter} J/mm²"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_square_millimeter, fractional_digits)} J/mm²"""
         
         if unit == IrradiationUnits.WattHourPerSquareMeter:
-            return f"""{self.watt_hours_per_square_meter} Wh/m²"""
+            return f"""{super()._truncate_fraction_digits(self.watt_hours_per_square_meter, fractional_digits)} Wh/m²"""
+        
+        if unit == IrradiationUnits.BtuPerSquareFoot:
+            return f"""{super()._truncate_fraction_digits(self.btus_per_square_foot, fractional_digits)} Btu/ft²"""
         
         if unit == IrradiationUnits.KilojoulePerSquareMeter:
-            return f"""{self.kilojoules_per_square_meter} kJ/m²"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules_per_square_meter, fractional_digits)} kJ/m²"""
         
         if unit == IrradiationUnits.MillijoulePerSquareCentimeter:
-            return f"""{self.millijoules_per_square_centimeter} mJ/cm²"""
+            return f"""{super()._truncate_fraction_digits(self.millijoules_per_square_centimeter, fractional_digits)} mJ/cm²"""
         
         if unit == IrradiationUnits.KilowattHourPerSquareMeter:
-            return f"""{self.kilowatt_hours_per_square_meter} kWh/m²"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatt_hours_per_square_meter, fractional_digits)} kWh/m²"""
+        
+        if unit == IrradiationUnits.KilobtuPerSquareFoot:
+            return f"""{super()._truncate_fraction_digits(self.kilobtus_per_square_foot, fractional_digits)} kBtu/ft²"""
         
         return f'{self._value}'
 
@@ -367,6 +559,9 @@ class Irradiation(AbstractMeasure):
         if unit_abbreviation == IrradiationUnits.WattHourPerSquareMeter:
             return """Wh/m²"""
         
+        if unit_abbreviation == IrradiationUnits.BtuPerSquareFoot:
+            return """Btu/ft²"""
+        
         if unit_abbreviation == IrradiationUnits.KilojoulePerSquareMeter:
             return """kJ/m²"""
         
@@ -375,4 +570,7 @@ class Irradiation(AbstractMeasure):
         
         if unit_abbreviation == IrradiationUnits.KilowattHourPerSquareMeter:
             return """kWh/m²"""
+        
+        if unit_abbreviation == IrradiationUnits.KilobtuPerSquareFoot:
+            return """kBtu/ft²"""
         

@@ -10,56 +10,106 @@ class ReciprocalLengthUnits(Enum):
             ReciprocalLengthUnits enumeration
         """
         
-        InverseMeter = 'inverse_meter'
+        InverseMeter = 'InverseMeter'
         """
             
         """
         
-        InverseCentimeter = 'inverse_centimeter'
+        InverseCentimeter = 'InverseCentimeter'
         """
             
         """
         
-        InverseMillimeter = 'inverse_millimeter'
+        InverseMillimeter = 'InverseMillimeter'
         """
             
         """
         
-        InverseMile = 'inverse_mile'
+        InverseMile = 'InverseMile'
         """
             
         """
         
-        InverseYard = 'inverse_yard'
+        InverseYard = 'InverseYard'
         """
             
         """
         
-        InverseFoot = 'inverse_foot'
+        InverseFoot = 'InverseFoot'
         """
             
         """
         
-        InverseUsSurveyFoot = 'inverse_us_survey_foot'
+        InverseUsSurveyFoot = 'InverseUsSurveyFoot'
         """
             
         """
         
-        InverseInch = 'inverse_inch'
+        InverseInch = 'InverseInch'
         """
             
         """
         
-        InverseMil = 'inverse_mil'
+        InverseMil = 'InverseMil'
         """
             
         """
         
-        InverseMicroinch = 'inverse_microinch'
+        InverseMicroinch = 'InverseMicroinch'
         """
             
         """
         
+
+class ReciprocalLengthDto:
+    """
+    A DTO representation of a ReciprocalLength
+
+    Attributes:
+        value (float): The value of the ReciprocalLength.
+        unit (ReciprocalLengthUnits): The specific unit that the ReciprocalLength value is representing.
+    """
+
+    def __init__(self, value: float, unit: ReciprocalLengthUnits):
+        """
+        Create a new DTO representation of a ReciprocalLength
+
+        Parameters:
+            value (float): The value of the ReciprocalLength.
+            unit (ReciprocalLengthUnits): The specific unit that the ReciprocalLength value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ReciprocalLength
+        """
+        self.unit: ReciprocalLengthUnits = unit
+        """
+        The specific unit that the ReciprocalLength value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ReciprocalLength DTO JSON object representing the current unit.
+
+        :return: JSON object represents ReciprocalLength DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "InverseMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ReciprocalLength DTO from a json representation.
+
+        :param data: The ReciprocalLength DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "InverseMeter"}
+        :return: A new instance of ReciprocalLengthDto.
+        :rtype: ReciprocalLengthDto
+        """
+        return ReciprocalLengthDto(value=data["value"], unit=ReciprocalLengthUnits(data["unit"]))
+
 
 class ReciprocalLength(AbstractMeasure):
     """
@@ -70,8 +120,10 @@ class ReciprocalLength(AbstractMeasure):
         from_unit (ReciprocalLengthUnits): The ReciprocalLength unit to create from, The default unit is InverseMeter
     """
     def __init__(self, value: float, from_unit: ReciprocalLengthUnits = ReciprocalLengthUnits.InverseMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__inverse_meters = None
@@ -97,6 +149,54 @@ class ReciprocalLength(AbstractMeasure):
 
     def convert(self, unit: ReciprocalLengthUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ReciprocalLengthUnits = ReciprocalLengthUnits.InverseMeter) -> ReciprocalLengthDto:
+        """
+        Get a new instance of ReciprocalLength DTO representing the current unit.
+
+        :param hold_in_unit: The specific ReciprocalLength unit to store the ReciprocalLength value in the DTO representation.
+        :type hold_in_unit: ReciprocalLengthUnits
+        :return: A new instance of ReciprocalLengthDto.
+        :rtype: ReciprocalLengthDto
+        """
+        return ReciprocalLengthDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ReciprocalLengthUnits = ReciprocalLengthUnits.InverseMeter):
+        """
+        Get a ReciprocalLength DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ReciprocalLength unit to store the ReciprocalLength value in the DTO representation.
+        :type hold_in_unit: ReciprocalLengthUnits
+        :return: JSON object represents ReciprocalLength DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "InverseMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(reciprocal_length_dto: ReciprocalLengthDto):
+        """
+        Obtain a new instance of ReciprocalLength from a DTO unit object.
+
+        :param reciprocal_length_dto: The ReciprocalLength DTO representation.
+        :type reciprocal_length_dto: ReciprocalLengthDto
+        :return: A new instance of ReciprocalLength.
+        :rtype: ReciprocalLength
+        """
+        return ReciprocalLength(reciprocal_length_dto.value, reciprocal_length_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ReciprocalLength from a DTO unit json representation.
+
+        :param data: The ReciprocalLength DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "InverseMeter"}
+        :return: A new instance of ReciprocalLength.
+        :rtype: ReciprocalLength
+        """
+        return ReciprocalLength.from_dto(ReciprocalLengthDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ReciprocalLengthUnits) -> float:
         value = self._value
@@ -434,42 +534,50 @@ class ReciprocalLength(AbstractMeasure):
         return self.__inverse_microinches
 
     
-    def to_string(self, unit: ReciprocalLengthUnits = ReciprocalLengthUnits.InverseMeter) -> str:
+    def to_string(self, unit: ReciprocalLengthUnits = ReciprocalLengthUnits.InverseMeter, fractional_digits: int = None) -> str:
         """
-        Format the ReciprocalLength to string.
-        Note! the default format for ReciprocalLength is InverseMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the ReciprocalLength to a string.
+        
+        Note: the default format for ReciprocalLength is InverseMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ReciprocalLength. Default is 'InverseMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ReciprocalLengthUnits.InverseMeter:
-            return f"""{self.inverse_meters} m⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_meters, fractional_digits)} m⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseCentimeter:
-            return f"""{self.inverse_centimeters} cm⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_centimeters, fractional_digits)} cm⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseMillimeter:
-            return f"""{self.inverse_millimeters} mm⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_millimeters, fractional_digits)} mm⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseMile:
-            return f"""{self.inverse_miles} mi⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_miles, fractional_digits)} mi⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseYard:
-            return f"""{self.inverse_yards} yd⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_yards, fractional_digits)} yd⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseFoot:
-            return f"""{self.inverse_feet} ft⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_feet, fractional_digits)} ft⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseUsSurveyFoot:
-            return f"""{self.inverse_us_survey_feet} ftUS⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_us_survey_feet, fractional_digits)} ftUS⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseInch:
-            return f"""{self.inverse_inches} in⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_inches, fractional_digits)} in⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseMil:
-            return f"""{self.inverse_mils} mil⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_mils, fractional_digits)} mil⁻¹"""
         
         if unit == ReciprocalLengthUnits.InverseMicroinch:
-            return f"""{self.inverse_microinches} µin⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_microinches, fractional_digits)} µin⁻¹"""
         
         return f'{self._value}'
 

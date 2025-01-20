@@ -10,51 +10,101 @@ class SpecificEntropyUnits(Enum):
             SpecificEntropyUnits enumeration
         """
         
-        JoulePerKilogramKelvin = 'joule_per_kilogram_kelvin'
+        JoulePerKilogramKelvin = 'JoulePerKilogramKelvin'
         """
             
         """
         
-        JoulePerKilogramDegreeCelsius = 'joule_per_kilogram_degree_celsius'
+        JoulePerKilogramDegreeCelsius = 'JoulePerKilogramDegreeCelsius'
         """
             
         """
         
-        CaloriePerGramKelvin = 'calorie_per_gram_kelvin'
+        CaloriePerGramKelvin = 'CaloriePerGramKelvin'
         """
             
         """
         
-        BtuPerPoundFahrenheit = 'btu_per_pound_fahrenheit'
+        BtuPerPoundFahrenheit = 'BtuPerPoundFahrenheit'
         """
             
         """
         
-        KilojoulePerKilogramKelvin = 'kilojoule_per_kilogram_kelvin'
+        KilojoulePerKilogramKelvin = 'KilojoulePerKilogramKelvin'
         """
             
         """
         
-        MegajoulePerKilogramKelvin = 'megajoule_per_kilogram_kelvin'
+        MegajoulePerKilogramKelvin = 'MegajoulePerKilogramKelvin'
         """
             
         """
         
-        KilojoulePerKilogramDegreeCelsius = 'kilojoule_per_kilogram_degree_celsius'
+        KilojoulePerKilogramDegreeCelsius = 'KilojoulePerKilogramDegreeCelsius'
         """
             
         """
         
-        MegajoulePerKilogramDegreeCelsius = 'megajoule_per_kilogram_degree_celsius'
+        MegajoulePerKilogramDegreeCelsius = 'MegajoulePerKilogramDegreeCelsius'
         """
             
         """
         
-        KilocaloriePerGramKelvin = 'kilocalorie_per_gram_kelvin'
+        KilocaloriePerGramKelvin = 'KilocaloriePerGramKelvin'
         """
             
         """
         
+
+class SpecificEntropyDto:
+    """
+    A DTO representation of a SpecificEntropy
+
+    Attributes:
+        value (float): The value of the SpecificEntropy.
+        unit (SpecificEntropyUnits): The specific unit that the SpecificEntropy value is representing.
+    """
+
+    def __init__(self, value: float, unit: SpecificEntropyUnits):
+        """
+        Create a new DTO representation of a SpecificEntropy
+
+        Parameters:
+            value (float): The value of the SpecificEntropy.
+            unit (SpecificEntropyUnits): The specific unit that the SpecificEntropy value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the SpecificEntropy
+        """
+        self.unit: SpecificEntropyUnits = unit
+        """
+        The specific unit that the SpecificEntropy value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a SpecificEntropy DTO JSON object representing the current unit.
+
+        :return: JSON object represents SpecificEntropy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "JoulePerKilogramKelvin"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of SpecificEntropy DTO from a json representation.
+
+        :param data: The SpecificEntropy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "JoulePerKilogramKelvin"}
+        :return: A new instance of SpecificEntropyDto.
+        :rtype: SpecificEntropyDto
+        """
+        return SpecificEntropyDto(value=data["value"], unit=SpecificEntropyUnits(data["unit"]))
+
 
 class SpecificEntropy(AbstractMeasure):
     """
@@ -65,8 +115,10 @@ class SpecificEntropy(AbstractMeasure):
         from_unit (SpecificEntropyUnits): The SpecificEntropy unit to create from, The default unit is JoulePerKilogramKelvin
     """
     def __init__(self, value: float, from_unit: SpecificEntropyUnits = SpecificEntropyUnits.JoulePerKilogramKelvin):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__joules_per_kilogram_kelvin = None
@@ -90,6 +142,54 @@ class SpecificEntropy(AbstractMeasure):
 
     def convert(self, unit: SpecificEntropyUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: SpecificEntropyUnits = SpecificEntropyUnits.JoulePerKilogramKelvin) -> SpecificEntropyDto:
+        """
+        Get a new instance of SpecificEntropy DTO representing the current unit.
+
+        :param hold_in_unit: The specific SpecificEntropy unit to store the SpecificEntropy value in the DTO representation.
+        :type hold_in_unit: SpecificEntropyUnits
+        :return: A new instance of SpecificEntropyDto.
+        :rtype: SpecificEntropyDto
+        """
+        return SpecificEntropyDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: SpecificEntropyUnits = SpecificEntropyUnits.JoulePerKilogramKelvin):
+        """
+        Get a SpecificEntropy DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific SpecificEntropy unit to store the SpecificEntropy value in the DTO representation.
+        :type hold_in_unit: SpecificEntropyUnits
+        :return: JSON object represents SpecificEntropy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "JoulePerKilogramKelvin"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(specific_entropy_dto: SpecificEntropyDto):
+        """
+        Obtain a new instance of SpecificEntropy from a DTO unit object.
+
+        :param specific_entropy_dto: The SpecificEntropy DTO representation.
+        :type specific_entropy_dto: SpecificEntropyDto
+        :return: A new instance of SpecificEntropy.
+        :rtype: SpecificEntropy
+        """
+        return SpecificEntropy(specific_entropy_dto.value, specific_entropy_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of SpecificEntropy from a DTO unit json representation.
+
+        :param data: The SpecificEntropy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "JoulePerKilogramKelvin"}
+        :return: A new instance of SpecificEntropy.
+        :rtype: SpecificEntropy
+        """
+        return SpecificEntropy.from_dto(SpecificEntropyDto.from_json(data))
 
     def __convert_from_base(self, from_unit: SpecificEntropyUnits) -> float:
         value = self._value
@@ -395,39 +495,47 @@ class SpecificEntropy(AbstractMeasure):
         return self.__kilocalories_per_gram_kelvin
 
     
-    def to_string(self, unit: SpecificEntropyUnits = SpecificEntropyUnits.JoulePerKilogramKelvin) -> str:
+    def to_string(self, unit: SpecificEntropyUnits = SpecificEntropyUnits.JoulePerKilogramKelvin, fractional_digits: int = None) -> str:
         """
-        Format the SpecificEntropy to string.
-        Note! the default format for SpecificEntropy is JoulePerKilogramKelvin.
-        To specify the unit format set the 'unit' parameter.
+        Format the SpecificEntropy to a string.
+        
+        Note: the default format for SpecificEntropy is JoulePerKilogramKelvin.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the SpecificEntropy. Default is 'JoulePerKilogramKelvin'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == SpecificEntropyUnits.JoulePerKilogramKelvin:
-            return f"""{self.joules_per_kilogram_kelvin} J/kg.K"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_kilogram_kelvin, fractional_digits)} J/kg·K"""
         
         if unit == SpecificEntropyUnits.JoulePerKilogramDegreeCelsius:
-            return f"""{self.joules_per_kilogram_degree_celsius} J/kg.C"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_kilogram_degree_celsius, fractional_digits)} J/kg·°C"""
         
         if unit == SpecificEntropyUnits.CaloriePerGramKelvin:
-            return f"""{self.calories_per_gram_kelvin} cal/g.K"""
+            return f"""{super()._truncate_fraction_digits(self.calories_per_gram_kelvin, fractional_digits)} cal/g·K"""
         
         if unit == SpecificEntropyUnits.BtuPerPoundFahrenheit:
-            return f"""{self.btus_per_pound_fahrenheit} BTU/lb·°F"""
+            return f"""{super()._truncate_fraction_digits(self.btus_per_pound_fahrenheit, fractional_digits)} BTU/lb·°F"""
         
         if unit == SpecificEntropyUnits.KilojoulePerKilogramKelvin:
-            return f"""{self.kilojoules_per_kilogram_kelvin} kJ/kg.K"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules_per_kilogram_kelvin, fractional_digits)} kJ/kg·K"""
         
         if unit == SpecificEntropyUnits.MegajoulePerKilogramKelvin:
-            return f"""{self.megajoules_per_kilogram_kelvin} MJ/kg.K"""
+            return f"""{super()._truncate_fraction_digits(self.megajoules_per_kilogram_kelvin, fractional_digits)} MJ/kg·K"""
         
         if unit == SpecificEntropyUnits.KilojoulePerKilogramDegreeCelsius:
-            return f"""{self.kilojoules_per_kilogram_degree_celsius} kJ/kg.C"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules_per_kilogram_degree_celsius, fractional_digits)} kJ/kg·°C"""
         
         if unit == SpecificEntropyUnits.MegajoulePerKilogramDegreeCelsius:
-            return f"""{self.megajoules_per_kilogram_degree_celsius} MJ/kg.C"""
+            return f"""{super()._truncate_fraction_digits(self.megajoules_per_kilogram_degree_celsius, fractional_digits)} MJ/kg·°C"""
         
         if unit == SpecificEntropyUnits.KilocaloriePerGramKelvin:
-            return f"""{self.kilocalories_per_gram_kelvin} kcal/g.K"""
+            return f"""{super()._truncate_fraction_digits(self.kilocalories_per_gram_kelvin, fractional_digits)} kcal/g·K"""
         
         return f'{self._value}'
 
@@ -440,29 +548,29 @@ class SpecificEntropy(AbstractMeasure):
         """
         
         if unit_abbreviation == SpecificEntropyUnits.JoulePerKilogramKelvin:
-            return """J/kg.K"""
+            return """J/kg·K"""
         
         if unit_abbreviation == SpecificEntropyUnits.JoulePerKilogramDegreeCelsius:
-            return """J/kg.C"""
+            return """J/kg·°C"""
         
         if unit_abbreviation == SpecificEntropyUnits.CaloriePerGramKelvin:
-            return """cal/g.K"""
+            return """cal/g·K"""
         
         if unit_abbreviation == SpecificEntropyUnits.BtuPerPoundFahrenheit:
             return """BTU/lb·°F"""
         
         if unit_abbreviation == SpecificEntropyUnits.KilojoulePerKilogramKelvin:
-            return """kJ/kg.K"""
+            return """kJ/kg·K"""
         
         if unit_abbreviation == SpecificEntropyUnits.MegajoulePerKilogramKelvin:
-            return """MJ/kg.K"""
+            return """MJ/kg·K"""
         
         if unit_abbreviation == SpecificEntropyUnits.KilojoulePerKilogramDegreeCelsius:
-            return """kJ/kg.C"""
+            return """kJ/kg·°C"""
         
         if unit_abbreviation == SpecificEntropyUnits.MegajoulePerKilogramDegreeCelsius:
-            return """MJ/kg.C"""
+            return """MJ/kg·°C"""
         
         if unit_abbreviation == SpecificEntropyUnits.KilocaloriePerGramKelvin:
-            return """kcal/g.K"""
+            return """kcal/g·K"""
         

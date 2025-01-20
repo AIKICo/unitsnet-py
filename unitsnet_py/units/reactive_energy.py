@@ -10,21 +10,71 @@ class ReactiveEnergyUnits(Enum):
             ReactiveEnergyUnits enumeration
         """
         
-        VoltampereReactiveHour = 'voltampere_reactive_hour'
+        VoltampereReactiveHour = 'VoltampereReactiveHour'
         """
             
         """
         
-        KilovoltampereReactiveHour = 'kilovoltampere_reactive_hour'
+        KilovoltampereReactiveHour = 'KilovoltampereReactiveHour'
         """
             
         """
         
-        MegavoltampereReactiveHour = 'megavoltampere_reactive_hour'
+        MegavoltampereReactiveHour = 'MegavoltampereReactiveHour'
         """
             
         """
         
+
+class ReactiveEnergyDto:
+    """
+    A DTO representation of a ReactiveEnergy
+
+    Attributes:
+        value (float): The value of the ReactiveEnergy.
+        unit (ReactiveEnergyUnits): The specific unit that the ReactiveEnergy value is representing.
+    """
+
+    def __init__(self, value: float, unit: ReactiveEnergyUnits):
+        """
+        Create a new DTO representation of a ReactiveEnergy
+
+        Parameters:
+            value (float): The value of the ReactiveEnergy.
+            unit (ReactiveEnergyUnits): The specific unit that the ReactiveEnergy value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ReactiveEnergy
+        """
+        self.unit: ReactiveEnergyUnits = unit
+        """
+        The specific unit that the ReactiveEnergy value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ReactiveEnergy DTO JSON object representing the current unit.
+
+        :return: JSON object represents ReactiveEnergy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "VoltampereReactiveHour"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ReactiveEnergy DTO from a json representation.
+
+        :param data: The ReactiveEnergy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "VoltampereReactiveHour"}
+        :return: A new instance of ReactiveEnergyDto.
+        :rtype: ReactiveEnergyDto
+        """
+        return ReactiveEnergyDto(value=data["value"], unit=ReactiveEnergyUnits(data["unit"]))
+
 
 class ReactiveEnergy(AbstractMeasure):
     """
@@ -35,8 +85,10 @@ class ReactiveEnergy(AbstractMeasure):
         from_unit (ReactiveEnergyUnits): The ReactiveEnergy unit to create from, The default unit is VoltampereReactiveHour
     """
     def __init__(self, value: float, from_unit: ReactiveEnergyUnits = ReactiveEnergyUnits.VoltampereReactiveHour):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__voltampere_reactive_hours = None
@@ -48,6 +100,54 @@ class ReactiveEnergy(AbstractMeasure):
 
     def convert(self, unit: ReactiveEnergyUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ReactiveEnergyUnits = ReactiveEnergyUnits.VoltampereReactiveHour) -> ReactiveEnergyDto:
+        """
+        Get a new instance of ReactiveEnergy DTO representing the current unit.
+
+        :param hold_in_unit: The specific ReactiveEnergy unit to store the ReactiveEnergy value in the DTO representation.
+        :type hold_in_unit: ReactiveEnergyUnits
+        :return: A new instance of ReactiveEnergyDto.
+        :rtype: ReactiveEnergyDto
+        """
+        return ReactiveEnergyDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ReactiveEnergyUnits = ReactiveEnergyUnits.VoltampereReactiveHour):
+        """
+        Get a ReactiveEnergy DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ReactiveEnergy unit to store the ReactiveEnergy value in the DTO representation.
+        :type hold_in_unit: ReactiveEnergyUnits
+        :return: JSON object represents ReactiveEnergy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "VoltampereReactiveHour"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(reactive_energy_dto: ReactiveEnergyDto):
+        """
+        Obtain a new instance of ReactiveEnergy from a DTO unit object.
+
+        :param reactive_energy_dto: The ReactiveEnergy DTO representation.
+        :type reactive_energy_dto: ReactiveEnergyDto
+        :return: A new instance of ReactiveEnergy.
+        :rtype: ReactiveEnergy
+        """
+        return ReactiveEnergy(reactive_energy_dto.value, reactive_energy_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ReactiveEnergy from a DTO unit json representation.
+
+        :param data: The ReactiveEnergy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "VoltampereReactiveHour"}
+        :return: A new instance of ReactiveEnergy.
+        :rtype: ReactiveEnergy
+        """
+        return ReactiveEnergy.from_dto(ReactiveEnergyDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ReactiveEnergyUnits) -> float:
         value = self._value
@@ -161,21 +261,29 @@ class ReactiveEnergy(AbstractMeasure):
         return self.__megavoltampere_reactive_hours
 
     
-    def to_string(self, unit: ReactiveEnergyUnits = ReactiveEnergyUnits.VoltampereReactiveHour) -> str:
+    def to_string(self, unit: ReactiveEnergyUnits = ReactiveEnergyUnits.VoltampereReactiveHour, fractional_digits: int = None) -> str:
         """
-        Format the ReactiveEnergy to string.
-        Note! the default format for ReactiveEnergy is VoltampereReactiveHour.
-        To specify the unit format set the 'unit' parameter.
+        Format the ReactiveEnergy to a string.
+        
+        Note: the default format for ReactiveEnergy is VoltampereReactiveHour.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ReactiveEnergy. Default is 'VoltampereReactiveHour'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ReactiveEnergyUnits.VoltampereReactiveHour:
-            return f"""{self.voltampere_reactive_hours} varh"""
+            return f"""{super()._truncate_fraction_digits(self.voltampere_reactive_hours, fractional_digits)} varh"""
         
         if unit == ReactiveEnergyUnits.KilovoltampereReactiveHour:
-            return f"""{self.kilovoltampere_reactive_hours} kvarh"""
+            return f"""{super()._truncate_fraction_digits(self.kilovoltampere_reactive_hours, fractional_digits)} kvarh"""
         
         if unit == ReactiveEnergyUnits.MegavoltampereReactiveHour:
-            return f"""{self.megavoltampere_reactive_hours} Mvarh"""
+            return f"""{super()._truncate_fraction_digits(self.megavoltampere_reactive_hours, fractional_digits)} Mvarh"""
         
         return f'{self._value}'
 

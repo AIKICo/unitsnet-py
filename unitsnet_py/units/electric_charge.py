@@ -10,61 +10,111 @@ class ElectricChargeUnits(Enum):
             ElectricChargeUnits enumeration
         """
         
-        Coulomb = 'coulomb'
+        Coulomb = 'Coulomb'
         """
             
         """
         
-        AmpereHour = 'ampere_hour'
+        AmpereHour = 'AmpereHour'
         """
             
         """
         
-        Picocoulomb = 'picocoulomb'
+        Picocoulomb = 'Picocoulomb'
         """
             
         """
         
-        Nanocoulomb = 'nanocoulomb'
+        Nanocoulomb = 'Nanocoulomb'
         """
             
         """
         
-        Microcoulomb = 'microcoulomb'
+        Microcoulomb = 'Microcoulomb'
         """
             
         """
         
-        Millicoulomb = 'millicoulomb'
+        Millicoulomb = 'Millicoulomb'
         """
             
         """
         
-        Kilocoulomb = 'kilocoulomb'
+        Kilocoulomb = 'Kilocoulomb'
         """
             
         """
         
-        Megacoulomb = 'megacoulomb'
+        Megacoulomb = 'Megacoulomb'
         """
             
         """
         
-        MilliampereHour = 'milliampere_hour'
+        MilliampereHour = 'MilliampereHour'
         """
             
         """
         
-        KiloampereHour = 'kiloampere_hour'
+        KiloampereHour = 'KiloampereHour'
         """
             
         """
         
-        MegaampereHour = 'megaampere_hour'
+        MegaampereHour = 'MegaampereHour'
         """
             
         """
         
+
+class ElectricChargeDto:
+    """
+    A DTO representation of a ElectricCharge
+
+    Attributes:
+        value (float): The value of the ElectricCharge.
+        unit (ElectricChargeUnits): The specific unit that the ElectricCharge value is representing.
+    """
+
+    def __init__(self, value: float, unit: ElectricChargeUnits):
+        """
+        Create a new DTO representation of a ElectricCharge
+
+        Parameters:
+            value (float): The value of the ElectricCharge.
+            unit (ElectricChargeUnits): The specific unit that the ElectricCharge value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ElectricCharge
+        """
+        self.unit: ElectricChargeUnits = unit
+        """
+        The specific unit that the ElectricCharge value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ElectricCharge DTO JSON object representing the current unit.
+
+        :return: JSON object represents ElectricCharge DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Coulomb"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ElectricCharge DTO from a json representation.
+
+        :param data: The ElectricCharge DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Coulomb"}
+        :return: A new instance of ElectricChargeDto.
+        :rtype: ElectricChargeDto
+        """
+        return ElectricChargeDto(value=data["value"], unit=ElectricChargeUnits(data["unit"]))
+
 
 class ElectricCharge(AbstractMeasure):
     """
@@ -75,8 +125,10 @@ class ElectricCharge(AbstractMeasure):
         from_unit (ElectricChargeUnits): The ElectricCharge unit to create from, The default unit is Coulomb
     """
     def __init__(self, value: float, from_unit: ElectricChargeUnits = ElectricChargeUnits.Coulomb):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__coulombs = None
@@ -104,6 +156,54 @@ class ElectricCharge(AbstractMeasure):
 
     def convert(self, unit: ElectricChargeUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ElectricChargeUnits = ElectricChargeUnits.Coulomb) -> ElectricChargeDto:
+        """
+        Get a new instance of ElectricCharge DTO representing the current unit.
+
+        :param hold_in_unit: The specific ElectricCharge unit to store the ElectricCharge value in the DTO representation.
+        :type hold_in_unit: ElectricChargeUnits
+        :return: A new instance of ElectricChargeDto.
+        :rtype: ElectricChargeDto
+        """
+        return ElectricChargeDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ElectricChargeUnits = ElectricChargeUnits.Coulomb):
+        """
+        Get a ElectricCharge DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ElectricCharge unit to store the ElectricCharge value in the DTO representation.
+        :type hold_in_unit: ElectricChargeUnits
+        :return: JSON object represents ElectricCharge DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Coulomb"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(electric_charge_dto: ElectricChargeDto):
+        """
+        Obtain a new instance of ElectricCharge from a DTO unit object.
+
+        :param electric_charge_dto: The ElectricCharge DTO representation.
+        :type electric_charge_dto: ElectricChargeDto
+        :return: A new instance of ElectricCharge.
+        :rtype: ElectricCharge
+        """
+        return ElectricCharge(electric_charge_dto.value, electric_charge_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ElectricCharge from a DTO unit json representation.
+
+        :param data: The ElectricCharge DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Coulomb"}
+        :return: A new instance of ElectricCharge.
+        :rtype: ElectricCharge
+        """
+        return ElectricCharge.from_dto(ElectricChargeDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ElectricChargeUnits) -> float:
         value = self._value
@@ -473,45 +573,53 @@ class ElectricCharge(AbstractMeasure):
         return self.__megaampere_hours
 
     
-    def to_string(self, unit: ElectricChargeUnits = ElectricChargeUnits.Coulomb) -> str:
+    def to_string(self, unit: ElectricChargeUnits = ElectricChargeUnits.Coulomb, fractional_digits: int = None) -> str:
         """
-        Format the ElectricCharge to string.
-        Note! the default format for ElectricCharge is Coulomb.
-        To specify the unit format set the 'unit' parameter.
+        Format the ElectricCharge to a string.
+        
+        Note: the default format for ElectricCharge is Coulomb.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ElectricCharge. Default is 'Coulomb'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ElectricChargeUnits.Coulomb:
-            return f"""{self.coulombs} C"""
+            return f"""{super()._truncate_fraction_digits(self.coulombs, fractional_digits)} C"""
         
         if unit == ElectricChargeUnits.AmpereHour:
-            return f"""{self.ampere_hours} A-h"""
+            return f"""{super()._truncate_fraction_digits(self.ampere_hours, fractional_digits)} A-h"""
         
         if unit == ElectricChargeUnits.Picocoulomb:
-            return f"""{self.picocoulombs} pC"""
+            return f"""{super()._truncate_fraction_digits(self.picocoulombs, fractional_digits)} pC"""
         
         if unit == ElectricChargeUnits.Nanocoulomb:
-            return f"""{self.nanocoulombs} nC"""
+            return f"""{super()._truncate_fraction_digits(self.nanocoulombs, fractional_digits)} nC"""
         
         if unit == ElectricChargeUnits.Microcoulomb:
-            return f"""{self.microcoulombs} μC"""
+            return f"""{super()._truncate_fraction_digits(self.microcoulombs, fractional_digits)} μC"""
         
         if unit == ElectricChargeUnits.Millicoulomb:
-            return f"""{self.millicoulombs} mC"""
+            return f"""{super()._truncate_fraction_digits(self.millicoulombs, fractional_digits)} mC"""
         
         if unit == ElectricChargeUnits.Kilocoulomb:
-            return f"""{self.kilocoulombs} kC"""
+            return f"""{super()._truncate_fraction_digits(self.kilocoulombs, fractional_digits)} kC"""
         
         if unit == ElectricChargeUnits.Megacoulomb:
-            return f"""{self.megacoulombs} MC"""
+            return f"""{super()._truncate_fraction_digits(self.megacoulombs, fractional_digits)} MC"""
         
         if unit == ElectricChargeUnits.MilliampereHour:
-            return f"""{self.milliampere_hours} mA-h"""
+            return f"""{super()._truncate_fraction_digits(self.milliampere_hours, fractional_digits)} mA-h"""
         
         if unit == ElectricChargeUnits.KiloampereHour:
-            return f"""{self.kiloampere_hours} kA-h"""
+            return f"""{super()._truncate_fraction_digits(self.kiloampere_hours, fractional_digits)} kA-h"""
         
         if unit == ElectricChargeUnits.MegaampereHour:
-            return f"""{self.megaampere_hours} MA-h"""
+            return f"""{super()._truncate_fraction_digits(self.megaampere_hours, fractional_digits)} MA-h"""
         
         return f'{self._value}'
 

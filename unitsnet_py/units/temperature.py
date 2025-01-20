@@ -10,56 +10,106 @@ class TemperatureUnits(Enum):
             TemperatureUnits enumeration
         """
         
-        Kelvin = 'kelvin'
+        Kelvin = 'Kelvin'
         """
             
         """
         
-        DegreeCelsius = 'degree_celsius'
+        DegreeCelsius = 'DegreeCelsius'
         """
             
         """
         
-        MillidegreeCelsius = 'millidegree_celsius'
+        MillidegreeCelsius = 'MillidegreeCelsius'
         """
             
         """
         
-        DegreeDelisle = 'degree_delisle'
+        DegreeDelisle = 'DegreeDelisle'
         """
             
         """
         
-        DegreeFahrenheit = 'degree_fahrenheit'
+        DegreeFahrenheit = 'DegreeFahrenheit'
         """
             
         """
         
-        DegreeNewton = 'degree_newton'
+        DegreeNewton = 'DegreeNewton'
         """
             
         """
         
-        DegreeRankine = 'degree_rankine'
+        DegreeRankine = 'DegreeRankine'
         """
             
         """
         
-        DegreeReaumur = 'degree_reaumur'
+        DegreeReaumur = 'DegreeReaumur'
         """
             
         """
         
-        DegreeRoemer = 'degree_roemer'
+        DegreeRoemer = 'DegreeRoemer'
         """
             
         """
         
-        SolarTemperature = 'solar_temperature'
+        SolarTemperature = 'SolarTemperature'
         """
             
         """
         
+
+class TemperatureDto:
+    """
+    A DTO representation of a Temperature
+
+    Attributes:
+        value (float): The value of the Temperature.
+        unit (TemperatureUnits): The specific unit that the Temperature value is representing.
+    """
+
+    def __init__(self, value: float, unit: TemperatureUnits):
+        """
+        Create a new DTO representation of a Temperature
+
+        Parameters:
+            value (float): The value of the Temperature.
+            unit (TemperatureUnits): The specific unit that the Temperature value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Temperature
+        """
+        self.unit: TemperatureUnits = unit
+        """
+        The specific unit that the Temperature value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Temperature DTO JSON object representing the current unit.
+
+        :return: JSON object represents Temperature DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Kelvin"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Temperature DTO from a json representation.
+
+        :param data: The Temperature DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Kelvin"}
+        :return: A new instance of TemperatureDto.
+        :rtype: TemperatureDto
+        """
+        return TemperatureDto(value=data["value"], unit=TemperatureUnits(data["unit"]))
+
 
 class Temperature(AbstractMeasure):
     """
@@ -70,8 +120,10 @@ class Temperature(AbstractMeasure):
         from_unit (TemperatureUnits): The Temperature unit to create from, The default unit is Kelvin
     """
     def __init__(self, value: float, from_unit: TemperatureUnits = TemperatureUnits.Kelvin):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__kelvins = None
@@ -97,6 +149,54 @@ class Temperature(AbstractMeasure):
 
     def convert(self, unit: TemperatureUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: TemperatureUnits = TemperatureUnits.Kelvin) -> TemperatureDto:
+        """
+        Get a new instance of Temperature DTO representing the current unit.
+
+        :param hold_in_unit: The specific Temperature unit to store the Temperature value in the DTO representation.
+        :type hold_in_unit: TemperatureUnits
+        :return: A new instance of TemperatureDto.
+        :rtype: TemperatureDto
+        """
+        return TemperatureDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: TemperatureUnits = TemperatureUnits.Kelvin):
+        """
+        Get a Temperature DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Temperature unit to store the Temperature value in the DTO representation.
+        :type hold_in_unit: TemperatureUnits
+        :return: JSON object represents Temperature DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Kelvin"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(temperature_dto: TemperatureDto):
+        """
+        Obtain a new instance of Temperature from a DTO unit object.
+
+        :param temperature_dto: The Temperature DTO representation.
+        :type temperature_dto: TemperatureDto
+        :return: A new instance of Temperature.
+        :rtype: Temperature
+        """
+        return Temperature(temperature_dto.value, temperature_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Temperature from a DTO unit json representation.
+
+        :param data: The Temperature DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Kelvin"}
+        :return: A new instance of Temperature.
+        :rtype: Temperature
+        """
+        return Temperature.from_dto(TemperatureDto.from_json(data))
 
     def __convert_from_base(self, from_unit: TemperatureUnits) -> float:
         value = self._value
@@ -434,42 +534,50 @@ class Temperature(AbstractMeasure):
         return self.__solar_temperatures
 
     
-    def to_string(self, unit: TemperatureUnits = TemperatureUnits.Kelvin) -> str:
+    def to_string(self, unit: TemperatureUnits = TemperatureUnits.Kelvin, fractional_digits: int = None) -> str:
         """
-        Format the Temperature to string.
-        Note! the default format for Temperature is Kelvin.
-        To specify the unit format set the 'unit' parameter.
+        Format the Temperature to a string.
+        
+        Note: the default format for Temperature is Kelvin.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Temperature. Default is 'Kelvin'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == TemperatureUnits.Kelvin:
-            return f"""{self.kelvins} K"""
+            return f"""{super()._truncate_fraction_digits(self.kelvins, fractional_digits)} K"""
         
         if unit == TemperatureUnits.DegreeCelsius:
-            return f"""{self.degrees_celsius} °C"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_celsius, fractional_digits)} °C"""
         
         if unit == TemperatureUnits.MillidegreeCelsius:
-            return f"""{self.millidegrees_celsius} m°C"""
+            return f"""{super()._truncate_fraction_digits(self.millidegrees_celsius, fractional_digits)} m°C"""
         
         if unit == TemperatureUnits.DegreeDelisle:
-            return f"""{self.degrees_delisle} °De"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_delisle, fractional_digits)} °De"""
         
         if unit == TemperatureUnits.DegreeFahrenheit:
-            return f"""{self.degrees_fahrenheit} °F"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_fahrenheit, fractional_digits)} °F"""
         
         if unit == TemperatureUnits.DegreeNewton:
-            return f"""{self.degrees_newton} °N"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_newton, fractional_digits)} °N"""
         
         if unit == TemperatureUnits.DegreeRankine:
-            return f"""{self.degrees_rankine} °R"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_rankine, fractional_digits)} °R"""
         
         if unit == TemperatureUnits.DegreeReaumur:
-            return f"""{self.degrees_reaumur} °Ré"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_reaumur, fractional_digits)} °Ré"""
         
         if unit == TemperatureUnits.DegreeRoemer:
-            return f"""{self.degrees_roemer} °Rø"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_roemer, fractional_digits)} °Rø"""
         
         if unit == TemperatureUnits.SolarTemperature:
-            return f"""{self.solar_temperatures} T⊙"""
+            return f"""{super()._truncate_fraction_digits(self.solar_temperatures, fractional_digits)} T⊙"""
         
         return f'{self._value}'
 
