@@ -10,96 +10,146 @@ class PressureChangeRateUnits(Enum):
             PressureChangeRateUnits enumeration
         """
         
-        PascalPerSecond = 'pascal_per_second'
+        PascalPerSecond = 'PascalPerSecond'
         """
             
         """
         
-        PascalPerMinute = 'pascal_per_minute'
+        PascalPerMinute = 'PascalPerMinute'
         """
             
         """
         
-        MillimeterOfMercuryPerSecond = 'millimeter_of_mercury_per_second'
+        MillimeterOfMercuryPerSecond = 'MillimeterOfMercuryPerSecond'
         """
             
         """
         
-        AtmospherePerSecond = 'atmosphere_per_second'
+        AtmospherePerSecond = 'AtmospherePerSecond'
         """
             
         """
         
-        PoundForcePerSquareInchPerSecond = 'pound_force_per_square_inch_per_second'
+        PoundForcePerSquareInchPerSecond = 'PoundForcePerSquareInchPerSecond'
         """
             
         """
         
-        PoundForcePerSquareInchPerMinute = 'pound_force_per_square_inch_per_minute'
+        PoundForcePerSquareInchPerMinute = 'PoundForcePerSquareInchPerMinute'
         """
             
         """
         
-        BarPerSecond = 'bar_per_second'
+        BarPerSecond = 'BarPerSecond'
         """
             
         """
         
-        BarPerMinute = 'bar_per_minute'
+        BarPerMinute = 'BarPerMinute'
         """
             
         """
         
-        KilopascalPerSecond = 'kilopascal_per_second'
+        KilopascalPerSecond = 'KilopascalPerSecond'
         """
             
         """
         
-        MegapascalPerSecond = 'megapascal_per_second'
+        MegapascalPerSecond = 'MegapascalPerSecond'
         """
             
         """
         
-        KilopascalPerMinute = 'kilopascal_per_minute'
+        KilopascalPerMinute = 'KilopascalPerMinute'
         """
             
         """
         
-        MegapascalPerMinute = 'megapascal_per_minute'
+        MegapascalPerMinute = 'MegapascalPerMinute'
         """
             
         """
         
-        KilopoundForcePerSquareInchPerSecond = 'kilopound_force_per_square_inch_per_second'
+        KilopoundForcePerSquareInchPerSecond = 'KilopoundForcePerSquareInchPerSecond'
         """
             
         """
         
-        MegapoundForcePerSquareInchPerSecond = 'megapound_force_per_square_inch_per_second'
+        MegapoundForcePerSquareInchPerSecond = 'MegapoundForcePerSquareInchPerSecond'
         """
             
         """
         
-        KilopoundForcePerSquareInchPerMinute = 'kilopound_force_per_square_inch_per_minute'
+        KilopoundForcePerSquareInchPerMinute = 'KilopoundForcePerSquareInchPerMinute'
         """
             
         """
         
-        MegapoundForcePerSquareInchPerMinute = 'megapound_force_per_square_inch_per_minute'
+        MegapoundForcePerSquareInchPerMinute = 'MegapoundForcePerSquareInchPerMinute'
         """
             
         """
         
-        MillibarPerSecond = 'millibar_per_second'
+        MillibarPerSecond = 'MillibarPerSecond'
         """
             
         """
         
-        MillibarPerMinute = 'millibar_per_minute'
+        MillibarPerMinute = 'MillibarPerMinute'
         """
             
         """
         
+
+class PressureChangeRateDto:
+    """
+    A DTO representation of a PressureChangeRate
+
+    Attributes:
+        value (float): The value of the PressureChangeRate.
+        unit (PressureChangeRateUnits): The specific unit that the PressureChangeRate value is representing.
+    """
+
+    def __init__(self, value: float, unit: PressureChangeRateUnits):
+        """
+        Create a new DTO representation of a PressureChangeRate
+
+        Parameters:
+            value (float): The value of the PressureChangeRate.
+            unit (PressureChangeRateUnits): The specific unit that the PressureChangeRate value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the PressureChangeRate
+        """
+        self.unit: PressureChangeRateUnits = unit
+        """
+        The specific unit that the PressureChangeRate value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a PressureChangeRate DTO JSON object representing the current unit.
+
+        :return: JSON object represents PressureChangeRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "PascalPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of PressureChangeRate DTO from a json representation.
+
+        :param data: The PressureChangeRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "PascalPerSecond"}
+        :return: A new instance of PressureChangeRateDto.
+        :rtype: PressureChangeRateDto
+        """
+        return PressureChangeRateDto(value=data["value"], unit=PressureChangeRateUnits(data["unit"]))
+
 
 class PressureChangeRate(AbstractMeasure):
     """
@@ -110,8 +160,10 @@ class PressureChangeRate(AbstractMeasure):
         from_unit (PressureChangeRateUnits): The PressureChangeRate unit to create from, The default unit is PascalPerSecond
     """
     def __init__(self, value: float, from_unit: PressureChangeRateUnits = PressureChangeRateUnits.PascalPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__pascals_per_second = None
@@ -153,6 +205,54 @@ class PressureChangeRate(AbstractMeasure):
 
     def convert(self, unit: PressureChangeRateUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: PressureChangeRateUnits = PressureChangeRateUnits.PascalPerSecond) -> PressureChangeRateDto:
+        """
+        Get a new instance of PressureChangeRate DTO representing the current unit.
+
+        :param hold_in_unit: The specific PressureChangeRate unit to store the PressureChangeRate value in the DTO representation.
+        :type hold_in_unit: PressureChangeRateUnits
+        :return: A new instance of PressureChangeRateDto.
+        :rtype: PressureChangeRateDto
+        """
+        return PressureChangeRateDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: PressureChangeRateUnits = PressureChangeRateUnits.PascalPerSecond):
+        """
+        Get a PressureChangeRate DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific PressureChangeRate unit to store the PressureChangeRate value in the DTO representation.
+        :type hold_in_unit: PressureChangeRateUnits
+        :return: JSON object represents PressureChangeRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "PascalPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(pressure_change_rate_dto: PressureChangeRateDto):
+        """
+        Obtain a new instance of PressureChangeRate from a DTO unit object.
+
+        :param pressure_change_rate_dto: The PressureChangeRate DTO representation.
+        :type pressure_change_rate_dto: PressureChangeRateDto
+        :return: A new instance of PressureChangeRate.
+        :rtype: PressureChangeRate
+        """
+        return PressureChangeRate(pressure_change_rate_dto.value, pressure_change_rate_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of PressureChangeRate from a DTO unit json representation.
+
+        :param data: The PressureChangeRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "PascalPerSecond"}
+        :return: A new instance of PressureChangeRate.
+        :rtype: PressureChangeRate
+        """
+        return PressureChangeRate.from_dto(PressureChangeRateDto.from_json(data))
 
     def __convert_from_base(self, from_unit: PressureChangeRateUnits) -> float:
         value = self._value
@@ -746,66 +846,74 @@ class PressureChangeRate(AbstractMeasure):
         return self.__millibars_per_minute
 
     
-    def to_string(self, unit: PressureChangeRateUnits = PressureChangeRateUnits.PascalPerSecond) -> str:
+    def to_string(self, unit: PressureChangeRateUnits = PressureChangeRateUnits.PascalPerSecond, fractional_digits: int = None) -> str:
         """
-        Format the PressureChangeRate to string.
-        Note! the default format for PressureChangeRate is PascalPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the PressureChangeRate to a string.
+        
+        Note: the default format for PressureChangeRate is PascalPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the PressureChangeRate. Default is 'PascalPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == PressureChangeRateUnits.PascalPerSecond:
-            return f"""{self.pascals_per_second} Pa/s"""
+            return f"""{super()._truncate_fraction_digits(self.pascals_per_second, fractional_digits)} Pa/s"""
         
         if unit == PressureChangeRateUnits.PascalPerMinute:
-            return f"""{self.pascals_per_minute} Pa/min"""
+            return f"""{super()._truncate_fraction_digits(self.pascals_per_minute, fractional_digits)} Pa/min"""
         
         if unit == PressureChangeRateUnits.MillimeterOfMercuryPerSecond:
-            return f"""{self.millimeters_of_mercury_per_second} mmHg/s"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_of_mercury_per_second, fractional_digits)} mmHg/s"""
         
         if unit == PressureChangeRateUnits.AtmospherePerSecond:
-            return f"""{self.atmospheres_per_second} atm/s"""
+            return f"""{super()._truncate_fraction_digits(self.atmospheres_per_second, fractional_digits)} atm/s"""
         
         if unit == PressureChangeRateUnits.PoundForcePerSquareInchPerSecond:
-            return f"""{self.pounds_force_per_square_inch_per_second} psi/s"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_square_inch_per_second, fractional_digits)} psi/s"""
         
         if unit == PressureChangeRateUnits.PoundForcePerSquareInchPerMinute:
-            return f"""{self.pounds_force_per_square_inch_per_minute} psi/min"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_square_inch_per_minute, fractional_digits)} psi/min"""
         
         if unit == PressureChangeRateUnits.BarPerSecond:
-            return f"""{self.bars_per_second} bar/s"""
+            return f"""{super()._truncate_fraction_digits(self.bars_per_second, fractional_digits)} bar/s"""
         
         if unit == PressureChangeRateUnits.BarPerMinute:
-            return f"""{self.bars_per_minute} bar/min"""
+            return f"""{super()._truncate_fraction_digits(self.bars_per_minute, fractional_digits)} bar/min"""
         
         if unit == PressureChangeRateUnits.KilopascalPerSecond:
-            return f"""{self.kilopascals_per_second} kPa/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilopascals_per_second, fractional_digits)} kPa/s"""
         
         if unit == PressureChangeRateUnits.MegapascalPerSecond:
-            return f"""{self.megapascals_per_second} MPa/s"""
+            return f"""{super()._truncate_fraction_digits(self.megapascals_per_second, fractional_digits)} MPa/s"""
         
         if unit == PressureChangeRateUnits.KilopascalPerMinute:
-            return f"""{self.kilopascals_per_minute} kPa/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilopascals_per_minute, fractional_digits)} kPa/min"""
         
         if unit == PressureChangeRateUnits.MegapascalPerMinute:
-            return f"""{self.megapascals_per_minute} MPa/min"""
+            return f"""{super()._truncate_fraction_digits(self.megapascals_per_minute, fractional_digits)} MPa/min"""
         
         if unit == PressureChangeRateUnits.KilopoundForcePerSquareInchPerSecond:
-            return f"""{self.kilopounds_force_per_square_inch_per_second} kpsi/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_square_inch_per_second, fractional_digits)} kpsi/s"""
         
         if unit == PressureChangeRateUnits.MegapoundForcePerSquareInchPerSecond:
-            return f"""{self.megapounds_force_per_square_inch_per_second} Mpsi/s"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_force_per_square_inch_per_second, fractional_digits)} Mpsi/s"""
         
         if unit == PressureChangeRateUnits.KilopoundForcePerSquareInchPerMinute:
-            return f"""{self.kilopounds_force_per_square_inch_per_minute} kpsi/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_square_inch_per_minute, fractional_digits)} kpsi/min"""
         
         if unit == PressureChangeRateUnits.MegapoundForcePerSquareInchPerMinute:
-            return f"""{self.megapounds_force_per_square_inch_per_minute} Mpsi/min"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_force_per_square_inch_per_minute, fractional_digits)} Mpsi/min"""
         
         if unit == PressureChangeRateUnits.MillibarPerSecond:
-            return f"""{self.millibars_per_second} mbar/s"""
+            return f"""{super()._truncate_fraction_digits(self.millibars_per_second, fractional_digits)} mbar/s"""
         
         if unit == PressureChangeRateUnits.MillibarPerMinute:
-            return f"""{self.millibars_per_minute} mbar/min"""
+            return f"""{super()._truncate_fraction_digits(self.millibars_per_minute, fractional_digits)} mbar/min"""
         
         return f'{self._value}'
 

@@ -10,86 +10,136 @@ class AngleUnits(Enum):
             AngleUnits enumeration
         """
         
-        Radian = 'radian'
+        Radian = 'Radian'
         """
             
         """
         
-        Degree = 'degree'
+        Degree = 'Degree'
         """
             
         """
         
-        Arcminute = 'arcminute'
+        Arcminute = 'Arcminute'
         """
             
         """
         
-        Arcsecond = 'arcsecond'
+        Arcsecond = 'Arcsecond'
         """
             
         """
         
-        Gradian = 'gradian'
+        Gradian = 'Gradian'
         """
             
         """
         
-        NatoMil = 'nato_mil'
+        NatoMil = 'NatoMil'
         """
             
         """
         
-        Revolution = 'revolution'
+        Revolution = 'Revolution'
         """
             
         """
         
-        Tilt = 'tilt'
+        Tilt = 'Tilt'
         """
             
         """
         
-        Nanoradian = 'nanoradian'
+        Nanoradian = 'Nanoradian'
         """
             
         """
         
-        Microradian = 'microradian'
+        Microradian = 'Microradian'
         """
             
         """
         
-        Milliradian = 'milliradian'
+        Milliradian = 'Milliradian'
         """
             
         """
         
-        Centiradian = 'centiradian'
+        Centiradian = 'Centiradian'
         """
             
         """
         
-        Deciradian = 'deciradian'
+        Deciradian = 'Deciradian'
         """
             
         """
         
-        Nanodegree = 'nanodegree'
+        Nanodegree = 'Nanodegree'
         """
             
         """
         
-        Microdegree = 'microdegree'
+        Microdegree = 'Microdegree'
         """
             
         """
         
-        Millidegree = 'millidegree'
+        Millidegree = 'Millidegree'
         """
             
         """
         
+
+class AngleDto:
+    """
+    A DTO representation of a Angle
+
+    Attributes:
+        value (float): The value of the Angle.
+        unit (AngleUnits): The specific unit that the Angle value is representing.
+    """
+
+    def __init__(self, value: float, unit: AngleUnits):
+        """
+        Create a new DTO representation of a Angle
+
+        Parameters:
+            value (float): The value of the Angle.
+            unit (AngleUnits): The specific unit that the Angle value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Angle
+        """
+        self.unit: AngleUnits = unit
+        """
+        The specific unit that the Angle value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Angle DTO JSON object representing the current unit.
+
+        :return: JSON object represents Angle DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Degree"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Angle DTO from a json representation.
+
+        :param data: The Angle DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Degree"}
+        :return: A new instance of AngleDto.
+        :rtype: AngleDto
+        """
+        return AngleDto(value=data["value"], unit=AngleUnits(data["unit"]))
+
 
 class Angle(AbstractMeasure):
     """
@@ -100,8 +150,10 @@ class Angle(AbstractMeasure):
         from_unit (AngleUnits): The Angle unit to create from, The default unit is Degree
     """
     def __init__(self, value: float, from_unit: AngleUnits = AngleUnits.Degree):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__radians = None
@@ -139,6 +191,54 @@ class Angle(AbstractMeasure):
 
     def convert(self, unit: AngleUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: AngleUnits = AngleUnits.Degree) -> AngleDto:
+        """
+        Get a new instance of Angle DTO representing the current unit.
+
+        :param hold_in_unit: The specific Angle unit to store the Angle value in the DTO representation.
+        :type hold_in_unit: AngleUnits
+        :return: A new instance of AngleDto.
+        :rtype: AngleDto
+        """
+        return AngleDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: AngleUnits = AngleUnits.Degree):
+        """
+        Get a Angle DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Angle unit to store the Angle value in the DTO representation.
+        :type hold_in_unit: AngleUnits
+        :return: JSON object represents Angle DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Degree"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(angle_dto: AngleDto):
+        """
+        Obtain a new instance of Angle from a DTO unit object.
+
+        :param angle_dto: The Angle DTO representation.
+        :type angle_dto: AngleDto
+        :return: A new instance of Angle.
+        :rtype: Angle
+        """
+        return Angle(angle_dto.value, angle_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Angle from a DTO unit json representation.
+
+        :param data: The Angle DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Degree"}
+        :return: A new instance of Angle.
+        :rtype: Angle
+        """
+        return Angle.from_dto(AngleDto.from_json(data))
 
     def __convert_from_base(self, from_unit: AngleUnits) -> float:
         value = self._value
@@ -668,60 +768,68 @@ class Angle(AbstractMeasure):
         return self.__millidegrees
 
     
-    def to_string(self, unit: AngleUnits = AngleUnits.Degree) -> str:
+    def to_string(self, unit: AngleUnits = AngleUnits.Degree, fractional_digits: int = None) -> str:
         """
-        Format the Angle to string.
-        Note! the default format for Angle is Degree.
-        To specify the unit format set the 'unit' parameter.
+        Format the Angle to a string.
+        
+        Note: the default format for Angle is Degree.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Angle. Default is 'Degree'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == AngleUnits.Radian:
-            return f"""{self.radians} rad"""
+            return f"""{super()._truncate_fraction_digits(self.radians, fractional_digits)} rad"""
         
         if unit == AngleUnits.Degree:
-            return f"""{self.degrees} °"""
+            return f"""{super()._truncate_fraction_digits(self.degrees, fractional_digits)} °"""
         
         if unit == AngleUnits.Arcminute:
-            return f"""{self.arcminutes} '"""
+            return f"""{super()._truncate_fraction_digits(self.arcminutes, fractional_digits)} '"""
         
         if unit == AngleUnits.Arcsecond:
-            return f"""{self.arcseconds} ″"""
+            return f"""{super()._truncate_fraction_digits(self.arcseconds, fractional_digits)} ″"""
         
         if unit == AngleUnits.Gradian:
-            return f"""{self.gradians} g"""
+            return f"""{super()._truncate_fraction_digits(self.gradians, fractional_digits)} g"""
         
         if unit == AngleUnits.NatoMil:
-            return f"""{self.nato_mils} mil"""
+            return f"""{super()._truncate_fraction_digits(self.nato_mils, fractional_digits)} mil"""
         
         if unit == AngleUnits.Revolution:
-            return f"""{self.revolutions} r"""
+            return f"""{super()._truncate_fraction_digits(self.revolutions, fractional_digits)} r"""
         
         if unit == AngleUnits.Tilt:
-            return f"""{self.tilt} sin(θ)"""
+            return f"""{super()._truncate_fraction_digits(self.tilt, fractional_digits)} sin(θ)"""
         
         if unit == AngleUnits.Nanoradian:
-            return f"""{self.nanoradians} nrad"""
+            return f"""{super()._truncate_fraction_digits(self.nanoradians, fractional_digits)} nrad"""
         
         if unit == AngleUnits.Microradian:
-            return f"""{self.microradians} μrad"""
+            return f"""{super()._truncate_fraction_digits(self.microradians, fractional_digits)} μrad"""
         
         if unit == AngleUnits.Milliradian:
-            return f"""{self.milliradians} mrad"""
+            return f"""{super()._truncate_fraction_digits(self.milliradians, fractional_digits)} mrad"""
         
         if unit == AngleUnits.Centiradian:
-            return f"""{self.centiradians} crad"""
+            return f"""{super()._truncate_fraction_digits(self.centiradians, fractional_digits)} crad"""
         
         if unit == AngleUnits.Deciradian:
-            return f"""{self.deciradians} drad"""
+            return f"""{super()._truncate_fraction_digits(self.deciradians, fractional_digits)} drad"""
         
         if unit == AngleUnits.Nanodegree:
-            return f"""{self.nanodegrees} n°"""
+            return f"""{super()._truncate_fraction_digits(self.nanodegrees, fractional_digits)} n°"""
         
         if unit == AngleUnits.Microdegree:
-            return f"""{self.microdegrees} μ°"""
+            return f"""{super()._truncate_fraction_digits(self.microdegrees, fractional_digits)} μ°"""
         
         if unit == AngleUnits.Millidegree:
-            return f"""{self.millidegrees} m°"""
+            return f"""{super()._truncate_fraction_digits(self.millidegrees, fractional_digits)} m°"""
         
         return f'{self._value}'
 

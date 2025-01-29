@@ -10,171 +10,221 @@ class SpeedUnits(Enum):
             SpeedUnits enumeration
         """
         
-        MeterPerSecond = 'meter_per_second'
+        MeterPerSecond = 'MeterPerSecond'
         """
             
         """
         
-        MeterPerMinute = 'meter_per_minute'
+        MeterPerMinute = 'MeterPerMinute'
         """
             
         """
         
-        MeterPerHour = 'meter_per_hour'
+        MeterPerHour = 'MeterPerHour'
         """
             
         """
         
-        FootPerSecond = 'foot_per_second'
+        FootPerSecond = 'FootPerSecond'
         """
             
         """
         
-        FootPerMinute = 'foot_per_minute'
+        FootPerMinute = 'FootPerMinute'
         """
             
         """
         
-        FootPerHour = 'foot_per_hour'
+        FootPerHour = 'FootPerHour'
         """
             
         """
         
-        UsSurveyFootPerSecond = 'us_survey_foot_per_second'
+        UsSurveyFootPerSecond = 'UsSurveyFootPerSecond'
         """
             
         """
         
-        UsSurveyFootPerMinute = 'us_survey_foot_per_minute'
+        UsSurveyFootPerMinute = 'UsSurveyFootPerMinute'
         """
             
         """
         
-        UsSurveyFootPerHour = 'us_survey_foot_per_hour'
+        UsSurveyFootPerHour = 'UsSurveyFootPerHour'
         """
             
         """
         
-        InchPerSecond = 'inch_per_second'
+        InchPerSecond = 'InchPerSecond'
         """
             
         """
         
-        InchPerMinute = 'inch_per_minute'
+        InchPerMinute = 'InchPerMinute'
         """
             
         """
         
-        InchPerHour = 'inch_per_hour'
+        InchPerHour = 'InchPerHour'
         """
             
         """
         
-        YardPerSecond = 'yard_per_second'
+        YardPerSecond = 'YardPerSecond'
         """
             
         """
         
-        YardPerMinute = 'yard_per_minute'
+        YardPerMinute = 'YardPerMinute'
         """
             
         """
         
-        YardPerHour = 'yard_per_hour'
+        YardPerHour = 'YardPerHour'
         """
             
         """
         
-        Knot = 'knot'
+        Knot = 'Knot'
         """
             The knot, by definition, is a unit of speed equals to 1 nautical mile per hour, which is exactly 1852.000 metres per hour. The length of the internationally agreed nautical mile is 1852 m. The US adopted the international definition in 1954, the UK adopted the international nautical mile definition in 1970.
         """
         
-        MilePerHour = 'mile_per_hour'
+        MilePerHour = 'MilePerHour'
         """
             
         """
         
-        Mach = 'mach'
+        Mach = 'Mach'
         """
             
         """
         
-        NanometerPerSecond = 'nanometer_per_second'
+        NanometerPerSecond = 'NanometerPerSecond'
         """
             
         """
         
-        MicrometerPerSecond = 'micrometer_per_second'
+        MicrometerPerSecond = 'MicrometerPerSecond'
         """
             
         """
         
-        MillimeterPerSecond = 'millimeter_per_second'
+        MillimeterPerSecond = 'MillimeterPerSecond'
         """
             
         """
         
-        CentimeterPerSecond = 'centimeter_per_second'
+        CentimeterPerSecond = 'CentimeterPerSecond'
         """
             
         """
         
-        DecimeterPerSecond = 'decimeter_per_second'
+        DecimeterPerSecond = 'DecimeterPerSecond'
         """
             
         """
         
-        KilometerPerSecond = 'kilometer_per_second'
+        KilometerPerSecond = 'KilometerPerSecond'
         """
             
         """
         
-        NanometerPerMinute = 'nanometer_per_minute'
+        NanometerPerMinute = 'NanometerPerMinute'
         """
             
         """
         
-        MicrometerPerMinute = 'micrometer_per_minute'
+        MicrometerPerMinute = 'MicrometerPerMinute'
         """
             
         """
         
-        MillimeterPerMinute = 'millimeter_per_minute'
+        MillimeterPerMinute = 'MillimeterPerMinute'
         """
             
         """
         
-        CentimeterPerMinute = 'centimeter_per_minute'
+        CentimeterPerMinute = 'CentimeterPerMinute'
         """
             
         """
         
-        DecimeterPerMinute = 'decimeter_per_minute'
+        DecimeterPerMinute = 'DecimeterPerMinute'
         """
             
         """
         
-        KilometerPerMinute = 'kilometer_per_minute'
+        KilometerPerMinute = 'KilometerPerMinute'
         """
             
         """
         
-        MillimeterPerHour = 'millimeter_per_hour'
+        MillimeterPerHour = 'MillimeterPerHour'
         """
             
         """
         
-        CentimeterPerHour = 'centimeter_per_hour'
+        CentimeterPerHour = 'CentimeterPerHour'
         """
             
         """
         
-        KilometerPerHour = 'kilometer_per_hour'
+        KilometerPerHour = 'KilometerPerHour'
         """
             
         """
         
+
+class SpeedDto:
+    """
+    A DTO representation of a Speed
+
+    Attributes:
+        value (float): The value of the Speed.
+        unit (SpeedUnits): The specific unit that the Speed value is representing.
+    """
+
+    def __init__(self, value: float, unit: SpeedUnits):
+        """
+        Create a new DTO representation of a Speed
+
+        Parameters:
+            value (float): The value of the Speed.
+            unit (SpeedUnits): The specific unit that the Speed value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Speed
+        """
+        self.unit: SpeedUnits = unit
+        """
+        The specific unit that the Speed value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Speed DTO JSON object representing the current unit.
+
+        :return: JSON object represents Speed DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Speed DTO from a json representation.
+
+        :param data: The Speed DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterPerSecond"}
+        :return: A new instance of SpeedDto.
+        :rtype: SpeedDto
+        """
+        return SpeedDto(value=data["value"], unit=SpeedUnits(data["unit"]))
+
 
 class Speed(AbstractMeasure):
     """
@@ -185,8 +235,10 @@ class Speed(AbstractMeasure):
         from_unit (SpeedUnits): The Speed unit to create from, The default unit is MeterPerSecond
     """
     def __init__(self, value: float, from_unit: SpeedUnits = SpeedUnits.MeterPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__meters_per_second = None
@@ -258,6 +310,54 @@ class Speed(AbstractMeasure):
 
     def convert(self, unit: SpeedUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: SpeedUnits = SpeedUnits.MeterPerSecond) -> SpeedDto:
+        """
+        Get a new instance of Speed DTO representing the current unit.
+
+        :param hold_in_unit: The specific Speed unit to store the Speed value in the DTO representation.
+        :type hold_in_unit: SpeedUnits
+        :return: A new instance of SpeedDto.
+        :rtype: SpeedDto
+        """
+        return SpeedDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: SpeedUnits = SpeedUnits.MeterPerSecond):
+        """
+        Get a Speed DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Speed unit to store the Speed value in the DTO representation.
+        :type hold_in_unit: SpeedUnits
+        :return: JSON object represents Speed DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(speed_dto: SpeedDto):
+        """
+        Obtain a new instance of Speed from a DTO unit object.
+
+        :param speed_dto: The Speed DTO representation.
+        :type speed_dto: SpeedDto
+        :return: A new instance of Speed.
+        :rtype: Speed
+        """
+        return Speed(speed_dto.value, speed_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Speed from a DTO unit json representation.
+
+        :param data: The Speed DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterPerSecond"}
+        :return: A new instance of Speed.
+        :rtype: Speed
+        """
+        return Speed.from_dto(SpeedDto.from_json(data))
 
     def __convert_from_base(self, from_unit: SpeedUnits) -> float:
         value = self._value
@@ -1331,111 +1431,119 @@ class Speed(AbstractMeasure):
         return self.__kilometers_per_hour
 
     
-    def to_string(self, unit: SpeedUnits = SpeedUnits.MeterPerSecond) -> str:
+    def to_string(self, unit: SpeedUnits = SpeedUnits.MeterPerSecond, fractional_digits: int = None) -> str:
         """
-        Format the Speed to string.
-        Note! the default format for Speed is MeterPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the Speed to a string.
+        
+        Note: the default format for Speed is MeterPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Speed. Default is 'MeterPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == SpeedUnits.MeterPerSecond:
-            return f"""{self.meters_per_second} m/s"""
+            return f"""{super()._truncate_fraction_digits(self.meters_per_second, fractional_digits)} m/s"""
         
         if unit == SpeedUnits.MeterPerMinute:
-            return f"""{self.meters_per_minutes} m/min"""
+            return f"""{super()._truncate_fraction_digits(self.meters_per_minutes, fractional_digits)} m/min"""
         
         if unit == SpeedUnits.MeterPerHour:
-            return f"""{self.meters_per_hour} m/h"""
+            return f"""{super()._truncate_fraction_digits(self.meters_per_hour, fractional_digits)} m/h"""
         
         if unit == SpeedUnits.FootPerSecond:
-            return f"""{self.feet_per_second} ft/s"""
+            return f"""{super()._truncate_fraction_digits(self.feet_per_second, fractional_digits)} ft/s"""
         
         if unit == SpeedUnits.FootPerMinute:
-            return f"""{self.feet_per_minute} ft/min"""
+            return f"""{super()._truncate_fraction_digits(self.feet_per_minute, fractional_digits)} ft/min"""
         
         if unit == SpeedUnits.FootPerHour:
-            return f"""{self.feet_per_hour} ft/h"""
+            return f"""{super()._truncate_fraction_digits(self.feet_per_hour, fractional_digits)} ft/h"""
         
         if unit == SpeedUnits.UsSurveyFootPerSecond:
-            return f"""{self.us_survey_feet_per_second} ftUS/s"""
+            return f"""{super()._truncate_fraction_digits(self.us_survey_feet_per_second, fractional_digits)} ftUS/s"""
         
         if unit == SpeedUnits.UsSurveyFootPerMinute:
-            return f"""{self.us_survey_feet_per_minute} ftUS/min"""
+            return f"""{super()._truncate_fraction_digits(self.us_survey_feet_per_minute, fractional_digits)} ftUS/min"""
         
         if unit == SpeedUnits.UsSurveyFootPerHour:
-            return f"""{self.us_survey_feet_per_hour} ftUS/h"""
+            return f"""{super()._truncate_fraction_digits(self.us_survey_feet_per_hour, fractional_digits)} ftUS/h"""
         
         if unit == SpeedUnits.InchPerSecond:
-            return f"""{self.inches_per_second} in/s"""
+            return f"""{super()._truncate_fraction_digits(self.inches_per_second, fractional_digits)} in/s"""
         
         if unit == SpeedUnits.InchPerMinute:
-            return f"""{self.inches_per_minute} in/min"""
+            return f"""{super()._truncate_fraction_digits(self.inches_per_minute, fractional_digits)} in/min"""
         
         if unit == SpeedUnits.InchPerHour:
-            return f"""{self.inches_per_hour} in/h"""
+            return f"""{super()._truncate_fraction_digits(self.inches_per_hour, fractional_digits)} in/h"""
         
         if unit == SpeedUnits.YardPerSecond:
-            return f"""{self.yards_per_second} yd/s"""
+            return f"""{super()._truncate_fraction_digits(self.yards_per_second, fractional_digits)} yd/s"""
         
         if unit == SpeedUnits.YardPerMinute:
-            return f"""{self.yards_per_minute} yd/min"""
+            return f"""{super()._truncate_fraction_digits(self.yards_per_minute, fractional_digits)} yd/min"""
         
         if unit == SpeedUnits.YardPerHour:
-            return f"""{self.yards_per_hour} yd/h"""
+            return f"""{super()._truncate_fraction_digits(self.yards_per_hour, fractional_digits)} yd/h"""
         
         if unit == SpeedUnits.Knot:
-            return f"""{self.knots} kn"""
+            return f"""{super()._truncate_fraction_digits(self.knots, fractional_digits)} kn"""
         
         if unit == SpeedUnits.MilePerHour:
-            return f"""{self.miles_per_hour} mph"""
+            return f"""{super()._truncate_fraction_digits(self.miles_per_hour, fractional_digits)} mph"""
         
         if unit == SpeedUnits.Mach:
-            return f"""{self.mach} M"""
+            return f"""{super()._truncate_fraction_digits(self.mach, fractional_digits)} M"""
         
         if unit == SpeedUnits.NanometerPerSecond:
-            return f"""{self.nanometers_per_second} nm/s"""
+            return f"""{super()._truncate_fraction_digits(self.nanometers_per_second, fractional_digits)} nm/s"""
         
         if unit == SpeedUnits.MicrometerPerSecond:
-            return f"""{self.micrometers_per_second} μm/s"""
+            return f"""{super()._truncate_fraction_digits(self.micrometers_per_second, fractional_digits)} μm/s"""
         
         if unit == SpeedUnits.MillimeterPerSecond:
-            return f"""{self.millimeters_per_second} mm/s"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_per_second, fractional_digits)} mm/s"""
         
         if unit == SpeedUnits.CentimeterPerSecond:
-            return f"""{self.centimeters_per_second} cm/s"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_per_second, fractional_digits)} cm/s"""
         
         if unit == SpeedUnits.DecimeterPerSecond:
-            return f"""{self.decimeters_per_second} dm/s"""
+            return f"""{super()._truncate_fraction_digits(self.decimeters_per_second, fractional_digits)} dm/s"""
         
         if unit == SpeedUnits.KilometerPerSecond:
-            return f"""{self.kilometers_per_second} km/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilometers_per_second, fractional_digits)} km/s"""
         
         if unit == SpeedUnits.NanometerPerMinute:
-            return f"""{self.nanometers_per_minutes} nm/min"""
+            return f"""{super()._truncate_fraction_digits(self.nanometers_per_minutes, fractional_digits)} nm/min"""
         
         if unit == SpeedUnits.MicrometerPerMinute:
-            return f"""{self.micrometers_per_minutes} μm/min"""
+            return f"""{super()._truncate_fraction_digits(self.micrometers_per_minutes, fractional_digits)} μm/min"""
         
         if unit == SpeedUnits.MillimeterPerMinute:
-            return f"""{self.millimeters_per_minutes} mm/min"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_per_minutes, fractional_digits)} mm/min"""
         
         if unit == SpeedUnits.CentimeterPerMinute:
-            return f"""{self.centimeters_per_minutes} cm/min"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_per_minutes, fractional_digits)} cm/min"""
         
         if unit == SpeedUnits.DecimeterPerMinute:
-            return f"""{self.decimeters_per_minutes} dm/min"""
+            return f"""{super()._truncate_fraction_digits(self.decimeters_per_minutes, fractional_digits)} dm/min"""
         
         if unit == SpeedUnits.KilometerPerMinute:
-            return f"""{self.kilometers_per_minutes} km/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilometers_per_minutes, fractional_digits)} km/min"""
         
         if unit == SpeedUnits.MillimeterPerHour:
-            return f"""{self.millimeters_per_hour} mm/h"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_per_hour, fractional_digits)} mm/h"""
         
         if unit == SpeedUnits.CentimeterPerHour:
-            return f"""{self.centimeters_per_hour} cm/h"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_per_hour, fractional_digits)} cm/h"""
         
         if unit == SpeedUnits.KilometerPerHour:
-            return f"""{self.kilometers_per_hour} km/h"""
+            return f"""{super()._truncate_fraction_digits(self.kilometers_per_hour, fractional_digits)} km/h"""
         
         return f'{self._value}'
 

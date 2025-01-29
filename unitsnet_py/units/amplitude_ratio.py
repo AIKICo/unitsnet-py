@@ -10,26 +10,76 @@ class AmplitudeRatioUnits(Enum):
             AmplitudeRatioUnits enumeration
         """
         
-        DecibelVolt = 'decibel_volt'
+        DecibelVolt = 'DecibelVolt'
         """
             
         """
         
-        DecibelMicrovolt = 'decibel_microvolt'
+        DecibelMicrovolt = 'DecibelMicrovolt'
         """
             
         """
         
-        DecibelMillivolt = 'decibel_millivolt'
+        DecibelMillivolt = 'DecibelMillivolt'
         """
             
         """
         
-        DecibelUnloaded = 'decibel_unloaded'
+        DecibelUnloaded = 'DecibelUnloaded'
         """
             
         """
         
+
+class AmplitudeRatioDto:
+    """
+    A DTO representation of a AmplitudeRatio
+
+    Attributes:
+        value (float): The value of the AmplitudeRatio.
+        unit (AmplitudeRatioUnits): The specific unit that the AmplitudeRatio value is representing.
+    """
+
+    def __init__(self, value: float, unit: AmplitudeRatioUnits):
+        """
+        Create a new DTO representation of a AmplitudeRatio
+
+        Parameters:
+            value (float): The value of the AmplitudeRatio.
+            unit (AmplitudeRatioUnits): The specific unit that the AmplitudeRatio value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the AmplitudeRatio
+        """
+        self.unit: AmplitudeRatioUnits = unit
+        """
+        The specific unit that the AmplitudeRatio value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a AmplitudeRatio DTO JSON object representing the current unit.
+
+        :return: JSON object represents AmplitudeRatio DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "DecibelVolt"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of AmplitudeRatio DTO from a json representation.
+
+        :param data: The AmplitudeRatio DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "DecibelVolt"}
+        :return: A new instance of AmplitudeRatioDto.
+        :rtype: AmplitudeRatioDto
+        """
+        return AmplitudeRatioDto(value=data["value"], unit=AmplitudeRatioUnits(data["unit"]))
+
 
 class AmplitudeRatio(AbstractMeasure):
     """
@@ -40,8 +90,10 @@ class AmplitudeRatio(AbstractMeasure):
         from_unit (AmplitudeRatioUnits): The AmplitudeRatio unit to create from, The default unit is DecibelVolt
     """
     def __init__(self, value: float, from_unit: AmplitudeRatioUnits = AmplitudeRatioUnits.DecibelVolt):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__decibel_volts = None
@@ -55,6 +107,54 @@ class AmplitudeRatio(AbstractMeasure):
 
     def convert(self, unit: AmplitudeRatioUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: AmplitudeRatioUnits = AmplitudeRatioUnits.DecibelVolt) -> AmplitudeRatioDto:
+        """
+        Get a new instance of AmplitudeRatio DTO representing the current unit.
+
+        :param hold_in_unit: The specific AmplitudeRatio unit to store the AmplitudeRatio value in the DTO representation.
+        :type hold_in_unit: AmplitudeRatioUnits
+        :return: A new instance of AmplitudeRatioDto.
+        :rtype: AmplitudeRatioDto
+        """
+        return AmplitudeRatioDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: AmplitudeRatioUnits = AmplitudeRatioUnits.DecibelVolt):
+        """
+        Get a AmplitudeRatio DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific AmplitudeRatio unit to store the AmplitudeRatio value in the DTO representation.
+        :type hold_in_unit: AmplitudeRatioUnits
+        :return: JSON object represents AmplitudeRatio DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "DecibelVolt"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(amplitude_ratio_dto: AmplitudeRatioDto):
+        """
+        Obtain a new instance of AmplitudeRatio from a DTO unit object.
+
+        :param amplitude_ratio_dto: The AmplitudeRatio DTO representation.
+        :type amplitude_ratio_dto: AmplitudeRatioDto
+        :return: A new instance of AmplitudeRatio.
+        :rtype: AmplitudeRatio
+        """
+        return AmplitudeRatio(amplitude_ratio_dto.value, amplitude_ratio_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of AmplitudeRatio from a DTO unit json representation.
+
+        :param data: The AmplitudeRatio DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "DecibelVolt"}
+        :return: A new instance of AmplitudeRatio.
+        :rtype: AmplitudeRatio
+        """
+        return AmplitudeRatio.from_dto(AmplitudeRatioDto.from_json(data))
 
     def __convert_from_base(self, from_unit: AmplitudeRatioUnits) -> float:
         value = self._value
@@ -200,24 +300,32 @@ class AmplitudeRatio(AbstractMeasure):
         return self.__decibels_unloaded
 
     
-    def to_string(self, unit: AmplitudeRatioUnits = AmplitudeRatioUnits.DecibelVolt) -> str:
+    def to_string(self, unit: AmplitudeRatioUnits = AmplitudeRatioUnits.DecibelVolt, fractional_digits: int = None) -> str:
         """
-        Format the AmplitudeRatio to string.
-        Note! the default format for AmplitudeRatio is DecibelVolt.
-        To specify the unit format set the 'unit' parameter.
+        Format the AmplitudeRatio to a string.
+        
+        Note: the default format for AmplitudeRatio is DecibelVolt.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the AmplitudeRatio. Default is 'DecibelVolt'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == AmplitudeRatioUnits.DecibelVolt:
-            return f"""{self.decibel_volts} dBV"""
+            return f"""{super()._truncate_fraction_digits(self.decibel_volts, fractional_digits)} dBV"""
         
         if unit == AmplitudeRatioUnits.DecibelMicrovolt:
-            return f"""{self.decibel_microvolts} dBµV"""
+            return f"""{super()._truncate_fraction_digits(self.decibel_microvolts, fractional_digits)} dBµV"""
         
         if unit == AmplitudeRatioUnits.DecibelMillivolt:
-            return f"""{self.decibel_millivolts} dBmV"""
+            return f"""{super()._truncate_fraction_digits(self.decibel_millivolts, fractional_digits)} dBmV"""
         
         if unit == AmplitudeRatioUnits.DecibelUnloaded:
-            return f"""{self.decibels_unloaded} dBu"""
+            return f"""{super()._truncate_fraction_digits(self.decibels_unloaded, fractional_digits)} dBu"""
         
         return f'{self._value}'
 

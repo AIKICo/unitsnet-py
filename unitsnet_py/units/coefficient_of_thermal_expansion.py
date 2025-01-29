@@ -10,36 +10,86 @@ class CoefficientOfThermalExpansionUnits(Enum):
             CoefficientOfThermalExpansionUnits enumeration
         """
         
-        PerKelvin = 'per_kelvin'
+        PerKelvin = 'PerKelvin'
         """
             
         """
         
-        PerDegreeCelsius = 'per_degree_celsius'
+        PerDegreeCelsius = 'PerDegreeCelsius'
         """
             
         """
         
-        PerDegreeFahrenheit = 'per_degree_fahrenheit'
+        PerDegreeFahrenheit = 'PerDegreeFahrenheit'
         """
             
         """
         
-        PpmPerKelvin = 'ppm_per_kelvin'
+        PpmPerKelvin = 'PpmPerKelvin'
         """
             
         """
         
-        PpmPerDegreeCelsius = 'ppm_per_degree_celsius'
+        PpmPerDegreeCelsius = 'PpmPerDegreeCelsius'
         """
             
         """
         
-        PpmPerDegreeFahrenheit = 'ppm_per_degree_fahrenheit'
+        PpmPerDegreeFahrenheit = 'PpmPerDegreeFahrenheit'
         """
             
         """
         
+
+class CoefficientOfThermalExpansionDto:
+    """
+    A DTO representation of a CoefficientOfThermalExpansion
+
+    Attributes:
+        value (float): The value of the CoefficientOfThermalExpansion.
+        unit (CoefficientOfThermalExpansionUnits): The specific unit that the CoefficientOfThermalExpansion value is representing.
+    """
+
+    def __init__(self, value: float, unit: CoefficientOfThermalExpansionUnits):
+        """
+        Create a new DTO representation of a CoefficientOfThermalExpansion
+
+        Parameters:
+            value (float): The value of the CoefficientOfThermalExpansion.
+            unit (CoefficientOfThermalExpansionUnits): The specific unit that the CoefficientOfThermalExpansion value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the CoefficientOfThermalExpansion
+        """
+        self.unit: CoefficientOfThermalExpansionUnits = unit
+        """
+        The specific unit that the CoefficientOfThermalExpansion value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a CoefficientOfThermalExpansion DTO JSON object representing the current unit.
+
+        :return: JSON object represents CoefficientOfThermalExpansion DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "PerKelvin"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of CoefficientOfThermalExpansion DTO from a json representation.
+
+        :param data: The CoefficientOfThermalExpansion DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "PerKelvin"}
+        :return: A new instance of CoefficientOfThermalExpansionDto.
+        :rtype: CoefficientOfThermalExpansionDto
+        """
+        return CoefficientOfThermalExpansionDto(value=data["value"], unit=CoefficientOfThermalExpansionUnits(data["unit"]))
+
 
 class CoefficientOfThermalExpansion(AbstractMeasure):
     """
@@ -50,8 +100,10 @@ class CoefficientOfThermalExpansion(AbstractMeasure):
         from_unit (CoefficientOfThermalExpansionUnits): The CoefficientOfThermalExpansion unit to create from, The default unit is PerKelvin
     """
     def __init__(self, value: float, from_unit: CoefficientOfThermalExpansionUnits = CoefficientOfThermalExpansionUnits.PerKelvin):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__per_kelvin = None
@@ -69,6 +121,54 @@ class CoefficientOfThermalExpansion(AbstractMeasure):
 
     def convert(self, unit: CoefficientOfThermalExpansionUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: CoefficientOfThermalExpansionUnits = CoefficientOfThermalExpansionUnits.PerKelvin) -> CoefficientOfThermalExpansionDto:
+        """
+        Get a new instance of CoefficientOfThermalExpansion DTO representing the current unit.
+
+        :param hold_in_unit: The specific CoefficientOfThermalExpansion unit to store the CoefficientOfThermalExpansion value in the DTO representation.
+        :type hold_in_unit: CoefficientOfThermalExpansionUnits
+        :return: A new instance of CoefficientOfThermalExpansionDto.
+        :rtype: CoefficientOfThermalExpansionDto
+        """
+        return CoefficientOfThermalExpansionDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: CoefficientOfThermalExpansionUnits = CoefficientOfThermalExpansionUnits.PerKelvin):
+        """
+        Get a CoefficientOfThermalExpansion DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific CoefficientOfThermalExpansion unit to store the CoefficientOfThermalExpansion value in the DTO representation.
+        :type hold_in_unit: CoefficientOfThermalExpansionUnits
+        :return: JSON object represents CoefficientOfThermalExpansion DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "PerKelvin"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(coefficient_of_thermal_expansion_dto: CoefficientOfThermalExpansionDto):
+        """
+        Obtain a new instance of CoefficientOfThermalExpansion from a DTO unit object.
+
+        :param coefficient_of_thermal_expansion_dto: The CoefficientOfThermalExpansion DTO representation.
+        :type coefficient_of_thermal_expansion_dto: CoefficientOfThermalExpansionDto
+        :return: A new instance of CoefficientOfThermalExpansion.
+        :rtype: CoefficientOfThermalExpansion
+        """
+        return CoefficientOfThermalExpansion(coefficient_of_thermal_expansion_dto.value, coefficient_of_thermal_expansion_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of CoefficientOfThermalExpansion from a DTO unit json representation.
+
+        :param data: The CoefficientOfThermalExpansion DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "PerKelvin"}
+        :return: A new instance of CoefficientOfThermalExpansion.
+        :rtype: CoefficientOfThermalExpansion
+        """
+        return CoefficientOfThermalExpansion.from_dto(CoefficientOfThermalExpansionDto.from_json(data))
 
     def __convert_from_base(self, from_unit: CoefficientOfThermalExpansionUnits) -> float:
         value = self._value
@@ -278,30 +378,38 @@ class CoefficientOfThermalExpansion(AbstractMeasure):
         return self.__ppm_per_degree_fahrenheit
 
     
-    def to_string(self, unit: CoefficientOfThermalExpansionUnits = CoefficientOfThermalExpansionUnits.PerKelvin) -> str:
+    def to_string(self, unit: CoefficientOfThermalExpansionUnits = CoefficientOfThermalExpansionUnits.PerKelvin, fractional_digits: int = None) -> str:
         """
-        Format the CoefficientOfThermalExpansion to string.
-        Note! the default format for CoefficientOfThermalExpansion is PerKelvin.
-        To specify the unit format set the 'unit' parameter.
+        Format the CoefficientOfThermalExpansion to a string.
+        
+        Note: the default format for CoefficientOfThermalExpansion is PerKelvin.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the CoefficientOfThermalExpansion. Default is 'PerKelvin'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == CoefficientOfThermalExpansionUnits.PerKelvin:
-            return f"""{self.per_kelvin} K⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.per_kelvin, fractional_digits)} K⁻¹"""
         
         if unit == CoefficientOfThermalExpansionUnits.PerDegreeCelsius:
-            return f"""{self.per_degree_celsius} °C⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.per_degree_celsius, fractional_digits)} °C⁻¹"""
         
         if unit == CoefficientOfThermalExpansionUnits.PerDegreeFahrenheit:
-            return f"""{self.per_degree_fahrenheit} °F⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.per_degree_fahrenheit, fractional_digits)} °F⁻¹"""
         
         if unit == CoefficientOfThermalExpansionUnits.PpmPerKelvin:
-            return f"""{self.ppm_per_kelvin} ppm/K"""
+            return f"""{super()._truncate_fraction_digits(self.ppm_per_kelvin, fractional_digits)} ppm/K"""
         
         if unit == CoefficientOfThermalExpansionUnits.PpmPerDegreeCelsius:
-            return f"""{self.ppm_per_degree_celsius} ppm/°C"""
+            return f"""{super()._truncate_fraction_digits(self.ppm_per_degree_celsius, fractional_digits)} ppm/°C"""
         
         if unit == CoefficientOfThermalExpansionUnits.PpmPerDegreeFahrenheit:
-            return f"""{self.ppm_per_degree_fahrenheit} ppm/°F"""
+            return f"""{super()._truncate_fraction_digits(self.ppm_per_degree_fahrenheit, fractional_digits)} ppm/°F"""
         
         return f'{self._value}'
 

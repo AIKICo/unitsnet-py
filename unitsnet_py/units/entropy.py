@@ -10,41 +10,91 @@ class EntropyUnits(Enum):
             EntropyUnits enumeration
         """
         
-        JoulePerKelvin = 'joule_per_kelvin'
+        JoulePerKelvin = 'JoulePerKelvin'
         """
             
         """
         
-        CaloriePerKelvin = 'calorie_per_kelvin'
+        CaloriePerKelvin = 'CaloriePerKelvin'
         """
             
         """
         
-        JoulePerDegreeCelsius = 'joule_per_degree_celsius'
+        JoulePerDegreeCelsius = 'JoulePerDegreeCelsius'
         """
             
         """
         
-        KilojoulePerKelvin = 'kilojoule_per_kelvin'
+        KilojoulePerKelvin = 'KilojoulePerKelvin'
         """
             
         """
         
-        MegajoulePerKelvin = 'megajoule_per_kelvin'
+        MegajoulePerKelvin = 'MegajoulePerKelvin'
         """
             
         """
         
-        KilocaloriePerKelvin = 'kilocalorie_per_kelvin'
+        KilocaloriePerKelvin = 'KilocaloriePerKelvin'
         """
             
         """
         
-        KilojoulePerDegreeCelsius = 'kilojoule_per_degree_celsius'
+        KilojoulePerDegreeCelsius = 'KilojoulePerDegreeCelsius'
         """
             
         """
         
+
+class EntropyDto:
+    """
+    A DTO representation of a Entropy
+
+    Attributes:
+        value (float): The value of the Entropy.
+        unit (EntropyUnits): The specific unit that the Entropy value is representing.
+    """
+
+    def __init__(self, value: float, unit: EntropyUnits):
+        """
+        Create a new DTO representation of a Entropy
+
+        Parameters:
+            value (float): The value of the Entropy.
+            unit (EntropyUnits): The specific unit that the Entropy value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Entropy
+        """
+        self.unit: EntropyUnits = unit
+        """
+        The specific unit that the Entropy value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Entropy DTO JSON object representing the current unit.
+
+        :return: JSON object represents Entropy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "JoulePerKelvin"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Entropy DTO from a json representation.
+
+        :param data: The Entropy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "JoulePerKelvin"}
+        :return: A new instance of EntropyDto.
+        :rtype: EntropyDto
+        """
+        return EntropyDto(value=data["value"], unit=EntropyUnits(data["unit"]))
+
 
 class Entropy(AbstractMeasure):
     """
@@ -55,8 +105,10 @@ class Entropy(AbstractMeasure):
         from_unit (EntropyUnits): The Entropy unit to create from, The default unit is JoulePerKelvin
     """
     def __init__(self, value: float, from_unit: EntropyUnits = EntropyUnits.JoulePerKelvin):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__joules_per_kelvin = None
@@ -76,6 +128,54 @@ class Entropy(AbstractMeasure):
 
     def convert(self, unit: EntropyUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: EntropyUnits = EntropyUnits.JoulePerKelvin) -> EntropyDto:
+        """
+        Get a new instance of Entropy DTO representing the current unit.
+
+        :param hold_in_unit: The specific Entropy unit to store the Entropy value in the DTO representation.
+        :type hold_in_unit: EntropyUnits
+        :return: A new instance of EntropyDto.
+        :rtype: EntropyDto
+        """
+        return EntropyDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: EntropyUnits = EntropyUnits.JoulePerKelvin):
+        """
+        Get a Entropy DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Entropy unit to store the Entropy value in the DTO representation.
+        :type hold_in_unit: EntropyUnits
+        :return: JSON object represents Entropy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "JoulePerKelvin"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(entropy_dto: EntropyDto):
+        """
+        Obtain a new instance of Entropy from a DTO unit object.
+
+        :param entropy_dto: The Entropy DTO representation.
+        :type entropy_dto: EntropyDto
+        :return: A new instance of Entropy.
+        :rtype: Entropy
+        """
+        return Entropy(entropy_dto.value, entropy_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Entropy from a DTO unit json representation.
+
+        :param data: The Entropy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "JoulePerKelvin"}
+        :return: A new instance of Entropy.
+        :rtype: Entropy
+        """
+        return Entropy.from_dto(EntropyDto.from_json(data))
 
     def __convert_from_base(self, from_unit: EntropyUnits) -> float:
         value = self._value
@@ -317,33 +417,41 @@ class Entropy(AbstractMeasure):
         return self.__kilojoules_per_degree_celsius
 
     
-    def to_string(self, unit: EntropyUnits = EntropyUnits.JoulePerKelvin) -> str:
+    def to_string(self, unit: EntropyUnits = EntropyUnits.JoulePerKelvin, fractional_digits: int = None) -> str:
         """
-        Format the Entropy to string.
-        Note! the default format for Entropy is JoulePerKelvin.
-        To specify the unit format set the 'unit' parameter.
+        Format the Entropy to a string.
+        
+        Note: the default format for Entropy is JoulePerKelvin.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Entropy. Default is 'JoulePerKelvin'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == EntropyUnits.JoulePerKelvin:
-            return f"""{self.joules_per_kelvin} J/K"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_kelvin, fractional_digits)} J/K"""
         
         if unit == EntropyUnits.CaloriePerKelvin:
-            return f"""{self.calories_per_kelvin} cal/K"""
+            return f"""{super()._truncate_fraction_digits(self.calories_per_kelvin, fractional_digits)} cal/K"""
         
         if unit == EntropyUnits.JoulePerDegreeCelsius:
-            return f"""{self.joules_per_degree_celsius} J/C"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_degree_celsius, fractional_digits)} J/°C"""
         
         if unit == EntropyUnits.KilojoulePerKelvin:
-            return f"""{self.kilojoules_per_kelvin} kJ/K"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules_per_kelvin, fractional_digits)} kJ/K"""
         
         if unit == EntropyUnits.MegajoulePerKelvin:
-            return f"""{self.megajoules_per_kelvin} MJ/K"""
+            return f"""{super()._truncate_fraction_digits(self.megajoules_per_kelvin, fractional_digits)} MJ/K"""
         
         if unit == EntropyUnits.KilocaloriePerKelvin:
-            return f"""{self.kilocalories_per_kelvin} kcal/K"""
+            return f"""{super()._truncate_fraction_digits(self.kilocalories_per_kelvin, fractional_digits)} kcal/K"""
         
         if unit == EntropyUnits.KilojoulePerDegreeCelsius:
-            return f"""{self.kilojoules_per_degree_celsius} kJ/C"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules_per_degree_celsius, fractional_digits)} kJ/°C"""
         
         return f'{self._value}'
 
@@ -362,7 +470,7 @@ class Entropy(AbstractMeasure):
             return """cal/K"""
         
         if unit_abbreviation == EntropyUnits.JoulePerDegreeCelsius:
-            return """J/C"""
+            return """J/°C"""
         
         if unit_abbreviation == EntropyUnits.KilojoulePerKelvin:
             return """kJ/K"""
@@ -374,5 +482,5 @@ class Entropy(AbstractMeasure):
             return """kcal/K"""
         
         if unit_abbreviation == EntropyUnits.KilojoulePerDegreeCelsius:
-            return """kJ/C"""
+            return """kJ/°C"""
         

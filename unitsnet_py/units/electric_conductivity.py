@@ -10,36 +10,86 @@ class ElectricConductivityUnits(Enum):
             ElectricConductivityUnits enumeration
         """
         
-        SiemensPerMeter = 'siemens_per_meter'
+        SiemensPerMeter = 'SiemensPerMeter'
         """
             
         """
         
-        SiemensPerInch = 'siemens_per_inch'
+        SiemensPerInch = 'SiemensPerInch'
         """
             
         """
         
-        SiemensPerFoot = 'siemens_per_foot'
+        SiemensPerFoot = 'SiemensPerFoot'
         """
             
         """
         
-        SiemensPerCentimeter = 'siemens_per_centimeter'
+        SiemensPerCentimeter = 'SiemensPerCentimeter'
         """
             
         """
         
-        MicrosiemensPerCentimeter = 'microsiemens_per_centimeter'
+        MicrosiemensPerCentimeter = 'MicrosiemensPerCentimeter'
         """
             
         """
         
-        MillisiemensPerCentimeter = 'millisiemens_per_centimeter'
+        MillisiemensPerCentimeter = 'MillisiemensPerCentimeter'
         """
             
         """
         
+
+class ElectricConductivityDto:
+    """
+    A DTO representation of a ElectricConductivity
+
+    Attributes:
+        value (float): The value of the ElectricConductivity.
+        unit (ElectricConductivityUnits): The specific unit that the ElectricConductivity value is representing.
+    """
+
+    def __init__(self, value: float, unit: ElectricConductivityUnits):
+        """
+        Create a new DTO representation of a ElectricConductivity
+
+        Parameters:
+            value (float): The value of the ElectricConductivity.
+            unit (ElectricConductivityUnits): The specific unit that the ElectricConductivity value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ElectricConductivity
+        """
+        self.unit: ElectricConductivityUnits = unit
+        """
+        The specific unit that the ElectricConductivity value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ElectricConductivity DTO JSON object representing the current unit.
+
+        :return: JSON object represents ElectricConductivity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "SiemensPerMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ElectricConductivity DTO from a json representation.
+
+        :param data: The ElectricConductivity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "SiemensPerMeter"}
+        :return: A new instance of ElectricConductivityDto.
+        :rtype: ElectricConductivityDto
+        """
+        return ElectricConductivityDto(value=data["value"], unit=ElectricConductivityUnits(data["unit"]))
+
 
 class ElectricConductivity(AbstractMeasure):
     """
@@ -50,8 +100,10 @@ class ElectricConductivity(AbstractMeasure):
         from_unit (ElectricConductivityUnits): The ElectricConductivity unit to create from, The default unit is SiemensPerMeter
     """
     def __init__(self, value: float, from_unit: ElectricConductivityUnits = ElectricConductivityUnits.SiemensPerMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__siemens_per_meter = None
@@ -69,6 +121,54 @@ class ElectricConductivity(AbstractMeasure):
 
     def convert(self, unit: ElectricConductivityUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ElectricConductivityUnits = ElectricConductivityUnits.SiemensPerMeter) -> ElectricConductivityDto:
+        """
+        Get a new instance of ElectricConductivity DTO representing the current unit.
+
+        :param hold_in_unit: The specific ElectricConductivity unit to store the ElectricConductivity value in the DTO representation.
+        :type hold_in_unit: ElectricConductivityUnits
+        :return: A new instance of ElectricConductivityDto.
+        :rtype: ElectricConductivityDto
+        """
+        return ElectricConductivityDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ElectricConductivityUnits = ElectricConductivityUnits.SiemensPerMeter):
+        """
+        Get a ElectricConductivity DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ElectricConductivity unit to store the ElectricConductivity value in the DTO representation.
+        :type hold_in_unit: ElectricConductivityUnits
+        :return: JSON object represents ElectricConductivity DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "SiemensPerMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(electric_conductivity_dto: ElectricConductivityDto):
+        """
+        Obtain a new instance of ElectricConductivity from a DTO unit object.
+
+        :param electric_conductivity_dto: The ElectricConductivity DTO representation.
+        :type electric_conductivity_dto: ElectricConductivityDto
+        :return: A new instance of ElectricConductivity.
+        :rtype: ElectricConductivity
+        """
+        return ElectricConductivity(electric_conductivity_dto.value, electric_conductivity_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ElectricConductivity from a DTO unit json representation.
+
+        :param data: The ElectricConductivity DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "SiemensPerMeter"}
+        :return: A new instance of ElectricConductivity.
+        :rtype: ElectricConductivity
+        """
+        return ElectricConductivity.from_dto(ElectricConductivityDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ElectricConductivityUnits) -> float:
         value = self._value
@@ -278,30 +378,38 @@ class ElectricConductivity(AbstractMeasure):
         return self.__millisiemens_per_centimeter
 
     
-    def to_string(self, unit: ElectricConductivityUnits = ElectricConductivityUnits.SiemensPerMeter) -> str:
+    def to_string(self, unit: ElectricConductivityUnits = ElectricConductivityUnits.SiemensPerMeter, fractional_digits: int = None) -> str:
         """
-        Format the ElectricConductivity to string.
-        Note! the default format for ElectricConductivity is SiemensPerMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the ElectricConductivity to a string.
+        
+        Note: the default format for ElectricConductivity is SiemensPerMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ElectricConductivity. Default is 'SiemensPerMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ElectricConductivityUnits.SiemensPerMeter:
-            return f"""{self.siemens_per_meter} S/m"""
+            return f"""{super()._truncate_fraction_digits(self.siemens_per_meter, fractional_digits)} S/m"""
         
         if unit == ElectricConductivityUnits.SiemensPerInch:
-            return f"""{self.siemens_per_inch} S/in"""
+            return f"""{super()._truncate_fraction_digits(self.siemens_per_inch, fractional_digits)} S/in"""
         
         if unit == ElectricConductivityUnits.SiemensPerFoot:
-            return f"""{self.siemens_per_foot} S/ft"""
+            return f"""{super()._truncate_fraction_digits(self.siemens_per_foot, fractional_digits)} S/ft"""
         
         if unit == ElectricConductivityUnits.SiemensPerCentimeter:
-            return f"""{self.siemens_per_centimeter} S/cm"""
+            return f"""{super()._truncate_fraction_digits(self.siemens_per_centimeter, fractional_digits)} S/cm"""
         
         if unit == ElectricConductivityUnits.MicrosiemensPerCentimeter:
-            return f"""{self.microsiemens_per_centimeter} μS/cm"""
+            return f"""{super()._truncate_fraction_digits(self.microsiemens_per_centimeter, fractional_digits)} μS/cm"""
         
         if unit == ElectricConductivityUnits.MillisiemensPerCentimeter:
-            return f"""{self.millisiemens_per_centimeter} mS/cm"""
+            return f"""{super()._truncate_fraction_digits(self.millisiemens_per_centimeter, fractional_digits)} mS/cm"""
         
         return f'{self._value}'
 

@@ -10,16 +10,66 @@ class PowerRatioUnits(Enum):
             PowerRatioUnits enumeration
         """
         
-        DecibelWatt = 'decibel_watt'
+        DecibelWatt = 'DecibelWatt'
         """
             
         """
         
-        DecibelMilliwatt = 'decibel_milliwatt'
+        DecibelMilliwatt = 'DecibelMilliwatt'
         """
             
         """
         
+
+class PowerRatioDto:
+    """
+    A DTO representation of a PowerRatio
+
+    Attributes:
+        value (float): The value of the PowerRatio.
+        unit (PowerRatioUnits): The specific unit that the PowerRatio value is representing.
+    """
+
+    def __init__(self, value: float, unit: PowerRatioUnits):
+        """
+        Create a new DTO representation of a PowerRatio
+
+        Parameters:
+            value (float): The value of the PowerRatio.
+            unit (PowerRatioUnits): The specific unit that the PowerRatio value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the PowerRatio
+        """
+        self.unit: PowerRatioUnits = unit
+        """
+        The specific unit that the PowerRatio value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a PowerRatio DTO JSON object representing the current unit.
+
+        :return: JSON object represents PowerRatio DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "DecibelWatt"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of PowerRatio DTO from a json representation.
+
+        :param data: The PowerRatio DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "DecibelWatt"}
+        :return: A new instance of PowerRatioDto.
+        :rtype: PowerRatioDto
+        """
+        return PowerRatioDto(value=data["value"], unit=PowerRatioUnits(data["unit"]))
+
 
 class PowerRatio(AbstractMeasure):
     """
@@ -30,8 +80,10 @@ class PowerRatio(AbstractMeasure):
         from_unit (PowerRatioUnits): The PowerRatio unit to create from, The default unit is DecibelWatt
     """
     def __init__(self, value: float, from_unit: PowerRatioUnits = PowerRatioUnits.DecibelWatt):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__decibel_watts = None
@@ -41,6 +93,54 @@ class PowerRatio(AbstractMeasure):
 
     def convert(self, unit: PowerRatioUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: PowerRatioUnits = PowerRatioUnits.DecibelWatt) -> PowerRatioDto:
+        """
+        Get a new instance of PowerRatio DTO representing the current unit.
+
+        :param hold_in_unit: The specific PowerRatio unit to store the PowerRatio value in the DTO representation.
+        :type hold_in_unit: PowerRatioUnits
+        :return: A new instance of PowerRatioDto.
+        :rtype: PowerRatioDto
+        """
+        return PowerRatioDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: PowerRatioUnits = PowerRatioUnits.DecibelWatt):
+        """
+        Get a PowerRatio DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific PowerRatio unit to store the PowerRatio value in the DTO representation.
+        :type hold_in_unit: PowerRatioUnits
+        :return: JSON object represents PowerRatio DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "DecibelWatt"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(power_ratio_dto: PowerRatioDto):
+        """
+        Obtain a new instance of PowerRatio from a DTO unit object.
+
+        :param power_ratio_dto: The PowerRatio DTO representation.
+        :type power_ratio_dto: PowerRatioDto
+        :return: A new instance of PowerRatio.
+        :rtype: PowerRatio
+        """
+        return PowerRatio(power_ratio_dto.value, power_ratio_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of PowerRatio from a DTO unit json representation.
+
+        :param data: The PowerRatio DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "DecibelWatt"}
+        :return: A new instance of PowerRatio.
+        :rtype: PowerRatio
+        """
+        return PowerRatio.from_dto(PowerRatioDto.from_json(data))
 
     def __convert_from_base(self, from_unit: PowerRatioUnits) -> float:
         value = self._value
@@ -122,18 +222,26 @@ class PowerRatio(AbstractMeasure):
         return self.__decibel_milliwatts
 
     
-    def to_string(self, unit: PowerRatioUnits = PowerRatioUnits.DecibelWatt) -> str:
+    def to_string(self, unit: PowerRatioUnits = PowerRatioUnits.DecibelWatt, fractional_digits: int = None) -> str:
         """
-        Format the PowerRatio to string.
-        Note! the default format for PowerRatio is DecibelWatt.
-        To specify the unit format set the 'unit' parameter.
+        Format the PowerRatio to a string.
+        
+        Note: the default format for PowerRatio is DecibelWatt.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the PowerRatio. Default is 'DecibelWatt'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == PowerRatioUnits.DecibelWatt:
-            return f"""{self.decibel_watts} dBW"""
+            return f"""{super()._truncate_fraction_digits(self.decibel_watts, fractional_digits)} dBW"""
         
         if unit == PowerRatioUnits.DecibelMilliwatt:
-            return f"""{self.decibel_milliwatts} dBmW"""
+            return f"""{super()._truncate_fraction_digits(self.decibel_milliwatts, fractional_digits)} dBmW"""
         
         return f'{self._value}'
 

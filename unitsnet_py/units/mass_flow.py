@@ -10,171 +10,221 @@ class MassFlowUnits(Enum):
             MassFlowUnits enumeration
         """
         
-        GramPerSecond = 'gram_per_second'
+        GramPerSecond = 'GramPerSecond'
         """
             
         """
         
-        GramPerDay = 'gram_per_day'
+        GramPerDay = 'GramPerDay'
         """
             
         """
         
-        GramPerHour = 'gram_per_hour'
+        GramPerHour = 'GramPerHour'
         """
             
         """
         
-        KilogramPerHour = 'kilogram_per_hour'
+        KilogramPerHour = 'KilogramPerHour'
         """
             
         """
         
-        KilogramPerMinute = 'kilogram_per_minute'
+        KilogramPerMinute = 'KilogramPerMinute'
         """
             
         """
         
-        TonnePerHour = 'tonne_per_hour'
+        TonnePerHour = 'TonnePerHour'
         """
             
         """
         
-        PoundPerDay = 'pound_per_day'
+        PoundPerDay = 'PoundPerDay'
         """
             
         """
         
-        PoundPerHour = 'pound_per_hour'
+        PoundPerHour = 'PoundPerHour'
         """
             
         """
         
-        PoundPerMinute = 'pound_per_minute'
+        PoundPerMinute = 'PoundPerMinute'
         """
             
         """
         
-        PoundPerSecond = 'pound_per_second'
+        PoundPerSecond = 'PoundPerSecond'
         """
             
         """
         
-        TonnePerDay = 'tonne_per_day'
+        TonnePerDay = 'TonnePerDay'
         """
             
         """
         
-        ShortTonPerHour = 'short_ton_per_hour'
+        ShortTonPerHour = 'ShortTonPerHour'
         """
             
         """
         
-        NanogramPerSecond = 'nanogram_per_second'
+        NanogramPerSecond = 'NanogramPerSecond'
         """
             
         """
         
-        MicrogramPerSecond = 'microgram_per_second'
+        MicrogramPerSecond = 'MicrogramPerSecond'
         """
             
         """
         
-        MilligramPerSecond = 'milligram_per_second'
+        MilligramPerSecond = 'MilligramPerSecond'
         """
             
         """
         
-        CentigramPerSecond = 'centigram_per_second'
+        CentigramPerSecond = 'CentigramPerSecond'
         """
             
         """
         
-        DecigramPerSecond = 'decigram_per_second'
+        DecigramPerSecond = 'DecigramPerSecond'
         """
             
         """
         
-        DecagramPerSecond = 'decagram_per_second'
+        DecagramPerSecond = 'DecagramPerSecond'
         """
             
         """
         
-        HectogramPerSecond = 'hectogram_per_second'
+        HectogramPerSecond = 'HectogramPerSecond'
         """
             
         """
         
-        KilogramPerSecond = 'kilogram_per_second'
+        KilogramPerSecond = 'KilogramPerSecond'
         """
             
         """
         
-        NanogramPerDay = 'nanogram_per_day'
+        NanogramPerDay = 'NanogramPerDay'
         """
             
         """
         
-        MicrogramPerDay = 'microgram_per_day'
+        MicrogramPerDay = 'MicrogramPerDay'
         """
             
         """
         
-        MilligramPerDay = 'milligram_per_day'
+        MilligramPerDay = 'MilligramPerDay'
         """
             
         """
         
-        CentigramPerDay = 'centigram_per_day'
+        CentigramPerDay = 'CentigramPerDay'
         """
             
         """
         
-        DecigramPerDay = 'decigram_per_day'
+        DecigramPerDay = 'DecigramPerDay'
         """
             
         """
         
-        DecagramPerDay = 'decagram_per_day'
+        DecagramPerDay = 'DecagramPerDay'
         """
             
         """
         
-        HectogramPerDay = 'hectogram_per_day'
+        HectogramPerDay = 'HectogramPerDay'
         """
             
         """
         
-        KilogramPerDay = 'kilogram_per_day'
+        KilogramPerDay = 'KilogramPerDay'
         """
             
         """
         
-        MegagramPerDay = 'megagram_per_day'
+        MegagramPerDay = 'MegagramPerDay'
         """
             
         """
         
-        MegapoundPerDay = 'megapound_per_day'
+        MegapoundPerDay = 'MegapoundPerDay'
         """
             
         """
         
-        MegapoundPerHour = 'megapound_per_hour'
+        MegapoundPerHour = 'MegapoundPerHour'
         """
             
         """
         
-        MegapoundPerMinute = 'megapound_per_minute'
+        MegapoundPerMinute = 'MegapoundPerMinute'
         """
             
         """
         
-        MegapoundPerSecond = 'megapound_per_second'
+        MegapoundPerSecond = 'MegapoundPerSecond'
         """
             
         """
         
+
+class MassFlowDto:
+    """
+    A DTO representation of a MassFlow
+
+    Attributes:
+        value (float): The value of the MassFlow.
+        unit (MassFlowUnits): The specific unit that the MassFlow value is representing.
+    """
+
+    def __init__(self, value: float, unit: MassFlowUnits):
+        """
+        Create a new DTO representation of a MassFlow
+
+        Parameters:
+            value (float): The value of the MassFlow.
+            unit (MassFlowUnits): The specific unit that the MassFlow value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the MassFlow
+        """
+        self.unit: MassFlowUnits = unit
+        """
+        The specific unit that the MassFlow value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a MassFlow DTO JSON object representing the current unit.
+
+        :return: JSON object represents MassFlow DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "GramPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of MassFlow DTO from a json representation.
+
+        :param data: The MassFlow DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "GramPerSecond"}
+        :return: A new instance of MassFlowDto.
+        :rtype: MassFlowDto
+        """
+        return MassFlowDto(value=data["value"], unit=MassFlowUnits(data["unit"]))
+
 
 class MassFlow(AbstractMeasure):
     """
@@ -185,8 +235,10 @@ class MassFlow(AbstractMeasure):
         from_unit (MassFlowUnits): The MassFlow unit to create from, The default unit is GramPerSecond
     """
     def __init__(self, value: float, from_unit: MassFlowUnits = MassFlowUnits.GramPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__grams_per_second = None
@@ -258,6 +310,54 @@ class MassFlow(AbstractMeasure):
 
     def convert(self, unit: MassFlowUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: MassFlowUnits = MassFlowUnits.GramPerSecond) -> MassFlowDto:
+        """
+        Get a new instance of MassFlow DTO representing the current unit.
+
+        :param hold_in_unit: The specific MassFlow unit to store the MassFlow value in the DTO representation.
+        :type hold_in_unit: MassFlowUnits
+        :return: A new instance of MassFlowDto.
+        :rtype: MassFlowDto
+        """
+        return MassFlowDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: MassFlowUnits = MassFlowUnits.GramPerSecond):
+        """
+        Get a MassFlow DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific MassFlow unit to store the MassFlow value in the DTO representation.
+        :type hold_in_unit: MassFlowUnits
+        :return: JSON object represents MassFlow DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "GramPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(mass_flow_dto: MassFlowDto):
+        """
+        Obtain a new instance of MassFlow from a DTO unit object.
+
+        :param mass_flow_dto: The MassFlow DTO representation.
+        :type mass_flow_dto: MassFlowDto
+        :return: A new instance of MassFlow.
+        :rtype: MassFlow
+        """
+        return MassFlow(mass_flow_dto.value, mass_flow_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of MassFlow from a DTO unit json representation.
+
+        :param data: The MassFlow DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "GramPerSecond"}
+        :return: A new instance of MassFlow.
+        :rtype: MassFlow
+        """
+        return MassFlow.from_dto(MassFlowDto.from_json(data))
 
     def __convert_from_base(self, from_unit: MassFlowUnits) -> float:
         value = self._value
@@ -1331,111 +1431,119 @@ class MassFlow(AbstractMeasure):
         return self.__megapounds_per_second
 
     
-    def to_string(self, unit: MassFlowUnits = MassFlowUnits.GramPerSecond) -> str:
+    def to_string(self, unit: MassFlowUnits = MassFlowUnits.GramPerSecond, fractional_digits: int = None) -> str:
         """
-        Format the MassFlow to string.
-        Note! the default format for MassFlow is GramPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the MassFlow to a string.
+        
+        Note: the default format for MassFlow is GramPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the MassFlow. Default is 'GramPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == MassFlowUnits.GramPerSecond:
-            return f"""{self.grams_per_second} g/s"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_second, fractional_digits)} g/s"""
         
         if unit == MassFlowUnits.GramPerDay:
-            return f"""{self.grams_per_day} g/d"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_day, fractional_digits)} g/d"""
         
         if unit == MassFlowUnits.GramPerHour:
-            return f"""{self.grams_per_hour} g/h"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_hour, fractional_digits)} g/h"""
         
         if unit == MassFlowUnits.KilogramPerHour:
-            return f"""{self.kilograms_per_hour} kg/h"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_hour, fractional_digits)} kg/h"""
         
         if unit == MassFlowUnits.KilogramPerMinute:
-            return f"""{self.kilograms_per_minute} kg/min"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_minute, fractional_digits)} kg/min"""
         
         if unit == MassFlowUnits.TonnePerHour:
-            return f"""{self.tonnes_per_hour} t/h"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_per_hour, fractional_digits)} t/h"""
         
         if unit == MassFlowUnits.PoundPerDay:
-            return f"""{self.pounds_per_day} lb/d"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_day, fractional_digits)} lb/d"""
         
         if unit == MassFlowUnits.PoundPerHour:
-            return f"""{self.pounds_per_hour} lb/h"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_hour, fractional_digits)} lb/h"""
         
         if unit == MassFlowUnits.PoundPerMinute:
-            return f"""{self.pounds_per_minute} lb/min"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_minute, fractional_digits)} lb/min"""
         
         if unit == MassFlowUnits.PoundPerSecond:
-            return f"""{self.pounds_per_second} lb/s"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_second, fractional_digits)} lb/s"""
         
         if unit == MassFlowUnits.TonnePerDay:
-            return f"""{self.tonnes_per_day} t/d"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_per_day, fractional_digits)} t/d"""
         
         if unit == MassFlowUnits.ShortTonPerHour:
-            return f"""{self.short_tons_per_hour} short tn/h"""
+            return f"""{super()._truncate_fraction_digits(self.short_tons_per_hour, fractional_digits)} short tn/h"""
         
         if unit == MassFlowUnits.NanogramPerSecond:
-            return f"""{self.nanograms_per_second} ng/s"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_second, fractional_digits)} ng/s"""
         
         if unit == MassFlowUnits.MicrogramPerSecond:
-            return f"""{self.micrograms_per_second} μg/s"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_second, fractional_digits)} μg/s"""
         
         if unit == MassFlowUnits.MilligramPerSecond:
-            return f"""{self.milligrams_per_second} mg/s"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_second, fractional_digits)} mg/s"""
         
         if unit == MassFlowUnits.CentigramPerSecond:
-            return f"""{self.centigrams_per_second} cg/s"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_second, fractional_digits)} cg/s"""
         
         if unit == MassFlowUnits.DecigramPerSecond:
-            return f"""{self.decigrams_per_second} dg/s"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_second, fractional_digits)} dg/s"""
         
         if unit == MassFlowUnits.DecagramPerSecond:
-            return f"""{self.decagrams_per_second} dag/s"""
+            return f"""{super()._truncate_fraction_digits(self.decagrams_per_second, fractional_digits)} dag/s"""
         
         if unit == MassFlowUnits.HectogramPerSecond:
-            return f"""{self.hectograms_per_second} hg/s"""
+            return f"""{super()._truncate_fraction_digits(self.hectograms_per_second, fractional_digits)} hg/s"""
         
         if unit == MassFlowUnits.KilogramPerSecond:
-            return f"""{self.kilograms_per_second} kg/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_second, fractional_digits)} kg/s"""
         
         if unit == MassFlowUnits.NanogramPerDay:
-            return f"""{self.nanograms_per_day} ng/d"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_day, fractional_digits)} ng/d"""
         
         if unit == MassFlowUnits.MicrogramPerDay:
-            return f"""{self.micrograms_per_day} μg/d"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_day, fractional_digits)} μg/d"""
         
         if unit == MassFlowUnits.MilligramPerDay:
-            return f"""{self.milligrams_per_day} mg/d"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_day, fractional_digits)} mg/d"""
         
         if unit == MassFlowUnits.CentigramPerDay:
-            return f"""{self.centigrams_per_day} cg/d"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_day, fractional_digits)} cg/d"""
         
         if unit == MassFlowUnits.DecigramPerDay:
-            return f"""{self.decigrams_per_day} dg/d"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_day, fractional_digits)} dg/d"""
         
         if unit == MassFlowUnits.DecagramPerDay:
-            return f"""{self.decagrams_per_day} dag/d"""
+            return f"""{super()._truncate_fraction_digits(self.decagrams_per_day, fractional_digits)} dag/d"""
         
         if unit == MassFlowUnits.HectogramPerDay:
-            return f"""{self.hectograms_per_day} hg/d"""
+            return f"""{super()._truncate_fraction_digits(self.hectograms_per_day, fractional_digits)} hg/d"""
         
         if unit == MassFlowUnits.KilogramPerDay:
-            return f"""{self.kilograms_per_day} kg/d"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_day, fractional_digits)} kg/d"""
         
         if unit == MassFlowUnits.MegagramPerDay:
-            return f"""{self.megagrams_per_day} Mg/d"""
+            return f"""{super()._truncate_fraction_digits(self.megagrams_per_day, fractional_digits)} Mg/d"""
         
         if unit == MassFlowUnits.MegapoundPerDay:
-            return f"""{self.megapounds_per_day} Mlb/d"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_per_day, fractional_digits)} Mlb/d"""
         
         if unit == MassFlowUnits.MegapoundPerHour:
-            return f"""{self.megapounds_per_hour} Mlb/h"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_per_hour, fractional_digits)} Mlb/h"""
         
         if unit == MassFlowUnits.MegapoundPerMinute:
-            return f"""{self.megapounds_per_minute} Mlb/min"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_per_minute, fractional_digits)} Mlb/min"""
         
         if unit == MassFlowUnits.MegapoundPerSecond:
-            return f"""{self.megapounds_per_second} Mlb/s"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_per_second, fractional_digits)} Mlb/s"""
         
         return f'{self._value}'
 

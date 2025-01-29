@@ -10,51 +10,101 @@ class VolumePerLengthUnits(Enum):
             VolumePerLengthUnits enumeration
         """
         
-        CubicMeterPerMeter = 'cubic_meter_per_meter'
+        CubicMeterPerMeter = 'CubicMeterPerMeter'
         """
             
         """
         
-        LiterPerMeter = 'liter_per_meter'
+        LiterPerMeter = 'LiterPerMeter'
         """
             
         """
         
-        LiterPerKilometer = 'liter_per_kilometer'
+        LiterPerKilometer = 'LiterPerKilometer'
         """
             
         """
         
-        LiterPerMillimeter = 'liter_per_millimeter'
+        LiterPerMillimeter = 'LiterPerMillimeter'
         """
             
         """
         
-        OilBarrelPerFoot = 'oil_barrel_per_foot'
+        OilBarrelPerFoot = 'OilBarrelPerFoot'
         """
             
         """
         
-        CubicYardPerFoot = 'cubic_yard_per_foot'
+        CubicYardPerFoot = 'CubicYardPerFoot'
         """
             
         """
         
-        CubicYardPerUsSurveyFoot = 'cubic_yard_per_us_survey_foot'
+        CubicYardPerUsSurveyFoot = 'CubicYardPerUsSurveyFoot'
         """
             
         """
         
-        UsGallonPerMile = 'us_gallon_per_mile'
+        UsGallonPerMile = 'UsGallonPerMile'
         """
             
         """
         
-        ImperialGallonPerMile = 'imperial_gallon_per_mile'
+        ImperialGallonPerMile = 'ImperialGallonPerMile'
         """
             
         """
         
+
+class VolumePerLengthDto:
+    """
+    A DTO representation of a VolumePerLength
+
+    Attributes:
+        value (float): The value of the VolumePerLength.
+        unit (VolumePerLengthUnits): The specific unit that the VolumePerLength value is representing.
+    """
+
+    def __init__(self, value: float, unit: VolumePerLengthUnits):
+        """
+        Create a new DTO representation of a VolumePerLength
+
+        Parameters:
+            value (float): The value of the VolumePerLength.
+            unit (VolumePerLengthUnits): The specific unit that the VolumePerLength value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the VolumePerLength
+        """
+        self.unit: VolumePerLengthUnits = unit
+        """
+        The specific unit that the VolumePerLength value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a VolumePerLength DTO JSON object representing the current unit.
+
+        :return: JSON object represents VolumePerLength DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "CubicMeterPerMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of VolumePerLength DTO from a json representation.
+
+        :param data: The VolumePerLength DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "CubicMeterPerMeter"}
+        :return: A new instance of VolumePerLengthDto.
+        :rtype: VolumePerLengthDto
+        """
+        return VolumePerLengthDto(value=data["value"], unit=VolumePerLengthUnits(data["unit"]))
+
 
 class VolumePerLength(AbstractMeasure):
     """
@@ -65,8 +115,10 @@ class VolumePerLength(AbstractMeasure):
         from_unit (VolumePerLengthUnits): The VolumePerLength unit to create from, The default unit is CubicMeterPerMeter
     """
     def __init__(self, value: float, from_unit: VolumePerLengthUnits = VolumePerLengthUnits.CubicMeterPerMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__cubic_meters_per_meter = None
@@ -90,6 +142,54 @@ class VolumePerLength(AbstractMeasure):
 
     def convert(self, unit: VolumePerLengthUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: VolumePerLengthUnits = VolumePerLengthUnits.CubicMeterPerMeter) -> VolumePerLengthDto:
+        """
+        Get a new instance of VolumePerLength DTO representing the current unit.
+
+        :param hold_in_unit: The specific VolumePerLength unit to store the VolumePerLength value in the DTO representation.
+        :type hold_in_unit: VolumePerLengthUnits
+        :return: A new instance of VolumePerLengthDto.
+        :rtype: VolumePerLengthDto
+        """
+        return VolumePerLengthDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: VolumePerLengthUnits = VolumePerLengthUnits.CubicMeterPerMeter):
+        """
+        Get a VolumePerLength DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific VolumePerLength unit to store the VolumePerLength value in the DTO representation.
+        :type hold_in_unit: VolumePerLengthUnits
+        :return: JSON object represents VolumePerLength DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "CubicMeterPerMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(volume_per_length_dto: VolumePerLengthDto):
+        """
+        Obtain a new instance of VolumePerLength from a DTO unit object.
+
+        :param volume_per_length_dto: The VolumePerLength DTO representation.
+        :type volume_per_length_dto: VolumePerLengthDto
+        :return: A new instance of VolumePerLength.
+        :rtype: VolumePerLength
+        """
+        return VolumePerLength(volume_per_length_dto.value, volume_per_length_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of VolumePerLength from a DTO unit json representation.
+
+        :param data: The VolumePerLength DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "CubicMeterPerMeter"}
+        :return: A new instance of VolumePerLength.
+        :rtype: VolumePerLength
+        """
+        return VolumePerLength.from_dto(VolumePerLengthDto.from_json(data))
 
     def __convert_from_base(self, from_unit: VolumePerLengthUnits) -> float:
         value = self._value
@@ -395,39 +495,47 @@ class VolumePerLength(AbstractMeasure):
         return self.__imperial_gallons_per_mile
 
     
-    def to_string(self, unit: VolumePerLengthUnits = VolumePerLengthUnits.CubicMeterPerMeter) -> str:
+    def to_string(self, unit: VolumePerLengthUnits = VolumePerLengthUnits.CubicMeterPerMeter, fractional_digits: int = None) -> str:
         """
-        Format the VolumePerLength to string.
-        Note! the default format for VolumePerLength is CubicMeterPerMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the VolumePerLength to a string.
+        
+        Note: the default format for VolumePerLength is CubicMeterPerMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the VolumePerLength. Default is 'CubicMeterPerMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == VolumePerLengthUnits.CubicMeterPerMeter:
-            return f"""{self.cubic_meters_per_meter} m³/m"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_meters_per_meter, fractional_digits)} m³/m"""
         
         if unit == VolumePerLengthUnits.LiterPerMeter:
-            return f"""{self.liters_per_meter} l/m"""
+            return f"""{super()._truncate_fraction_digits(self.liters_per_meter, fractional_digits)} l/m"""
         
         if unit == VolumePerLengthUnits.LiterPerKilometer:
-            return f"""{self.liters_per_kilometer} l/km"""
+            return f"""{super()._truncate_fraction_digits(self.liters_per_kilometer, fractional_digits)} l/km"""
         
         if unit == VolumePerLengthUnits.LiterPerMillimeter:
-            return f"""{self.liters_per_millimeter} l/mm"""
+            return f"""{super()._truncate_fraction_digits(self.liters_per_millimeter, fractional_digits)} l/mm"""
         
         if unit == VolumePerLengthUnits.OilBarrelPerFoot:
-            return f"""{self.oil_barrels_per_foot} bbl/ft"""
+            return f"""{super()._truncate_fraction_digits(self.oil_barrels_per_foot, fractional_digits)} bbl/ft"""
         
         if unit == VolumePerLengthUnits.CubicYardPerFoot:
-            return f"""{self.cubic_yards_per_foot} yd³/ft"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_yards_per_foot, fractional_digits)} yd³/ft"""
         
         if unit == VolumePerLengthUnits.CubicYardPerUsSurveyFoot:
-            return f"""{self.cubic_yards_per_us_survey_foot} yd³/ftUS"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_yards_per_us_survey_foot, fractional_digits)} yd³/ftUS"""
         
         if unit == VolumePerLengthUnits.UsGallonPerMile:
-            return f"""{self.us_gallons_per_mile} gal (U.S.)/mi"""
+            return f"""{super()._truncate_fraction_digits(self.us_gallons_per_mile, fractional_digits)} gal (U.S.)/mi"""
         
         if unit == VolumePerLengthUnits.ImperialGallonPerMile:
-            return f"""{self.imperial_gallons_per_mile} gal (imp.)/mi"""
+            return f"""{super()._truncate_fraction_digits(self.imperial_gallons_per_mile, fractional_digits)} gal (imp.)/mi"""
         
         return f'{self._value}'
 

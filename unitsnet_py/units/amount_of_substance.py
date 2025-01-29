@@ -10,91 +10,141 @@ class AmountOfSubstanceUnits(Enum):
             AmountOfSubstanceUnits enumeration
         """
         
-        Mole = 'mole'
+        Mole = 'Mole'
         """
             
         """
         
-        PoundMole = 'pound_mole'
+        PoundMole = 'PoundMole'
         """
             
         """
         
-        Femtomole = 'femtomole'
+        Femtomole = 'Femtomole'
         """
             
         """
         
-        Picomole = 'picomole'
+        Picomole = 'Picomole'
         """
             
         """
         
-        Nanomole = 'nanomole'
+        Nanomole = 'Nanomole'
         """
             
         """
         
-        Micromole = 'micromole'
+        Micromole = 'Micromole'
         """
             
         """
         
-        Millimole = 'millimole'
+        Millimole = 'Millimole'
         """
             
         """
         
-        Centimole = 'centimole'
+        Centimole = 'Centimole'
         """
             
         """
         
-        Decimole = 'decimole'
+        Decimole = 'Decimole'
         """
             
         """
         
-        Kilomole = 'kilomole'
+        Kilomole = 'Kilomole'
         """
             
         """
         
-        Megamole = 'megamole'
+        Megamole = 'Megamole'
         """
             
         """
         
-        NanopoundMole = 'nanopound_mole'
+        NanopoundMole = 'NanopoundMole'
         """
             
         """
         
-        MicropoundMole = 'micropound_mole'
+        MicropoundMole = 'MicropoundMole'
         """
             
         """
         
-        MillipoundMole = 'millipound_mole'
+        MillipoundMole = 'MillipoundMole'
         """
             
         """
         
-        CentipoundMole = 'centipound_mole'
+        CentipoundMole = 'CentipoundMole'
         """
             
         """
         
-        DecipoundMole = 'decipound_mole'
+        DecipoundMole = 'DecipoundMole'
         """
             
         """
         
-        KilopoundMole = 'kilopound_mole'
+        KilopoundMole = 'KilopoundMole'
         """
             
         """
         
+
+class AmountOfSubstanceDto:
+    """
+    A DTO representation of a AmountOfSubstance
+
+    Attributes:
+        value (float): The value of the AmountOfSubstance.
+        unit (AmountOfSubstanceUnits): The specific unit that the AmountOfSubstance value is representing.
+    """
+
+    def __init__(self, value: float, unit: AmountOfSubstanceUnits):
+        """
+        Create a new DTO representation of a AmountOfSubstance
+
+        Parameters:
+            value (float): The value of the AmountOfSubstance.
+            unit (AmountOfSubstanceUnits): The specific unit that the AmountOfSubstance value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the AmountOfSubstance
+        """
+        self.unit: AmountOfSubstanceUnits = unit
+        """
+        The specific unit that the AmountOfSubstance value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a AmountOfSubstance DTO JSON object representing the current unit.
+
+        :return: JSON object represents AmountOfSubstance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Mole"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of AmountOfSubstance DTO from a json representation.
+
+        :param data: The AmountOfSubstance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Mole"}
+        :return: A new instance of AmountOfSubstanceDto.
+        :rtype: AmountOfSubstanceDto
+        """
+        return AmountOfSubstanceDto(value=data["value"], unit=AmountOfSubstanceUnits(data["unit"]))
+
 
 class AmountOfSubstance(AbstractMeasure):
     """
@@ -105,8 +155,10 @@ class AmountOfSubstance(AbstractMeasure):
         from_unit (AmountOfSubstanceUnits): The AmountOfSubstance unit to create from, The default unit is Mole
     """
     def __init__(self, value: float, from_unit: AmountOfSubstanceUnits = AmountOfSubstanceUnits.Mole):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__moles = None
@@ -146,6 +198,54 @@ class AmountOfSubstance(AbstractMeasure):
 
     def convert(self, unit: AmountOfSubstanceUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: AmountOfSubstanceUnits = AmountOfSubstanceUnits.Mole) -> AmountOfSubstanceDto:
+        """
+        Get a new instance of AmountOfSubstance DTO representing the current unit.
+
+        :param hold_in_unit: The specific AmountOfSubstance unit to store the AmountOfSubstance value in the DTO representation.
+        :type hold_in_unit: AmountOfSubstanceUnits
+        :return: A new instance of AmountOfSubstanceDto.
+        :rtype: AmountOfSubstanceDto
+        """
+        return AmountOfSubstanceDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: AmountOfSubstanceUnits = AmountOfSubstanceUnits.Mole):
+        """
+        Get a AmountOfSubstance DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific AmountOfSubstance unit to store the AmountOfSubstance value in the DTO representation.
+        :type hold_in_unit: AmountOfSubstanceUnits
+        :return: JSON object represents AmountOfSubstance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Mole"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(amount_of_substance_dto: AmountOfSubstanceDto):
+        """
+        Obtain a new instance of AmountOfSubstance from a DTO unit object.
+
+        :param amount_of_substance_dto: The AmountOfSubstance DTO representation.
+        :type amount_of_substance_dto: AmountOfSubstanceDto
+        :return: A new instance of AmountOfSubstance.
+        :rtype: AmountOfSubstance
+        """
+        return AmountOfSubstance(amount_of_substance_dto.value, amount_of_substance_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of AmountOfSubstance from a DTO unit json representation.
+
+        :param data: The AmountOfSubstance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Mole"}
+        :return: A new instance of AmountOfSubstance.
+        :rtype: AmountOfSubstance
+        """
+        return AmountOfSubstance.from_dto(AmountOfSubstanceDto.from_json(data))
 
     def __convert_from_base(self, from_unit: AmountOfSubstanceUnits) -> float:
         value = self._value
@@ -707,63 +807,71 @@ class AmountOfSubstance(AbstractMeasure):
         return self.__kilopound_moles
 
     
-    def to_string(self, unit: AmountOfSubstanceUnits = AmountOfSubstanceUnits.Mole) -> str:
+    def to_string(self, unit: AmountOfSubstanceUnits = AmountOfSubstanceUnits.Mole, fractional_digits: int = None) -> str:
         """
-        Format the AmountOfSubstance to string.
-        Note! the default format for AmountOfSubstance is Mole.
-        To specify the unit format set the 'unit' parameter.
+        Format the AmountOfSubstance to a string.
+        
+        Note: the default format for AmountOfSubstance is Mole.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the AmountOfSubstance. Default is 'Mole'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == AmountOfSubstanceUnits.Mole:
-            return f"""{self.moles} mol"""
+            return f"""{super()._truncate_fraction_digits(self.moles, fractional_digits)} mol"""
         
         if unit == AmountOfSubstanceUnits.PoundMole:
-            return f"""{self.pound_moles} lbmol"""
+            return f"""{super()._truncate_fraction_digits(self.pound_moles, fractional_digits)} lbmol"""
         
         if unit == AmountOfSubstanceUnits.Femtomole:
-            return f"""{self.femtomoles} fmol"""
+            return f"""{super()._truncate_fraction_digits(self.femtomoles, fractional_digits)} fmol"""
         
         if unit == AmountOfSubstanceUnits.Picomole:
-            return f"""{self.picomoles} pmol"""
+            return f"""{super()._truncate_fraction_digits(self.picomoles, fractional_digits)} pmol"""
         
         if unit == AmountOfSubstanceUnits.Nanomole:
-            return f"""{self.nanomoles} nmol"""
+            return f"""{super()._truncate_fraction_digits(self.nanomoles, fractional_digits)} nmol"""
         
         if unit == AmountOfSubstanceUnits.Micromole:
-            return f"""{self.micromoles} μmol"""
+            return f"""{super()._truncate_fraction_digits(self.micromoles, fractional_digits)} μmol"""
         
         if unit == AmountOfSubstanceUnits.Millimole:
-            return f"""{self.millimoles} mmol"""
+            return f"""{super()._truncate_fraction_digits(self.millimoles, fractional_digits)} mmol"""
         
         if unit == AmountOfSubstanceUnits.Centimole:
-            return f"""{self.centimoles} cmol"""
+            return f"""{super()._truncate_fraction_digits(self.centimoles, fractional_digits)} cmol"""
         
         if unit == AmountOfSubstanceUnits.Decimole:
-            return f"""{self.decimoles} dmol"""
+            return f"""{super()._truncate_fraction_digits(self.decimoles, fractional_digits)} dmol"""
         
         if unit == AmountOfSubstanceUnits.Kilomole:
-            return f"""{self.kilomoles} kmol"""
+            return f"""{super()._truncate_fraction_digits(self.kilomoles, fractional_digits)} kmol"""
         
         if unit == AmountOfSubstanceUnits.Megamole:
-            return f"""{self.megamoles} Mmol"""
+            return f"""{super()._truncate_fraction_digits(self.megamoles, fractional_digits)} Mmol"""
         
         if unit == AmountOfSubstanceUnits.NanopoundMole:
-            return f"""{self.nanopound_moles} nlbmol"""
+            return f"""{super()._truncate_fraction_digits(self.nanopound_moles, fractional_digits)} nlbmol"""
         
         if unit == AmountOfSubstanceUnits.MicropoundMole:
-            return f"""{self.micropound_moles} μlbmol"""
+            return f"""{super()._truncate_fraction_digits(self.micropound_moles, fractional_digits)} μlbmol"""
         
         if unit == AmountOfSubstanceUnits.MillipoundMole:
-            return f"""{self.millipound_moles} mlbmol"""
+            return f"""{super()._truncate_fraction_digits(self.millipound_moles, fractional_digits)} mlbmol"""
         
         if unit == AmountOfSubstanceUnits.CentipoundMole:
-            return f"""{self.centipound_moles} clbmol"""
+            return f"""{super()._truncate_fraction_digits(self.centipound_moles, fractional_digits)} clbmol"""
         
         if unit == AmountOfSubstanceUnits.DecipoundMole:
-            return f"""{self.decipound_moles} dlbmol"""
+            return f"""{super()._truncate_fraction_digits(self.decipound_moles, fractional_digits)} dlbmol"""
         
         if unit == AmountOfSubstanceUnits.KilopoundMole:
-            return f"""{self.kilopound_moles} klbmol"""
+            return f"""{super()._truncate_fraction_digits(self.kilopound_moles, fractional_digits)} klbmol"""
         
         return f'{self._value}'
 

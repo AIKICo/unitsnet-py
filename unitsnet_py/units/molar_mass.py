@@ -10,71 +10,121 @@ class MolarMassUnits(Enum):
             MolarMassUnits enumeration
         """
         
-        GramPerMole = 'gram_per_mole'
+        GramPerMole = 'GramPerMole'
         """
             
         """
         
-        KilogramPerKilomole = 'kilogram_per_kilomole'
+        KilogramPerKilomole = 'KilogramPerKilomole'
         """
             
         """
         
-        PoundPerMole = 'pound_per_mole'
+        PoundPerMole = 'PoundPerMole'
         """
             
         """
         
-        NanogramPerMole = 'nanogram_per_mole'
+        NanogramPerMole = 'NanogramPerMole'
         """
             
         """
         
-        MicrogramPerMole = 'microgram_per_mole'
+        MicrogramPerMole = 'MicrogramPerMole'
         """
             
         """
         
-        MilligramPerMole = 'milligram_per_mole'
+        MilligramPerMole = 'MilligramPerMole'
         """
             
         """
         
-        CentigramPerMole = 'centigram_per_mole'
+        CentigramPerMole = 'CentigramPerMole'
         """
             
         """
         
-        DecigramPerMole = 'decigram_per_mole'
+        DecigramPerMole = 'DecigramPerMole'
         """
             
         """
         
-        DecagramPerMole = 'decagram_per_mole'
+        DecagramPerMole = 'DecagramPerMole'
         """
             
         """
         
-        HectogramPerMole = 'hectogram_per_mole'
+        HectogramPerMole = 'HectogramPerMole'
         """
             
         """
         
-        KilogramPerMole = 'kilogram_per_mole'
+        KilogramPerMole = 'KilogramPerMole'
         """
             
         """
         
-        KilopoundPerMole = 'kilopound_per_mole'
+        KilopoundPerMole = 'KilopoundPerMole'
         """
             
         """
         
-        MegapoundPerMole = 'megapound_per_mole'
+        MegapoundPerMole = 'MegapoundPerMole'
         """
             
         """
         
+
+class MolarMassDto:
+    """
+    A DTO representation of a MolarMass
+
+    Attributes:
+        value (float): The value of the MolarMass.
+        unit (MolarMassUnits): The specific unit that the MolarMass value is representing.
+    """
+
+    def __init__(self, value: float, unit: MolarMassUnits):
+        """
+        Create a new DTO representation of a MolarMass
+
+        Parameters:
+            value (float): The value of the MolarMass.
+            unit (MolarMassUnits): The specific unit that the MolarMass value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the MolarMass
+        """
+        self.unit: MolarMassUnits = unit
+        """
+        The specific unit that the MolarMass value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a MolarMass DTO JSON object representing the current unit.
+
+        :return: JSON object represents MolarMass DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "KilogramPerMole"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of MolarMass DTO from a json representation.
+
+        :param data: The MolarMass DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "KilogramPerMole"}
+        :return: A new instance of MolarMassDto.
+        :rtype: MolarMassDto
+        """
+        return MolarMassDto(value=data["value"], unit=MolarMassUnits(data["unit"]))
+
 
 class MolarMass(AbstractMeasure):
     """
@@ -85,8 +135,10 @@ class MolarMass(AbstractMeasure):
         from_unit (MolarMassUnits): The MolarMass unit to create from, The default unit is KilogramPerMole
     """
     def __init__(self, value: float, from_unit: MolarMassUnits = MolarMassUnits.KilogramPerMole):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__grams_per_mole = None
@@ -118,6 +170,54 @@ class MolarMass(AbstractMeasure):
 
     def convert(self, unit: MolarMassUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: MolarMassUnits = MolarMassUnits.KilogramPerMole) -> MolarMassDto:
+        """
+        Get a new instance of MolarMass DTO representing the current unit.
+
+        :param hold_in_unit: The specific MolarMass unit to store the MolarMass value in the DTO representation.
+        :type hold_in_unit: MolarMassUnits
+        :return: A new instance of MolarMassDto.
+        :rtype: MolarMassDto
+        """
+        return MolarMassDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: MolarMassUnits = MolarMassUnits.KilogramPerMole):
+        """
+        Get a MolarMass DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific MolarMass unit to store the MolarMass value in the DTO representation.
+        :type hold_in_unit: MolarMassUnits
+        :return: JSON object represents MolarMass DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "KilogramPerMole"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(molar_mass_dto: MolarMassDto):
+        """
+        Obtain a new instance of MolarMass from a DTO unit object.
+
+        :param molar_mass_dto: The MolarMass DTO representation.
+        :type molar_mass_dto: MolarMassDto
+        :return: A new instance of MolarMass.
+        :rtype: MolarMass
+        """
+        return MolarMass(molar_mass_dto.value, molar_mass_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of MolarMass from a DTO unit json representation.
+
+        :param data: The MolarMass DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "KilogramPerMole"}
+        :return: A new instance of MolarMass.
+        :rtype: MolarMass
+        """
+        return MolarMass.from_dto(MolarMassDto.from_json(data))
 
     def __convert_from_base(self, from_unit: MolarMassUnits) -> float:
         value = self._value
@@ -551,51 +651,59 @@ class MolarMass(AbstractMeasure):
         return self.__megapounds_per_mole
 
     
-    def to_string(self, unit: MolarMassUnits = MolarMassUnits.KilogramPerMole) -> str:
+    def to_string(self, unit: MolarMassUnits = MolarMassUnits.KilogramPerMole, fractional_digits: int = None) -> str:
         """
-        Format the MolarMass to string.
-        Note! the default format for MolarMass is KilogramPerMole.
-        To specify the unit format set the 'unit' parameter.
+        Format the MolarMass to a string.
+        
+        Note: the default format for MolarMass is KilogramPerMole.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the MolarMass. Default is 'KilogramPerMole'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == MolarMassUnits.GramPerMole:
-            return f"""{self.grams_per_mole} g/mol"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_mole, fractional_digits)} g/mol"""
         
         if unit == MolarMassUnits.KilogramPerKilomole:
-            return f"""{self.kilograms_per_kilomole} kg/kmol"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_kilomole, fractional_digits)} kg/kmol"""
         
         if unit == MolarMassUnits.PoundPerMole:
-            return f"""{self.pounds_per_mole} lb/mol"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_mole, fractional_digits)} lb/mol"""
         
         if unit == MolarMassUnits.NanogramPerMole:
-            return f"""{self.nanograms_per_mole} ng/mol"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_mole, fractional_digits)} ng/mol"""
         
         if unit == MolarMassUnits.MicrogramPerMole:
-            return f"""{self.micrograms_per_mole} μg/mol"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_mole, fractional_digits)} μg/mol"""
         
         if unit == MolarMassUnits.MilligramPerMole:
-            return f"""{self.milligrams_per_mole} mg/mol"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_mole, fractional_digits)} mg/mol"""
         
         if unit == MolarMassUnits.CentigramPerMole:
-            return f"""{self.centigrams_per_mole} cg/mol"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_mole, fractional_digits)} cg/mol"""
         
         if unit == MolarMassUnits.DecigramPerMole:
-            return f"""{self.decigrams_per_mole} dg/mol"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_mole, fractional_digits)} dg/mol"""
         
         if unit == MolarMassUnits.DecagramPerMole:
-            return f"""{self.decagrams_per_mole} dag/mol"""
+            return f"""{super()._truncate_fraction_digits(self.decagrams_per_mole, fractional_digits)} dag/mol"""
         
         if unit == MolarMassUnits.HectogramPerMole:
-            return f"""{self.hectograms_per_mole} hg/mol"""
+            return f"""{super()._truncate_fraction_digits(self.hectograms_per_mole, fractional_digits)} hg/mol"""
         
         if unit == MolarMassUnits.KilogramPerMole:
-            return f"""{self.kilograms_per_mole} kg/mol"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_mole, fractional_digits)} kg/mol"""
         
         if unit == MolarMassUnits.KilopoundPerMole:
-            return f"""{self.kilopounds_per_mole} klb/mol"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_per_mole, fractional_digits)} klb/mol"""
         
         if unit == MolarMassUnits.MegapoundPerMole:
-            return f"""{self.megapounds_per_mole} Mlb/mol"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds_per_mole, fractional_digits)} Mlb/mol"""
         
         return f'{self._value}'
 
