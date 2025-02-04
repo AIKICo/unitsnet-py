@@ -10,31 +10,81 @@ class PorousMediumPermeabilityUnits(Enum):
             PorousMediumPermeabilityUnits enumeration
         """
         
-        Darcy = 'darcy'
+        Darcy = 'Darcy'
         """
             
         """
         
-        SquareMeter = 'square_meter'
+        SquareMeter = 'SquareMeter'
         """
             
         """
         
-        SquareCentimeter = 'square_centimeter'
+        SquareCentimeter = 'SquareCentimeter'
         """
             
         """
         
-        Microdarcy = 'microdarcy'
+        Microdarcy = 'Microdarcy'
         """
             
         """
         
-        Millidarcy = 'millidarcy'
+        Millidarcy = 'Millidarcy'
         """
             
         """
         
+
+class PorousMediumPermeabilityDto:
+    """
+    A DTO representation of a PorousMediumPermeability
+
+    Attributes:
+        value (float): The value of the PorousMediumPermeability.
+        unit (PorousMediumPermeabilityUnits): The specific unit that the PorousMediumPermeability value is representing.
+    """
+
+    def __init__(self, value: float, unit: PorousMediumPermeabilityUnits):
+        """
+        Create a new DTO representation of a PorousMediumPermeability
+
+        Parameters:
+            value (float): The value of the PorousMediumPermeability.
+            unit (PorousMediumPermeabilityUnits): The specific unit that the PorousMediumPermeability value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the PorousMediumPermeability
+        """
+        self.unit: PorousMediumPermeabilityUnits = unit
+        """
+        The specific unit that the PorousMediumPermeability value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a PorousMediumPermeability DTO JSON object representing the current unit.
+
+        :return: JSON object represents PorousMediumPermeability DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "SquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of PorousMediumPermeability DTO from a json representation.
+
+        :param data: The PorousMediumPermeability DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "SquareMeter"}
+        :return: A new instance of PorousMediumPermeabilityDto.
+        :rtype: PorousMediumPermeabilityDto
+        """
+        return PorousMediumPermeabilityDto(value=data["value"], unit=PorousMediumPermeabilityUnits(data["unit"]))
+
 
 class PorousMediumPermeability(AbstractMeasure):
     """
@@ -45,8 +95,10 @@ class PorousMediumPermeability(AbstractMeasure):
         from_unit (PorousMediumPermeabilityUnits): The PorousMediumPermeability unit to create from, The default unit is SquareMeter
     """
     def __init__(self, value: float, from_unit: PorousMediumPermeabilityUnits = PorousMediumPermeabilityUnits.SquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__darcys = None
@@ -62,6 +114,54 @@ class PorousMediumPermeability(AbstractMeasure):
 
     def convert(self, unit: PorousMediumPermeabilityUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: PorousMediumPermeabilityUnits = PorousMediumPermeabilityUnits.SquareMeter) -> PorousMediumPermeabilityDto:
+        """
+        Get a new instance of PorousMediumPermeability DTO representing the current unit.
+
+        :param hold_in_unit: The specific PorousMediumPermeability unit to store the PorousMediumPermeability value in the DTO representation.
+        :type hold_in_unit: PorousMediumPermeabilityUnits
+        :return: A new instance of PorousMediumPermeabilityDto.
+        :rtype: PorousMediumPermeabilityDto
+        """
+        return PorousMediumPermeabilityDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: PorousMediumPermeabilityUnits = PorousMediumPermeabilityUnits.SquareMeter):
+        """
+        Get a PorousMediumPermeability DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific PorousMediumPermeability unit to store the PorousMediumPermeability value in the DTO representation.
+        :type hold_in_unit: PorousMediumPermeabilityUnits
+        :return: JSON object represents PorousMediumPermeability DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "SquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(porous_medium_permeability_dto: PorousMediumPermeabilityDto):
+        """
+        Obtain a new instance of PorousMediumPermeability from a DTO unit object.
+
+        :param porous_medium_permeability_dto: The PorousMediumPermeability DTO representation.
+        :type porous_medium_permeability_dto: PorousMediumPermeabilityDto
+        :return: A new instance of PorousMediumPermeability.
+        :rtype: PorousMediumPermeability
+        """
+        return PorousMediumPermeability(porous_medium_permeability_dto.value, porous_medium_permeability_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of PorousMediumPermeability from a DTO unit json representation.
+
+        :param data: The PorousMediumPermeability DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "SquareMeter"}
+        :return: A new instance of PorousMediumPermeability.
+        :rtype: PorousMediumPermeability
+        """
+        return PorousMediumPermeability.from_dto(PorousMediumPermeabilityDto.from_json(data))
 
     def __convert_from_base(self, from_unit: PorousMediumPermeabilityUnits) -> float:
         value = self._value
@@ -239,27 +339,35 @@ class PorousMediumPermeability(AbstractMeasure):
         return self.__millidarcys
 
     
-    def to_string(self, unit: PorousMediumPermeabilityUnits = PorousMediumPermeabilityUnits.SquareMeter) -> str:
+    def to_string(self, unit: PorousMediumPermeabilityUnits = PorousMediumPermeabilityUnits.SquareMeter, fractional_digits: int = None) -> str:
         """
-        Format the PorousMediumPermeability to string.
-        Note! the default format for PorousMediumPermeability is SquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the PorousMediumPermeability to a string.
+        
+        Note: the default format for PorousMediumPermeability is SquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the PorousMediumPermeability. Default is 'SquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == PorousMediumPermeabilityUnits.Darcy:
-            return f"""{self.darcys} D"""
+            return f"""{super()._truncate_fraction_digits(self.darcys, fractional_digits)} D"""
         
         if unit == PorousMediumPermeabilityUnits.SquareMeter:
-            return f"""{self.square_meters} m²"""
+            return f"""{super()._truncate_fraction_digits(self.square_meters, fractional_digits)} m²"""
         
         if unit == PorousMediumPermeabilityUnits.SquareCentimeter:
-            return f"""{self.square_centimeters} cm²"""
+            return f"""{super()._truncate_fraction_digits(self.square_centimeters, fractional_digits)} cm²"""
         
         if unit == PorousMediumPermeabilityUnits.Microdarcy:
-            return f"""{self.microdarcys} μD"""
+            return f"""{super()._truncate_fraction_digits(self.microdarcys, fractional_digits)} μD"""
         
         if unit == PorousMediumPermeabilityUnits.Millidarcy:
-            return f"""{self.millidarcys} mD"""
+            return f"""{super()._truncate_fraction_digits(self.millidarcys, fractional_digits)} mD"""
         
         return f'{self._value}'
 

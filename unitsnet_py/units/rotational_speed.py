@@ -10,71 +10,121 @@ class RotationalSpeedUnits(Enum):
             RotationalSpeedUnits enumeration
         """
         
-        RadianPerSecond = 'radian_per_second'
+        RadianPerSecond = 'RadianPerSecond'
         """
             
         """
         
-        DegreePerSecond = 'degree_per_second'
+        DegreePerSecond = 'DegreePerSecond'
         """
             
         """
         
-        DegreePerMinute = 'degree_per_minute'
+        DegreePerMinute = 'DegreePerMinute'
         """
             
         """
         
-        RevolutionPerSecond = 'revolution_per_second'
+        RevolutionPerSecond = 'RevolutionPerSecond'
         """
             
         """
         
-        RevolutionPerMinute = 'revolution_per_minute'
+        RevolutionPerMinute = 'RevolutionPerMinute'
         """
             
         """
         
-        NanoradianPerSecond = 'nanoradian_per_second'
+        NanoradianPerSecond = 'NanoradianPerSecond'
         """
             
         """
         
-        MicroradianPerSecond = 'microradian_per_second'
+        MicroradianPerSecond = 'MicroradianPerSecond'
         """
             
         """
         
-        MilliradianPerSecond = 'milliradian_per_second'
+        MilliradianPerSecond = 'MilliradianPerSecond'
         """
             
         """
         
-        CentiradianPerSecond = 'centiradian_per_second'
+        CentiradianPerSecond = 'CentiradianPerSecond'
         """
             
         """
         
-        DeciradianPerSecond = 'deciradian_per_second'
+        DeciradianPerSecond = 'DeciradianPerSecond'
         """
             
         """
         
-        NanodegreePerSecond = 'nanodegree_per_second'
+        NanodegreePerSecond = 'NanodegreePerSecond'
         """
             
         """
         
-        MicrodegreePerSecond = 'microdegree_per_second'
+        MicrodegreePerSecond = 'MicrodegreePerSecond'
         """
             
         """
         
-        MillidegreePerSecond = 'millidegree_per_second'
+        MillidegreePerSecond = 'MillidegreePerSecond'
         """
             
         """
         
+
+class RotationalSpeedDto:
+    """
+    A DTO representation of a RotationalSpeed
+
+    Attributes:
+        value (float): The value of the RotationalSpeed.
+        unit (RotationalSpeedUnits): The specific unit that the RotationalSpeed value is representing.
+    """
+
+    def __init__(self, value: float, unit: RotationalSpeedUnits):
+        """
+        Create a new DTO representation of a RotationalSpeed
+
+        Parameters:
+            value (float): The value of the RotationalSpeed.
+            unit (RotationalSpeedUnits): The specific unit that the RotationalSpeed value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the RotationalSpeed
+        """
+        self.unit: RotationalSpeedUnits = unit
+        """
+        The specific unit that the RotationalSpeed value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a RotationalSpeed DTO JSON object representing the current unit.
+
+        :return: JSON object represents RotationalSpeed DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "RadianPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of RotationalSpeed DTO from a json representation.
+
+        :param data: The RotationalSpeed DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "RadianPerSecond"}
+        :return: A new instance of RotationalSpeedDto.
+        :rtype: RotationalSpeedDto
+        """
+        return RotationalSpeedDto(value=data["value"], unit=RotationalSpeedUnits(data["unit"]))
+
 
 class RotationalSpeed(AbstractMeasure):
     """
@@ -85,8 +135,10 @@ class RotationalSpeed(AbstractMeasure):
         from_unit (RotationalSpeedUnits): The RotationalSpeed unit to create from, The default unit is RadianPerSecond
     """
     def __init__(self, value: float, from_unit: RotationalSpeedUnits = RotationalSpeedUnits.RadianPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__radians_per_second = None
@@ -118,6 +170,54 @@ class RotationalSpeed(AbstractMeasure):
 
     def convert(self, unit: RotationalSpeedUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: RotationalSpeedUnits = RotationalSpeedUnits.RadianPerSecond) -> RotationalSpeedDto:
+        """
+        Get a new instance of RotationalSpeed DTO representing the current unit.
+
+        :param hold_in_unit: The specific RotationalSpeed unit to store the RotationalSpeed value in the DTO representation.
+        :type hold_in_unit: RotationalSpeedUnits
+        :return: A new instance of RotationalSpeedDto.
+        :rtype: RotationalSpeedDto
+        """
+        return RotationalSpeedDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: RotationalSpeedUnits = RotationalSpeedUnits.RadianPerSecond):
+        """
+        Get a RotationalSpeed DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific RotationalSpeed unit to store the RotationalSpeed value in the DTO representation.
+        :type hold_in_unit: RotationalSpeedUnits
+        :return: JSON object represents RotationalSpeed DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "RadianPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(rotational_speed_dto: RotationalSpeedDto):
+        """
+        Obtain a new instance of RotationalSpeed from a DTO unit object.
+
+        :param rotational_speed_dto: The RotationalSpeed DTO representation.
+        :type rotational_speed_dto: RotationalSpeedDto
+        :return: A new instance of RotationalSpeed.
+        :rtype: RotationalSpeed
+        """
+        return RotationalSpeed(rotational_speed_dto.value, rotational_speed_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of RotationalSpeed from a DTO unit json representation.
+
+        :param data: The RotationalSpeed DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "RadianPerSecond"}
+        :return: A new instance of RotationalSpeed.
+        :rtype: RotationalSpeed
+        """
+        return RotationalSpeed.from_dto(RotationalSpeedDto.from_json(data))
 
     def __convert_from_base(self, from_unit: RotationalSpeedUnits) -> float:
         value = self._value
@@ -551,51 +651,59 @@ class RotationalSpeed(AbstractMeasure):
         return self.__millidegrees_per_second
 
     
-    def to_string(self, unit: RotationalSpeedUnits = RotationalSpeedUnits.RadianPerSecond) -> str:
+    def to_string(self, unit: RotationalSpeedUnits = RotationalSpeedUnits.RadianPerSecond, fractional_digits: int = None) -> str:
         """
-        Format the RotationalSpeed to string.
-        Note! the default format for RotationalSpeed is RadianPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the RotationalSpeed to a string.
+        
+        Note: the default format for RotationalSpeed is RadianPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the RotationalSpeed. Default is 'RadianPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == RotationalSpeedUnits.RadianPerSecond:
-            return f"""{self.radians_per_second} rad/s"""
+            return f"""{super()._truncate_fraction_digits(self.radians_per_second, fractional_digits)} rad/s"""
         
         if unit == RotationalSpeedUnits.DegreePerSecond:
-            return f"""{self.degrees_per_second} °/s"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_per_second, fractional_digits)} °/s"""
         
         if unit == RotationalSpeedUnits.DegreePerMinute:
-            return f"""{self.degrees_per_minute} °/min"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_per_minute, fractional_digits)} °/min"""
         
         if unit == RotationalSpeedUnits.RevolutionPerSecond:
-            return f"""{self.revolutions_per_second} r/s"""
+            return f"""{super()._truncate_fraction_digits(self.revolutions_per_second, fractional_digits)} r/s"""
         
         if unit == RotationalSpeedUnits.RevolutionPerMinute:
-            return f"""{self.revolutions_per_minute} rpm"""
+            return f"""{super()._truncate_fraction_digits(self.revolutions_per_minute, fractional_digits)} rpm"""
         
         if unit == RotationalSpeedUnits.NanoradianPerSecond:
-            return f"""{self.nanoradians_per_second} nrad/s"""
+            return f"""{super()._truncate_fraction_digits(self.nanoradians_per_second, fractional_digits)} nrad/s"""
         
         if unit == RotationalSpeedUnits.MicroradianPerSecond:
-            return f"""{self.microradians_per_second} μrad/s"""
+            return f"""{super()._truncate_fraction_digits(self.microradians_per_second, fractional_digits)} μrad/s"""
         
         if unit == RotationalSpeedUnits.MilliradianPerSecond:
-            return f"""{self.milliradians_per_second} mrad/s"""
+            return f"""{super()._truncate_fraction_digits(self.milliradians_per_second, fractional_digits)} mrad/s"""
         
         if unit == RotationalSpeedUnits.CentiradianPerSecond:
-            return f"""{self.centiradians_per_second} crad/s"""
+            return f"""{super()._truncate_fraction_digits(self.centiradians_per_second, fractional_digits)} crad/s"""
         
         if unit == RotationalSpeedUnits.DeciradianPerSecond:
-            return f"""{self.deciradians_per_second} drad/s"""
+            return f"""{super()._truncate_fraction_digits(self.deciradians_per_second, fractional_digits)} drad/s"""
         
         if unit == RotationalSpeedUnits.NanodegreePerSecond:
-            return f"""{self.nanodegrees_per_second} n°/s"""
+            return f"""{super()._truncate_fraction_digits(self.nanodegrees_per_second, fractional_digits)} n°/s"""
         
         if unit == RotationalSpeedUnits.MicrodegreePerSecond:
-            return f"""{self.microdegrees_per_second} μ°/s"""
+            return f"""{super()._truncate_fraction_digits(self.microdegrees_per_second, fractional_digits)} μ°/s"""
         
         if unit == RotationalSpeedUnits.MillidegreePerSecond:
-            return f"""{self.millidegrees_per_second} m°/s"""
+            return f"""{super()._truncate_fraction_digits(self.millidegrees_per_second, fractional_digits)} m°/s"""
         
         return f'{self._value}'
 

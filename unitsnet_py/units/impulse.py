@@ -10,71 +10,121 @@ class ImpulseUnits(Enum):
             ImpulseUnits enumeration
         """
         
-        KilogramMeterPerSecond = 'kilogram_meter_per_second'
+        KilogramMeterPerSecond = 'KilogramMeterPerSecond'
         """
             
         """
         
-        NewtonSecond = 'newton_second'
+        NewtonSecond = 'NewtonSecond'
         """
             
         """
         
-        PoundFootPerSecond = 'pound_foot_per_second'
+        PoundFootPerSecond = 'PoundFootPerSecond'
         """
             
         """
         
-        PoundForceSecond = 'pound_force_second'
+        PoundForceSecond = 'PoundForceSecond'
         """
             
         """
         
-        SlugFootPerSecond = 'slug_foot_per_second'
+        SlugFootPerSecond = 'SlugFootPerSecond'
         """
             
         """
         
-        NanonewtonSecond = 'nanonewton_second'
+        NanonewtonSecond = 'NanonewtonSecond'
         """
             
         """
         
-        MicronewtonSecond = 'micronewton_second'
+        MicronewtonSecond = 'MicronewtonSecond'
         """
             
         """
         
-        MillinewtonSecond = 'millinewton_second'
+        MillinewtonSecond = 'MillinewtonSecond'
         """
             
         """
         
-        CentinewtonSecond = 'centinewton_second'
+        CentinewtonSecond = 'CentinewtonSecond'
         """
             
         """
         
-        DecinewtonSecond = 'decinewton_second'
+        DecinewtonSecond = 'DecinewtonSecond'
         """
             
         """
         
-        DecanewtonSecond = 'decanewton_second'
+        DecanewtonSecond = 'DecanewtonSecond'
         """
             
         """
         
-        KilonewtonSecond = 'kilonewton_second'
+        KilonewtonSecond = 'KilonewtonSecond'
         """
             
         """
         
-        MeganewtonSecond = 'meganewton_second'
+        MeganewtonSecond = 'MeganewtonSecond'
         """
             
         """
         
+
+class ImpulseDto:
+    """
+    A DTO representation of a Impulse
+
+    Attributes:
+        value (float): The value of the Impulse.
+        unit (ImpulseUnits): The specific unit that the Impulse value is representing.
+    """
+
+    def __init__(self, value: float, unit: ImpulseUnits):
+        """
+        Create a new DTO representation of a Impulse
+
+        Parameters:
+            value (float): The value of the Impulse.
+            unit (ImpulseUnits): The specific unit that the Impulse value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Impulse
+        """
+        self.unit: ImpulseUnits = unit
+        """
+        The specific unit that the Impulse value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Impulse DTO JSON object representing the current unit.
+
+        :return: JSON object represents Impulse DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Impulse DTO from a json representation.
+
+        :param data: The Impulse DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonSecond"}
+        :return: A new instance of ImpulseDto.
+        :rtype: ImpulseDto
+        """
+        return ImpulseDto(value=data["value"], unit=ImpulseUnits(data["unit"]))
+
 
 class Impulse(AbstractMeasure):
     """
@@ -85,8 +135,10 @@ class Impulse(AbstractMeasure):
         from_unit (ImpulseUnits): The Impulse unit to create from, The default unit is NewtonSecond
     """
     def __init__(self, value: float, from_unit: ImpulseUnits = ImpulseUnits.NewtonSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__kilogram_meters_per_second = None
@@ -118,6 +170,54 @@ class Impulse(AbstractMeasure):
 
     def convert(self, unit: ImpulseUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ImpulseUnits = ImpulseUnits.NewtonSecond) -> ImpulseDto:
+        """
+        Get a new instance of Impulse DTO representing the current unit.
+
+        :param hold_in_unit: The specific Impulse unit to store the Impulse value in the DTO representation.
+        :type hold_in_unit: ImpulseUnits
+        :return: A new instance of ImpulseDto.
+        :rtype: ImpulseDto
+        """
+        return ImpulseDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ImpulseUnits = ImpulseUnits.NewtonSecond):
+        """
+        Get a Impulse DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Impulse unit to store the Impulse value in the DTO representation.
+        :type hold_in_unit: ImpulseUnits
+        :return: JSON object represents Impulse DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(impulse_dto: ImpulseDto):
+        """
+        Obtain a new instance of Impulse from a DTO unit object.
+
+        :param impulse_dto: The Impulse DTO representation.
+        :type impulse_dto: ImpulseDto
+        :return: A new instance of Impulse.
+        :rtype: Impulse
+        """
+        return Impulse(impulse_dto.value, impulse_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Impulse from a DTO unit json representation.
+
+        :param data: The Impulse DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonSecond"}
+        :return: A new instance of Impulse.
+        :rtype: Impulse
+        """
+        return Impulse.from_dto(ImpulseDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ImpulseUnits) -> float:
         value = self._value
@@ -551,51 +651,59 @@ class Impulse(AbstractMeasure):
         return self.__meganewton_seconds
 
     
-    def to_string(self, unit: ImpulseUnits = ImpulseUnits.NewtonSecond) -> str:
+    def to_string(self, unit: ImpulseUnits = ImpulseUnits.NewtonSecond, fractional_digits: int = None) -> str:
         """
-        Format the Impulse to string.
-        Note! the default format for Impulse is NewtonSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the Impulse to a string.
+        
+        Note: the default format for Impulse is NewtonSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Impulse. Default is 'NewtonSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ImpulseUnits.KilogramMeterPerSecond:
-            return f"""{self.kilogram_meters_per_second} kg·m/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilogram_meters_per_second, fractional_digits)} kg·m/s"""
         
         if unit == ImpulseUnits.NewtonSecond:
-            return f"""{self.newton_seconds} N·s"""
+            return f"""{super()._truncate_fraction_digits(self.newton_seconds, fractional_digits)} N·s"""
         
         if unit == ImpulseUnits.PoundFootPerSecond:
-            return f"""{self.pound_feet_per_second} lb·ft/s"""
+            return f"""{super()._truncate_fraction_digits(self.pound_feet_per_second, fractional_digits)} lb·ft/s"""
         
         if unit == ImpulseUnits.PoundForceSecond:
-            return f"""{self.pound_force_seconds} lbf·s"""
+            return f"""{super()._truncate_fraction_digits(self.pound_force_seconds, fractional_digits)} lbf·s"""
         
         if unit == ImpulseUnits.SlugFootPerSecond:
-            return f"""{self.slug_feet_per_second} slug·ft/s"""
+            return f"""{super()._truncate_fraction_digits(self.slug_feet_per_second, fractional_digits)} slug·ft/s"""
         
         if unit == ImpulseUnits.NanonewtonSecond:
-            return f"""{self.nanonewton_seconds} nN·s"""
+            return f"""{super()._truncate_fraction_digits(self.nanonewton_seconds, fractional_digits)} nN·s"""
         
         if unit == ImpulseUnits.MicronewtonSecond:
-            return f"""{self.micronewton_seconds} μN·s"""
+            return f"""{super()._truncate_fraction_digits(self.micronewton_seconds, fractional_digits)} μN·s"""
         
         if unit == ImpulseUnits.MillinewtonSecond:
-            return f"""{self.millinewton_seconds} mN·s"""
+            return f"""{super()._truncate_fraction_digits(self.millinewton_seconds, fractional_digits)} mN·s"""
         
         if unit == ImpulseUnits.CentinewtonSecond:
-            return f"""{self.centinewton_seconds} cN·s"""
+            return f"""{super()._truncate_fraction_digits(self.centinewton_seconds, fractional_digits)} cN·s"""
         
         if unit == ImpulseUnits.DecinewtonSecond:
-            return f"""{self.decinewton_seconds} dN·s"""
+            return f"""{super()._truncate_fraction_digits(self.decinewton_seconds, fractional_digits)} dN·s"""
         
         if unit == ImpulseUnits.DecanewtonSecond:
-            return f"""{self.decanewton_seconds} daN·s"""
+            return f"""{super()._truncate_fraction_digits(self.decanewton_seconds, fractional_digits)} daN·s"""
         
         if unit == ImpulseUnits.KilonewtonSecond:
-            return f"""{self.kilonewton_seconds} kN·s"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_seconds, fractional_digits)} kN·s"""
         
         if unit == ImpulseUnits.MeganewtonSecond:
-            return f"""{self.meganewton_seconds} MN·s"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_seconds, fractional_digits)} MN·s"""
         
         return f'{self._value}'
 

@@ -10,41 +10,91 @@ class ElectricCurrentGradientUnits(Enum):
             ElectricCurrentGradientUnits enumeration
         """
         
-        AmperePerSecond = 'ampere_per_second'
+        AmperePerSecond = 'AmperePerSecond'
         """
             
         """
         
-        AmperePerMinute = 'ampere_per_minute'
+        AmperePerMinute = 'AmperePerMinute'
         """
             
         """
         
-        AmperePerMillisecond = 'ampere_per_millisecond'
+        AmperePerMillisecond = 'AmperePerMillisecond'
         """
             
         """
         
-        AmperePerMicrosecond = 'ampere_per_microsecond'
+        AmperePerMicrosecond = 'AmperePerMicrosecond'
         """
             
         """
         
-        AmperePerNanosecond = 'ampere_per_nanosecond'
+        AmperePerNanosecond = 'AmperePerNanosecond'
         """
             
         """
         
-        MilliamperePerSecond = 'milliampere_per_second'
+        MilliamperePerSecond = 'MilliamperePerSecond'
         """
             
         """
         
-        MilliamperePerMinute = 'milliampere_per_minute'
+        MilliamperePerMinute = 'MilliamperePerMinute'
         """
             
         """
         
+
+class ElectricCurrentGradientDto:
+    """
+    A DTO representation of a ElectricCurrentGradient
+
+    Attributes:
+        value (float): The value of the ElectricCurrentGradient.
+        unit (ElectricCurrentGradientUnits): The specific unit that the ElectricCurrentGradient value is representing.
+    """
+
+    def __init__(self, value: float, unit: ElectricCurrentGradientUnits):
+        """
+        Create a new DTO representation of a ElectricCurrentGradient
+
+        Parameters:
+            value (float): The value of the ElectricCurrentGradient.
+            unit (ElectricCurrentGradientUnits): The specific unit that the ElectricCurrentGradient value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ElectricCurrentGradient
+        """
+        self.unit: ElectricCurrentGradientUnits = unit
+        """
+        The specific unit that the ElectricCurrentGradient value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ElectricCurrentGradient DTO JSON object representing the current unit.
+
+        :return: JSON object represents ElectricCurrentGradient DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "AmperePerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ElectricCurrentGradient DTO from a json representation.
+
+        :param data: The ElectricCurrentGradient DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "AmperePerSecond"}
+        :return: A new instance of ElectricCurrentGradientDto.
+        :rtype: ElectricCurrentGradientDto
+        """
+        return ElectricCurrentGradientDto(value=data["value"], unit=ElectricCurrentGradientUnits(data["unit"]))
+
 
 class ElectricCurrentGradient(AbstractMeasure):
     """
@@ -55,8 +105,10 @@ class ElectricCurrentGradient(AbstractMeasure):
         from_unit (ElectricCurrentGradientUnits): The ElectricCurrentGradient unit to create from, The default unit is AmperePerSecond
     """
     def __init__(self, value: float, from_unit: ElectricCurrentGradientUnits = ElectricCurrentGradientUnits.AmperePerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__amperes_per_second = None
@@ -76,6 +128,54 @@ class ElectricCurrentGradient(AbstractMeasure):
 
     def convert(self, unit: ElectricCurrentGradientUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ElectricCurrentGradientUnits = ElectricCurrentGradientUnits.AmperePerSecond) -> ElectricCurrentGradientDto:
+        """
+        Get a new instance of ElectricCurrentGradient DTO representing the current unit.
+
+        :param hold_in_unit: The specific ElectricCurrentGradient unit to store the ElectricCurrentGradient value in the DTO representation.
+        :type hold_in_unit: ElectricCurrentGradientUnits
+        :return: A new instance of ElectricCurrentGradientDto.
+        :rtype: ElectricCurrentGradientDto
+        """
+        return ElectricCurrentGradientDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ElectricCurrentGradientUnits = ElectricCurrentGradientUnits.AmperePerSecond):
+        """
+        Get a ElectricCurrentGradient DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ElectricCurrentGradient unit to store the ElectricCurrentGradient value in the DTO representation.
+        :type hold_in_unit: ElectricCurrentGradientUnits
+        :return: JSON object represents ElectricCurrentGradient DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "AmperePerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(electric_current_gradient_dto: ElectricCurrentGradientDto):
+        """
+        Obtain a new instance of ElectricCurrentGradient from a DTO unit object.
+
+        :param electric_current_gradient_dto: The ElectricCurrentGradient DTO representation.
+        :type electric_current_gradient_dto: ElectricCurrentGradientDto
+        :return: A new instance of ElectricCurrentGradient.
+        :rtype: ElectricCurrentGradient
+        """
+        return ElectricCurrentGradient(electric_current_gradient_dto.value, electric_current_gradient_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ElectricCurrentGradient from a DTO unit json representation.
+
+        :param data: The ElectricCurrentGradient DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "AmperePerSecond"}
+        :return: A new instance of ElectricCurrentGradient.
+        :rtype: ElectricCurrentGradient
+        """
+        return ElectricCurrentGradient.from_dto(ElectricCurrentGradientDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ElectricCurrentGradientUnits) -> float:
         value = self._value
@@ -317,33 +417,41 @@ class ElectricCurrentGradient(AbstractMeasure):
         return self.__milliamperes_per_minute
 
     
-    def to_string(self, unit: ElectricCurrentGradientUnits = ElectricCurrentGradientUnits.AmperePerSecond) -> str:
+    def to_string(self, unit: ElectricCurrentGradientUnits = ElectricCurrentGradientUnits.AmperePerSecond, fractional_digits: int = None) -> str:
         """
-        Format the ElectricCurrentGradient to string.
-        Note! the default format for ElectricCurrentGradient is AmperePerSecond.
-        To specify the unit format set the 'unit' parameter.
+        Format the ElectricCurrentGradient to a string.
+        
+        Note: the default format for ElectricCurrentGradient is AmperePerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ElectricCurrentGradient. Default is 'AmperePerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ElectricCurrentGradientUnits.AmperePerSecond:
-            return f"""{self.amperes_per_second} A/s"""
+            return f"""{super()._truncate_fraction_digits(self.amperes_per_second, fractional_digits)} A/s"""
         
         if unit == ElectricCurrentGradientUnits.AmperePerMinute:
-            return f"""{self.amperes_per_minute} A/min"""
+            return f"""{super()._truncate_fraction_digits(self.amperes_per_minute, fractional_digits)} A/min"""
         
         if unit == ElectricCurrentGradientUnits.AmperePerMillisecond:
-            return f"""{self.amperes_per_millisecond} A/ms"""
+            return f"""{super()._truncate_fraction_digits(self.amperes_per_millisecond, fractional_digits)} A/ms"""
         
         if unit == ElectricCurrentGradientUnits.AmperePerMicrosecond:
-            return f"""{self.amperes_per_microsecond} A/μs"""
+            return f"""{super()._truncate_fraction_digits(self.amperes_per_microsecond, fractional_digits)} A/μs"""
         
         if unit == ElectricCurrentGradientUnits.AmperePerNanosecond:
-            return f"""{self.amperes_per_nanosecond} A/ns"""
+            return f"""{super()._truncate_fraction_digits(self.amperes_per_nanosecond, fractional_digits)} A/ns"""
         
         if unit == ElectricCurrentGradientUnits.MilliamperePerSecond:
-            return f"""{self.milliamperes_per_second} mA/s"""
+            return f"""{super()._truncate_fraction_digits(self.milliamperes_per_second, fractional_digits)} mA/s"""
         
         if unit == ElectricCurrentGradientUnits.MilliamperePerMinute:
-            return f"""{self.milliamperes_per_minute} mA/min"""
+            return f"""{super()._truncate_fraction_digits(self.milliamperes_per_minute, fractional_digits)} mA/min"""
         
         return f'{self._value}'
 

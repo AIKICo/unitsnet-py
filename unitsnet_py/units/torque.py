@@ -10,131 +10,181 @@ class TorqueUnits(Enum):
             TorqueUnits enumeration
         """
         
-        NewtonMillimeter = 'newton_millimeter'
+        NewtonMillimeter = 'NewtonMillimeter'
         """
             
         """
         
-        NewtonCentimeter = 'newton_centimeter'
+        NewtonCentimeter = 'NewtonCentimeter'
         """
             
         """
         
-        NewtonMeter = 'newton_meter'
+        NewtonMeter = 'NewtonMeter'
         """
             
         """
         
-        PoundalFoot = 'poundal_foot'
+        PoundalFoot = 'PoundalFoot'
         """
             
         """
         
-        PoundForceInch = 'pound_force_inch'
+        PoundForceInch = 'PoundForceInch'
         """
             
         """
         
-        PoundForceFoot = 'pound_force_foot'
+        PoundForceFoot = 'PoundForceFoot'
         """
             
         """
         
-        GramForceMillimeter = 'gram_force_millimeter'
+        GramForceMillimeter = 'GramForceMillimeter'
         """
             
         """
         
-        GramForceCentimeter = 'gram_force_centimeter'
+        GramForceCentimeter = 'GramForceCentimeter'
         """
             
         """
         
-        GramForceMeter = 'gram_force_meter'
+        GramForceMeter = 'GramForceMeter'
         """
             
         """
         
-        KilogramForceMillimeter = 'kilogram_force_millimeter'
+        KilogramForceMillimeter = 'KilogramForceMillimeter'
         """
             
         """
         
-        KilogramForceCentimeter = 'kilogram_force_centimeter'
+        KilogramForceCentimeter = 'KilogramForceCentimeter'
         """
             
         """
         
-        KilogramForceMeter = 'kilogram_force_meter'
+        KilogramForceMeter = 'KilogramForceMeter'
         """
             
         """
         
-        TonneForceMillimeter = 'tonne_force_millimeter'
+        TonneForceMillimeter = 'TonneForceMillimeter'
         """
             
         """
         
-        TonneForceCentimeter = 'tonne_force_centimeter'
+        TonneForceCentimeter = 'TonneForceCentimeter'
         """
             
         """
         
-        TonneForceMeter = 'tonne_force_meter'
+        TonneForceMeter = 'TonneForceMeter'
         """
             
         """
         
-        KilonewtonMillimeter = 'kilonewton_millimeter'
+        KilonewtonMillimeter = 'KilonewtonMillimeter'
         """
             
         """
         
-        MeganewtonMillimeter = 'meganewton_millimeter'
+        MeganewtonMillimeter = 'MeganewtonMillimeter'
         """
             
         """
         
-        KilonewtonCentimeter = 'kilonewton_centimeter'
+        KilonewtonCentimeter = 'KilonewtonCentimeter'
         """
             
         """
         
-        MeganewtonCentimeter = 'meganewton_centimeter'
+        MeganewtonCentimeter = 'MeganewtonCentimeter'
         """
             
         """
         
-        KilonewtonMeter = 'kilonewton_meter'
+        KilonewtonMeter = 'KilonewtonMeter'
         """
             
         """
         
-        MeganewtonMeter = 'meganewton_meter'
+        MeganewtonMeter = 'MeganewtonMeter'
         """
             
         """
         
-        KilopoundForceInch = 'kilopound_force_inch'
+        KilopoundForceInch = 'KilopoundForceInch'
         """
             
         """
         
-        MegapoundForceInch = 'megapound_force_inch'
+        MegapoundForceInch = 'MegapoundForceInch'
         """
             
         """
         
-        KilopoundForceFoot = 'kilopound_force_foot'
+        KilopoundForceFoot = 'KilopoundForceFoot'
         """
             
         """
         
-        MegapoundForceFoot = 'megapound_force_foot'
+        MegapoundForceFoot = 'MegapoundForceFoot'
         """
             
         """
         
+
+class TorqueDto:
+    """
+    A DTO representation of a Torque
+
+    Attributes:
+        value (float): The value of the Torque.
+        unit (TorqueUnits): The specific unit that the Torque value is representing.
+    """
+
+    def __init__(self, value: float, unit: TorqueUnits):
+        """
+        Create a new DTO representation of a Torque
+
+        Parameters:
+            value (float): The value of the Torque.
+            unit (TorqueUnits): The specific unit that the Torque value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Torque
+        """
+        self.unit: TorqueUnits = unit
+        """
+        The specific unit that the Torque value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Torque DTO JSON object representing the current unit.
+
+        :return: JSON object represents Torque DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Torque DTO from a json representation.
+
+        :param data: The Torque DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonMeter"}
+        :return: A new instance of TorqueDto.
+        :rtype: TorqueDto
+        """
+        return TorqueDto(value=data["value"], unit=TorqueUnits(data["unit"]))
+
 
 class Torque(AbstractMeasure):
     """
@@ -145,8 +195,10 @@ class Torque(AbstractMeasure):
         from_unit (TorqueUnits): The Torque unit to create from, The default unit is NewtonMeter
     """
     def __init__(self, value: float, from_unit: TorqueUnits = TorqueUnits.NewtonMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__newton_millimeters = None
@@ -202,6 +254,54 @@ class Torque(AbstractMeasure):
 
     def convert(self, unit: TorqueUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: TorqueUnits = TorqueUnits.NewtonMeter) -> TorqueDto:
+        """
+        Get a new instance of Torque DTO representing the current unit.
+
+        :param hold_in_unit: The specific Torque unit to store the Torque value in the DTO representation.
+        :type hold_in_unit: TorqueUnits
+        :return: A new instance of TorqueDto.
+        :rtype: TorqueDto
+        """
+        return TorqueDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: TorqueUnits = TorqueUnits.NewtonMeter):
+        """
+        Get a Torque DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Torque unit to store the Torque value in the DTO representation.
+        :type hold_in_unit: TorqueUnits
+        :return: JSON object represents Torque DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(torque_dto: TorqueDto):
+        """
+        Obtain a new instance of Torque from a DTO unit object.
+
+        :param torque_dto: The Torque DTO representation.
+        :type torque_dto: TorqueDto
+        :return: A new instance of Torque.
+        :rtype: Torque
+        """
+        return Torque(torque_dto.value, torque_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Torque from a DTO unit json representation.
+
+        :param data: The Torque DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonMeter"}
+        :return: A new instance of Torque.
+        :rtype: Torque
+        """
+        return Torque.from_dto(TorqueDto.from_json(data))
 
     def __convert_from_base(self, from_unit: TorqueUnits) -> float:
         value = self._value
@@ -1019,87 +1119,95 @@ class Torque(AbstractMeasure):
         return self.__megapound_force_feet
 
     
-    def to_string(self, unit: TorqueUnits = TorqueUnits.NewtonMeter) -> str:
+    def to_string(self, unit: TorqueUnits = TorqueUnits.NewtonMeter, fractional_digits: int = None) -> str:
         """
-        Format the Torque to string.
-        Note! the default format for Torque is NewtonMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the Torque to a string.
+        
+        Note: the default format for Torque is NewtonMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Torque. Default is 'NewtonMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == TorqueUnits.NewtonMillimeter:
-            return f"""{self.newton_millimeters} N·mm"""
+            return f"""{super()._truncate_fraction_digits(self.newton_millimeters, fractional_digits)} N·mm"""
         
         if unit == TorqueUnits.NewtonCentimeter:
-            return f"""{self.newton_centimeters} N·cm"""
+            return f"""{super()._truncate_fraction_digits(self.newton_centimeters, fractional_digits)} N·cm"""
         
         if unit == TorqueUnits.NewtonMeter:
-            return f"""{self.newton_meters} N·m"""
+            return f"""{super()._truncate_fraction_digits(self.newton_meters, fractional_digits)} N·m"""
         
         if unit == TorqueUnits.PoundalFoot:
-            return f"""{self.poundal_feet} pdl·ft"""
+            return f"""{super()._truncate_fraction_digits(self.poundal_feet, fractional_digits)} pdl·ft"""
         
         if unit == TorqueUnits.PoundForceInch:
-            return f"""{self.pound_force_inches} lbf·in"""
+            return f"""{super()._truncate_fraction_digits(self.pound_force_inches, fractional_digits)} lbf·in"""
         
         if unit == TorqueUnits.PoundForceFoot:
-            return f"""{self.pound_force_feet} lbf·ft"""
+            return f"""{super()._truncate_fraction_digits(self.pound_force_feet, fractional_digits)} lbf·ft"""
         
         if unit == TorqueUnits.GramForceMillimeter:
-            return f"""{self.gram_force_millimeters} gf·mm"""
+            return f"""{super()._truncate_fraction_digits(self.gram_force_millimeters, fractional_digits)} gf·mm"""
         
         if unit == TorqueUnits.GramForceCentimeter:
-            return f"""{self.gram_force_centimeters} gf·cm"""
+            return f"""{super()._truncate_fraction_digits(self.gram_force_centimeters, fractional_digits)} gf·cm"""
         
         if unit == TorqueUnits.GramForceMeter:
-            return f"""{self.gram_force_meters} gf·m"""
+            return f"""{super()._truncate_fraction_digits(self.gram_force_meters, fractional_digits)} gf·m"""
         
         if unit == TorqueUnits.KilogramForceMillimeter:
-            return f"""{self.kilogram_force_millimeters} kgf·mm"""
+            return f"""{super()._truncate_fraction_digits(self.kilogram_force_millimeters, fractional_digits)} kgf·mm"""
         
         if unit == TorqueUnits.KilogramForceCentimeter:
-            return f"""{self.kilogram_force_centimeters} kgf·cm"""
+            return f"""{super()._truncate_fraction_digits(self.kilogram_force_centimeters, fractional_digits)} kgf·cm"""
         
         if unit == TorqueUnits.KilogramForceMeter:
-            return f"""{self.kilogram_force_meters} kgf·m"""
+            return f"""{super()._truncate_fraction_digits(self.kilogram_force_meters, fractional_digits)} kgf·m"""
         
         if unit == TorqueUnits.TonneForceMillimeter:
-            return f"""{self.tonne_force_millimeters} tf·mm"""
+            return f"""{super()._truncate_fraction_digits(self.tonne_force_millimeters, fractional_digits)} tf·mm"""
         
         if unit == TorqueUnits.TonneForceCentimeter:
-            return f"""{self.tonne_force_centimeters} tf·cm"""
+            return f"""{super()._truncate_fraction_digits(self.tonne_force_centimeters, fractional_digits)} tf·cm"""
         
         if unit == TorqueUnits.TonneForceMeter:
-            return f"""{self.tonne_force_meters} tf·m"""
+            return f"""{super()._truncate_fraction_digits(self.tonne_force_meters, fractional_digits)} tf·m"""
         
         if unit == TorqueUnits.KilonewtonMillimeter:
-            return f"""{self.kilonewton_millimeters} kN·mm"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_millimeters, fractional_digits)} kN·mm"""
         
         if unit == TorqueUnits.MeganewtonMillimeter:
-            return f"""{self.meganewton_millimeters} MN·mm"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_millimeters, fractional_digits)} MN·mm"""
         
         if unit == TorqueUnits.KilonewtonCentimeter:
-            return f"""{self.kilonewton_centimeters} kN·cm"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_centimeters, fractional_digits)} kN·cm"""
         
         if unit == TorqueUnits.MeganewtonCentimeter:
-            return f"""{self.meganewton_centimeters} MN·cm"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_centimeters, fractional_digits)} MN·cm"""
         
         if unit == TorqueUnits.KilonewtonMeter:
-            return f"""{self.kilonewton_meters} kN·m"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_meters, fractional_digits)} kN·m"""
         
         if unit == TorqueUnits.MeganewtonMeter:
-            return f"""{self.meganewton_meters} MN·m"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_meters, fractional_digits)} MN·m"""
         
         if unit == TorqueUnits.KilopoundForceInch:
-            return f"""{self.kilopound_force_inches} klbf·in"""
+            return f"""{super()._truncate_fraction_digits(self.kilopound_force_inches, fractional_digits)} klbf·in"""
         
         if unit == TorqueUnits.MegapoundForceInch:
-            return f"""{self.megapound_force_inches} Mlbf·in"""
+            return f"""{super()._truncate_fraction_digits(self.megapound_force_inches, fractional_digits)} Mlbf·in"""
         
         if unit == TorqueUnits.KilopoundForceFoot:
-            return f"""{self.kilopound_force_feet} klbf·ft"""
+            return f"""{super()._truncate_fraction_digits(self.kilopound_force_feet, fractional_digits)} klbf·ft"""
         
         if unit == TorqueUnits.MegapoundForceFoot:
-            return f"""{self.megapound_force_feet} Mlbf·ft"""
+            return f"""{super()._truncate_fraction_digits(self.megapound_force_feet, fractional_digits)} Mlbf·ft"""
         
         return f'{self._value}'
 

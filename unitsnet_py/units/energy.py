@@ -10,196 +10,256 @@ class EnergyUnits(Enum):
             EnergyUnits enumeration
         """
         
-        Joule = 'joule'
+        Joule = 'Joule'
         """
             
         """
         
-        Calorie = 'calorie'
+        Calorie = 'Calorie'
         """
             
         """
         
-        BritishThermalUnit = 'british_thermal_unit'
+        BritishThermalUnit = 'BritishThermalUnit'
         """
             
         """
         
-        ElectronVolt = 'electron_volt'
+        ElectronVolt = 'ElectronVolt'
         """
             
         """
         
-        FootPound = 'foot_pound'
+        FootPound = 'FootPound'
         """
             
         """
         
-        Erg = 'erg'
+        Erg = 'Erg'
         """
             
         """
         
-        WattHour = 'watt_hour'
+        WattHour = 'WattHour'
         """
             
         """
         
-        WattDay = 'watt_day'
+        WattDay = 'WattDay'
         """
             
         """
         
-        ThermEc = 'therm_ec'
+        ThermEc = 'ThermEc'
         """
             
         """
         
-        ThermUs = 'therm_us'
+        ThermUs = 'ThermUs'
         """
             
         """
         
-        ThermImperial = 'therm_imperial'
+        ThermImperial = 'ThermImperial'
         """
             
         """
         
-        HorsepowerHour = 'horsepower_hour'
+        HorsepowerHour = 'HorsepowerHour'
         """
             
         """
         
-        Millijoule = 'millijoule'
+        Nanojoule = 'Nanojoule'
         """
             
         """
         
-        Kilojoule = 'kilojoule'
+        Microjoule = 'Microjoule'
         """
             
         """
         
-        Megajoule = 'megajoule'
+        Millijoule = 'Millijoule'
         """
             
         """
         
-        Gigajoule = 'gigajoule'
+        Kilojoule = 'Kilojoule'
         """
             
         """
         
-        Terajoule = 'terajoule'
+        Megajoule = 'Megajoule'
         """
             
         """
         
-        Petajoule = 'petajoule'
+        Gigajoule = 'Gigajoule'
         """
             
         """
         
-        Kilocalorie = 'kilocalorie'
+        Terajoule = 'Terajoule'
         """
             
         """
         
-        Megacalorie = 'megacalorie'
+        Petajoule = 'Petajoule'
         """
             
         """
         
-        KilobritishThermalUnit = 'kilobritish_thermal_unit'
+        Kilocalorie = 'Kilocalorie'
         """
             
         """
         
-        MegabritishThermalUnit = 'megabritish_thermal_unit'
+        Megacalorie = 'Megacalorie'
         """
             
         """
         
-        GigabritishThermalUnit = 'gigabritish_thermal_unit'
+        KilobritishThermalUnit = 'KilobritishThermalUnit'
         """
             
         """
         
-        KiloelectronVolt = 'kiloelectron_volt'
+        MegabritishThermalUnit = 'MegabritishThermalUnit'
         """
             
         """
         
-        MegaelectronVolt = 'megaelectron_volt'
+        GigabritishThermalUnit = 'GigabritishThermalUnit'
         """
             
         """
         
-        GigaelectronVolt = 'gigaelectron_volt'
+        KiloelectronVolt = 'KiloelectronVolt'
         """
             
         """
         
-        TeraelectronVolt = 'teraelectron_volt'
+        MegaelectronVolt = 'MegaelectronVolt'
         """
             
         """
         
-        KilowattHour = 'kilowatt_hour'
+        GigaelectronVolt = 'GigaelectronVolt'
         """
             
         """
         
-        MegawattHour = 'megawatt_hour'
+        TeraelectronVolt = 'TeraelectronVolt'
         """
             
         """
         
-        GigawattHour = 'gigawatt_hour'
+        KilowattHour = 'KilowattHour'
         """
             
         """
         
-        TerawattHour = 'terawatt_hour'
+        MegawattHour = 'MegawattHour'
         """
             
         """
         
-        KilowattDay = 'kilowatt_day'
+        GigawattHour = 'GigawattHour'
         """
             
         """
         
-        MegawattDay = 'megawatt_day'
+        TerawattHour = 'TerawattHour'
         """
             
         """
         
-        GigawattDay = 'gigawatt_day'
+        KilowattDay = 'KilowattDay'
         """
             
         """
         
-        TerawattDay = 'terawatt_day'
+        MegawattDay = 'MegawattDay'
         """
             
         """
         
-        DecathermEc = 'decatherm_ec'
+        GigawattDay = 'GigawattDay'
         """
             
         """
         
-        DecathermUs = 'decatherm_us'
+        TerawattDay = 'TerawattDay'
         """
             
         """
         
-        DecathermImperial = 'decatherm_imperial'
+        DecathermEc = 'DecathermEc'
         """
             
         """
         
+        DecathermUs = 'DecathermUs'
+        """
+            
+        """
+        
+        DecathermImperial = 'DecathermImperial'
+        """
+            
+        """
+        
+
+class EnergyDto:
+    """
+    A DTO representation of a Energy
+
+    Attributes:
+        value (float): The value of the Energy.
+        unit (EnergyUnits): The specific unit that the Energy value is representing.
+    """
+
+    def __init__(self, value: float, unit: EnergyUnits):
+        """
+        Create a new DTO representation of a Energy
+
+        Parameters:
+            value (float): The value of the Energy.
+            unit (EnergyUnits): The specific unit that the Energy value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Energy
+        """
+        self.unit: EnergyUnits = unit
+        """
+        The specific unit that the Energy value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Energy DTO JSON object representing the current unit.
+
+        :return: JSON object represents Energy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Joule"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Energy DTO from a json representation.
+
+        :param data: The Energy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Joule"}
+        :return: A new instance of EnergyDto.
+        :rtype: EnergyDto
+        """
+        return EnergyDto(value=data["value"], unit=EnergyUnits(data["unit"]))
+
 
 class Energy(AbstractMeasure):
     """
@@ -210,8 +270,10 @@ class Energy(AbstractMeasure):
         from_unit (EnergyUnits): The Energy unit to create from, The default unit is Joule
     """
     def __init__(self, value: float, from_unit: EnergyUnits = EnergyUnits.Joule):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__joules = None
@@ -237,6 +299,10 @@ class Energy(AbstractMeasure):
         self.__therms_imperial = None
         
         self.__horsepower_hours = None
+        
+        self.__nanojoules = None
+        
+        self.__microjoules = None
         
         self.__millijoules = None
         
@@ -294,6 +360,54 @@ class Energy(AbstractMeasure):
     def convert(self, unit: EnergyUnits) -> float:
         return self.__convert_from_base(unit)
 
+    def to_dto(self, hold_in_unit: EnergyUnits = EnergyUnits.Joule) -> EnergyDto:
+        """
+        Get a new instance of Energy DTO representing the current unit.
+
+        :param hold_in_unit: The specific Energy unit to store the Energy value in the DTO representation.
+        :type hold_in_unit: EnergyUnits
+        :return: A new instance of EnergyDto.
+        :rtype: EnergyDto
+        """
+        return EnergyDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: EnergyUnits = EnergyUnits.Joule):
+        """
+        Get a Energy DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Energy unit to store the Energy value in the DTO representation.
+        :type hold_in_unit: EnergyUnits
+        :return: JSON object represents Energy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Joule"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(energy_dto: EnergyDto):
+        """
+        Obtain a new instance of Energy from a DTO unit object.
+
+        :param energy_dto: The Energy DTO representation.
+        :type energy_dto: EnergyDto
+        :return: A new instance of Energy.
+        :rtype: Energy
+        """
+        return Energy(energy_dto.value, energy_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Energy from a DTO unit json representation.
+
+        :param data: The Energy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Joule"}
+        :return: A new instance of Energy.
+        :rtype: Energy
+        """
+        return Energy.from_dto(EnergyDto.from_json(data))
+
     def __convert_from_base(self, from_unit: EnergyUnits) -> float:
         value = self._value
         
@@ -332,6 +446,12 @@ class Energy(AbstractMeasure):
         
         if from_unit == EnergyUnits.HorsepowerHour:
             return (value / 2.6845195377e6)
+        
+        if from_unit == EnergyUnits.Nanojoule:
+            return ((value) / 1e-09)
+        
+        if from_unit == EnergyUnits.Microjoule:
+            return ((value) / 1e-06)
         
         if from_unit == EnergyUnits.Millijoule:
             return ((value) / 0.001)
@@ -451,6 +571,12 @@ class Energy(AbstractMeasure):
         
         if to_unit == EnergyUnits.HorsepowerHour:
             return (value * 2.6845195377e6)
+        
+        if to_unit == EnergyUnits.Nanojoule:
+            return ((value) * 1e-09)
+        
+        if to_unit == EnergyUnits.Microjoule:
+            return ((value) * 1e-06)
         
         if to_unit == EnergyUnits.Millijoule:
             return ((value) * 0.001)
@@ -716,6 +842,36 @@ class Energy(AbstractMeasure):
         :rtype: Energy
         """
         return Energy(horsepower_hours, EnergyUnits.HorsepowerHour)
+
+    
+    @staticmethod
+    def from_nanojoules(nanojoules: float):
+        """
+        Create a new instance of Energy from a value in nanojoules.
+
+        
+
+        :param meters: The Energy value in nanojoules.
+        :type nanojoules: float
+        :return: A new instance of Energy.
+        :rtype: Energy
+        """
+        return Energy(nanojoules, EnergyUnits.Nanojoule)
+
+    
+    @staticmethod
+    def from_microjoules(microjoules: float):
+        """
+        Create a new instance of Energy from a value in microjoules.
+
+        
+
+        :param meters: The Energy value in microjoules.
+        :type microjoules: float
+        :return: A new instance of Energy.
+        :rtype: Energy
+        """
+        return Energy(microjoules, EnergyUnits.Microjoule)
 
     
     @staticmethod
@@ -1241,6 +1397,28 @@ class Energy(AbstractMeasure):
 
     
     @property
+    def nanojoules(self) -> float:
+        """
+        
+        """
+        if self.__nanojoules != None:
+            return self.__nanojoules
+        self.__nanojoules = self.__convert_from_base(EnergyUnits.Nanojoule)
+        return self.__nanojoules
+
+    
+    @property
+    def microjoules(self) -> float:
+        """
+        
+        """
+        if self.__microjoules != None:
+            return self.__microjoules
+        self.__microjoules = self.__convert_from_base(EnergyUnits.Microjoule)
+        return self.__microjoules
+
+    
+    @property
     def millijoules(self) -> float:
         """
         
@@ -1526,126 +1704,140 @@ class Energy(AbstractMeasure):
         return self.__decatherms_imperial
 
     
-    def to_string(self, unit: EnergyUnits = EnergyUnits.Joule) -> str:
+    def to_string(self, unit: EnergyUnits = EnergyUnits.Joule, fractional_digits: int = None) -> str:
         """
-        Format the Energy to string.
-        Note! the default format for Energy is Joule.
-        To specify the unit format set the 'unit' parameter.
+        Format the Energy to a string.
+        
+        Note: the default format for Energy is Joule.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Energy. Default is 'Joule'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == EnergyUnits.Joule:
-            return f"""{self.joules} J"""
+            return f"""{super()._truncate_fraction_digits(self.joules, fractional_digits)} J"""
         
         if unit == EnergyUnits.Calorie:
-            return f"""{self.calories} cal"""
+            return f"""{super()._truncate_fraction_digits(self.calories, fractional_digits)} cal"""
         
         if unit == EnergyUnits.BritishThermalUnit:
-            return f"""{self.british_thermal_units} BTU"""
+            return f"""{super()._truncate_fraction_digits(self.british_thermal_units, fractional_digits)} BTU"""
         
         if unit == EnergyUnits.ElectronVolt:
-            return f"""{self.electron_volts} eV"""
+            return f"""{super()._truncate_fraction_digits(self.electron_volts, fractional_digits)} eV"""
         
         if unit == EnergyUnits.FootPound:
-            return f"""{self.foot_pounds} ft·lb"""
+            return f"""{super()._truncate_fraction_digits(self.foot_pounds, fractional_digits)} ft·lb"""
         
         if unit == EnergyUnits.Erg:
-            return f"""{self.ergs} erg"""
+            return f"""{super()._truncate_fraction_digits(self.ergs, fractional_digits)} erg"""
         
         if unit == EnergyUnits.WattHour:
-            return f"""{self.watt_hours} Wh"""
+            return f"""{super()._truncate_fraction_digits(self.watt_hours, fractional_digits)} Wh"""
         
         if unit == EnergyUnits.WattDay:
-            return f"""{self.watt_days} Wd"""
+            return f"""{super()._truncate_fraction_digits(self.watt_days, fractional_digits)} Wd"""
         
         if unit == EnergyUnits.ThermEc:
-            return f"""{self.therms_ec} th (E.C.)"""
+            return f"""{super()._truncate_fraction_digits(self.therms_ec, fractional_digits)} th (E.C.)"""
         
         if unit == EnergyUnits.ThermUs:
-            return f"""{self.therms_us} th (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.therms_us, fractional_digits)} th (U.S.)"""
         
         if unit == EnergyUnits.ThermImperial:
-            return f"""{self.therms_imperial} th (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.therms_imperial, fractional_digits)} th (imp.)"""
         
         if unit == EnergyUnits.HorsepowerHour:
-            return f"""{self.horsepower_hours} hp·h"""
+            return f"""{super()._truncate_fraction_digits(self.horsepower_hours, fractional_digits)} hp·h"""
+        
+        if unit == EnergyUnits.Nanojoule:
+            return f"""{super()._truncate_fraction_digits(self.nanojoules, fractional_digits)} nJ"""
+        
+        if unit == EnergyUnits.Microjoule:
+            return f"""{super()._truncate_fraction_digits(self.microjoules, fractional_digits)} μJ"""
         
         if unit == EnergyUnits.Millijoule:
-            return f"""{self.millijoules} mJ"""
+            return f"""{super()._truncate_fraction_digits(self.millijoules, fractional_digits)} mJ"""
         
         if unit == EnergyUnits.Kilojoule:
-            return f"""{self.kilojoules} kJ"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules, fractional_digits)} kJ"""
         
         if unit == EnergyUnits.Megajoule:
-            return f"""{self.megajoules} MJ"""
+            return f"""{super()._truncate_fraction_digits(self.megajoules, fractional_digits)} MJ"""
         
         if unit == EnergyUnits.Gigajoule:
-            return f"""{self.gigajoules} GJ"""
+            return f"""{super()._truncate_fraction_digits(self.gigajoules, fractional_digits)} GJ"""
         
         if unit == EnergyUnits.Terajoule:
-            return f"""{self.terajoules} TJ"""
+            return f"""{super()._truncate_fraction_digits(self.terajoules, fractional_digits)} TJ"""
         
         if unit == EnergyUnits.Petajoule:
-            return f"""{self.petajoules} PJ"""
+            return f"""{super()._truncate_fraction_digits(self.petajoules, fractional_digits)} PJ"""
         
         if unit == EnergyUnits.Kilocalorie:
-            return f"""{self.kilocalories} kcal"""
+            return f"""{super()._truncate_fraction_digits(self.kilocalories, fractional_digits)} kcal"""
         
         if unit == EnergyUnits.Megacalorie:
-            return f"""{self.megacalories} Mcal"""
+            return f"""{super()._truncate_fraction_digits(self.megacalories, fractional_digits)} Mcal"""
         
         if unit == EnergyUnits.KilobritishThermalUnit:
-            return f"""{self.kilobritish_thermal_units} kBTU"""
+            return f"""{super()._truncate_fraction_digits(self.kilobritish_thermal_units, fractional_digits)} kBTU"""
         
         if unit == EnergyUnits.MegabritishThermalUnit:
-            return f"""{self.megabritish_thermal_units} MBTU"""
+            return f"""{super()._truncate_fraction_digits(self.megabritish_thermal_units, fractional_digits)} MBTU"""
         
         if unit == EnergyUnits.GigabritishThermalUnit:
-            return f"""{self.gigabritish_thermal_units} GBTU"""
+            return f"""{super()._truncate_fraction_digits(self.gigabritish_thermal_units, fractional_digits)} GBTU"""
         
         if unit == EnergyUnits.KiloelectronVolt:
-            return f"""{self.kiloelectron_volts} keV"""
+            return f"""{super()._truncate_fraction_digits(self.kiloelectron_volts, fractional_digits)} keV"""
         
         if unit == EnergyUnits.MegaelectronVolt:
-            return f"""{self.megaelectron_volts} MeV"""
+            return f"""{super()._truncate_fraction_digits(self.megaelectron_volts, fractional_digits)} MeV"""
         
         if unit == EnergyUnits.GigaelectronVolt:
-            return f"""{self.gigaelectron_volts} GeV"""
+            return f"""{super()._truncate_fraction_digits(self.gigaelectron_volts, fractional_digits)} GeV"""
         
         if unit == EnergyUnits.TeraelectronVolt:
-            return f"""{self.teraelectron_volts} TeV"""
+            return f"""{super()._truncate_fraction_digits(self.teraelectron_volts, fractional_digits)} TeV"""
         
         if unit == EnergyUnits.KilowattHour:
-            return f"""{self.kilowatt_hours} kWh"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatt_hours, fractional_digits)} kWh"""
         
         if unit == EnergyUnits.MegawattHour:
-            return f"""{self.megawatt_hours} MWh"""
+            return f"""{super()._truncate_fraction_digits(self.megawatt_hours, fractional_digits)} MWh"""
         
         if unit == EnergyUnits.GigawattHour:
-            return f"""{self.gigawatt_hours} GWh"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatt_hours, fractional_digits)} GWh"""
         
         if unit == EnergyUnits.TerawattHour:
-            return f"""{self.terawatt_hours} TWh"""
+            return f"""{super()._truncate_fraction_digits(self.terawatt_hours, fractional_digits)} TWh"""
         
         if unit == EnergyUnits.KilowattDay:
-            return f"""{self.kilowatt_days} kWd"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatt_days, fractional_digits)} kWd"""
         
         if unit == EnergyUnits.MegawattDay:
-            return f"""{self.megawatt_days} MWd"""
+            return f"""{super()._truncate_fraction_digits(self.megawatt_days, fractional_digits)} MWd"""
         
         if unit == EnergyUnits.GigawattDay:
-            return f"""{self.gigawatt_days} GWd"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatt_days, fractional_digits)} GWd"""
         
         if unit == EnergyUnits.TerawattDay:
-            return f"""{self.terawatt_days} TWd"""
+            return f"""{super()._truncate_fraction_digits(self.terawatt_days, fractional_digits)} TWd"""
         
         if unit == EnergyUnits.DecathermEc:
-            return f"""{self.decatherms_ec} dath (E.C.)"""
+            return f"""{super()._truncate_fraction_digits(self.decatherms_ec, fractional_digits)} dath (E.C.)"""
         
         if unit == EnergyUnits.DecathermUs:
-            return f"""{self.decatherms_us} dath (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.decatherms_us, fractional_digits)} dath (U.S.)"""
         
         if unit == EnergyUnits.DecathermImperial:
-            return f"""{self.decatherms_imperial} dath (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.decatherms_imperial, fractional_digits)} dath (imp.)"""
         
         return f'{self._value}'
 
@@ -1692,6 +1884,12 @@ class Energy(AbstractMeasure):
         
         if unit_abbreviation == EnergyUnits.HorsepowerHour:
             return """hp·h"""
+        
+        if unit_abbreviation == EnergyUnits.Nanojoule:
+            return """nJ"""
+        
+        if unit_abbreviation == EnergyUnits.Microjoule:
+            return """μJ"""
         
         if unit_abbreviation == EnergyUnits.Millijoule:
             return """mJ"""

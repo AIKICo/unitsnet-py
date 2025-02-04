@@ -10,21 +10,71 @@ class ApparentEnergyUnits(Enum):
             ApparentEnergyUnits enumeration
         """
         
-        VoltampereHour = 'voltampere_hour'
+        VoltampereHour = 'VoltampereHour'
         """
             
         """
         
-        KilovoltampereHour = 'kilovoltampere_hour'
+        KilovoltampereHour = 'KilovoltampereHour'
         """
             
         """
         
-        MegavoltampereHour = 'megavoltampere_hour'
+        MegavoltampereHour = 'MegavoltampereHour'
         """
             
         """
         
+
+class ApparentEnergyDto:
+    """
+    A DTO representation of a ApparentEnergy
+
+    Attributes:
+        value (float): The value of the ApparentEnergy.
+        unit (ApparentEnergyUnits): The specific unit that the ApparentEnergy value is representing.
+    """
+
+    def __init__(self, value: float, unit: ApparentEnergyUnits):
+        """
+        Create a new DTO representation of a ApparentEnergy
+
+        Parameters:
+            value (float): The value of the ApparentEnergy.
+            unit (ApparentEnergyUnits): The specific unit that the ApparentEnergy value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the ApparentEnergy
+        """
+        self.unit: ApparentEnergyUnits = unit
+        """
+        The specific unit that the ApparentEnergy value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a ApparentEnergy DTO JSON object representing the current unit.
+
+        :return: JSON object represents ApparentEnergy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "VoltampereHour"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of ApparentEnergy DTO from a json representation.
+
+        :param data: The ApparentEnergy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "VoltampereHour"}
+        :return: A new instance of ApparentEnergyDto.
+        :rtype: ApparentEnergyDto
+        """
+        return ApparentEnergyDto(value=data["value"], unit=ApparentEnergyUnits(data["unit"]))
+
 
 class ApparentEnergy(AbstractMeasure):
     """
@@ -35,8 +85,10 @@ class ApparentEnergy(AbstractMeasure):
         from_unit (ApparentEnergyUnits): The ApparentEnergy unit to create from, The default unit is VoltampereHour
     """
     def __init__(self, value: float, from_unit: ApparentEnergyUnits = ApparentEnergyUnits.VoltampereHour):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__voltampere_hours = None
@@ -48,6 +100,54 @@ class ApparentEnergy(AbstractMeasure):
 
     def convert(self, unit: ApparentEnergyUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: ApparentEnergyUnits = ApparentEnergyUnits.VoltampereHour) -> ApparentEnergyDto:
+        """
+        Get a new instance of ApparentEnergy DTO representing the current unit.
+
+        :param hold_in_unit: The specific ApparentEnergy unit to store the ApparentEnergy value in the DTO representation.
+        :type hold_in_unit: ApparentEnergyUnits
+        :return: A new instance of ApparentEnergyDto.
+        :rtype: ApparentEnergyDto
+        """
+        return ApparentEnergyDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ApparentEnergyUnits = ApparentEnergyUnits.VoltampereHour):
+        """
+        Get a ApparentEnergy DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific ApparentEnergy unit to store the ApparentEnergy value in the DTO representation.
+        :type hold_in_unit: ApparentEnergyUnits
+        :return: JSON object represents ApparentEnergy DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "VoltampereHour"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(apparent_energy_dto: ApparentEnergyDto):
+        """
+        Obtain a new instance of ApparentEnergy from a DTO unit object.
+
+        :param apparent_energy_dto: The ApparentEnergy DTO representation.
+        :type apparent_energy_dto: ApparentEnergyDto
+        :return: A new instance of ApparentEnergy.
+        :rtype: ApparentEnergy
+        """
+        return ApparentEnergy(apparent_energy_dto.value, apparent_energy_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of ApparentEnergy from a DTO unit json representation.
+
+        :param data: The ApparentEnergy DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "VoltampereHour"}
+        :return: A new instance of ApparentEnergy.
+        :rtype: ApparentEnergy
+        """
+        return ApparentEnergy.from_dto(ApparentEnergyDto.from_json(data))
 
     def __convert_from_base(self, from_unit: ApparentEnergyUnits) -> float:
         value = self._value
@@ -161,21 +261,29 @@ class ApparentEnergy(AbstractMeasure):
         return self.__megavoltampere_hours
 
     
-    def to_string(self, unit: ApparentEnergyUnits = ApparentEnergyUnits.VoltampereHour) -> str:
+    def to_string(self, unit: ApparentEnergyUnits = ApparentEnergyUnits.VoltampereHour, fractional_digits: int = None) -> str:
         """
-        Format the ApparentEnergy to string.
-        Note! the default format for ApparentEnergy is VoltampereHour.
-        To specify the unit format set the 'unit' parameter.
+        Format the ApparentEnergy to a string.
+        
+        Note: the default format for ApparentEnergy is VoltampereHour.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the ApparentEnergy. Default is 'VoltampereHour'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ApparentEnergyUnits.VoltampereHour:
-            return f"""{self.voltampere_hours} VAh"""
+            return f"""{super()._truncate_fraction_digits(self.voltampere_hours, fractional_digits)} VAh"""
         
         if unit == ApparentEnergyUnits.KilovoltampereHour:
-            return f"""{self.kilovoltampere_hours} kVAh"""
+            return f"""{super()._truncate_fraction_digits(self.kilovoltampere_hours, fractional_digits)} kVAh"""
         
         if unit == ApparentEnergyUnits.MegavoltampereHour:
-            return f"""{self.megavoltampere_hours} MVAh"""
+            return f"""{super()._truncate_fraction_digits(self.megavoltampere_hours, fractional_digits)} MVAh"""
         
         return f'{self._value}'
 

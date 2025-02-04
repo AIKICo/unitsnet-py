@@ -10,11 +10,61 @@ class LuminousFluxUnits(Enum):
             LuminousFluxUnits enumeration
         """
         
-        Lumen = 'lumen'
+        Lumen = 'Lumen'
         """
             
         """
         
+
+class LuminousFluxDto:
+    """
+    A DTO representation of a LuminousFlux
+
+    Attributes:
+        value (float): The value of the LuminousFlux.
+        unit (LuminousFluxUnits): The specific unit that the LuminousFlux value is representing.
+    """
+
+    def __init__(self, value: float, unit: LuminousFluxUnits):
+        """
+        Create a new DTO representation of a LuminousFlux
+
+        Parameters:
+            value (float): The value of the LuminousFlux.
+            unit (LuminousFluxUnits): The specific unit that the LuminousFlux value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the LuminousFlux
+        """
+        self.unit: LuminousFluxUnits = unit
+        """
+        The specific unit that the LuminousFlux value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a LuminousFlux DTO JSON object representing the current unit.
+
+        :return: JSON object represents LuminousFlux DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Lumen"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of LuminousFlux DTO from a json representation.
+
+        :param data: The LuminousFlux DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Lumen"}
+        :return: A new instance of LuminousFluxDto.
+        :rtype: LuminousFluxDto
+        """
+        return LuminousFluxDto(value=data["value"], unit=LuminousFluxUnits(data["unit"]))
+
 
 class LuminousFlux(AbstractMeasure):
     """
@@ -25,8 +75,10 @@ class LuminousFlux(AbstractMeasure):
         from_unit (LuminousFluxUnits): The LuminousFlux unit to create from, The default unit is Lumen
     """
     def __init__(self, value: float, from_unit: LuminousFluxUnits = LuminousFluxUnits.Lumen):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__lumens = None
@@ -34,6 +86,54 @@ class LuminousFlux(AbstractMeasure):
 
     def convert(self, unit: LuminousFluxUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: LuminousFluxUnits = LuminousFluxUnits.Lumen) -> LuminousFluxDto:
+        """
+        Get a new instance of LuminousFlux DTO representing the current unit.
+
+        :param hold_in_unit: The specific LuminousFlux unit to store the LuminousFlux value in the DTO representation.
+        :type hold_in_unit: LuminousFluxUnits
+        :return: A new instance of LuminousFluxDto.
+        :rtype: LuminousFluxDto
+        """
+        return LuminousFluxDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: LuminousFluxUnits = LuminousFluxUnits.Lumen):
+        """
+        Get a LuminousFlux DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific LuminousFlux unit to store the LuminousFlux value in the DTO representation.
+        :type hold_in_unit: LuminousFluxUnits
+        :return: JSON object represents LuminousFlux DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Lumen"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(luminous_flux_dto: LuminousFluxDto):
+        """
+        Obtain a new instance of LuminousFlux from a DTO unit object.
+
+        :param luminous_flux_dto: The LuminousFlux DTO representation.
+        :type luminous_flux_dto: LuminousFluxDto
+        :return: A new instance of LuminousFlux.
+        :rtype: LuminousFlux
+        """
+        return LuminousFlux(luminous_flux_dto.value, luminous_flux_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of LuminousFlux from a DTO unit json representation.
+
+        :param data: The LuminousFlux DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Lumen"}
+        :return: A new instance of LuminousFlux.
+        :rtype: LuminousFlux
+        """
+        return LuminousFlux.from_dto(LuminousFluxDto.from_json(data))
 
     def __convert_from_base(self, from_unit: LuminousFluxUnits) -> float:
         value = self._value
@@ -83,15 +183,23 @@ class LuminousFlux(AbstractMeasure):
         return self.__lumens
 
     
-    def to_string(self, unit: LuminousFluxUnits = LuminousFluxUnits.Lumen) -> str:
+    def to_string(self, unit: LuminousFluxUnits = LuminousFluxUnits.Lumen, fractional_digits: int = None) -> str:
         """
-        Format the LuminousFlux to string.
-        Note! the default format for LuminousFlux is Lumen.
-        To specify the unit format set the 'unit' parameter.
+        Format the LuminousFlux to a string.
+        
+        Note: the default format for LuminousFlux is Lumen.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the LuminousFlux. Default is 'Lumen'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == LuminousFluxUnits.Lumen:
-            return f"""{self.lumens} lm"""
+            return f"""{super()._truncate_fraction_digits(self.lumens, fractional_digits)} lm"""
         
         return f'{self._value}'
 

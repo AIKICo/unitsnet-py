@@ -10,41 +10,91 @@ class CompressibilityUnits(Enum):
             CompressibilityUnits enumeration
         """
         
-        InversePascal = 'inverse_pascal'
+        InversePascal = 'InversePascal'
         """
             
         """
         
-        InverseKilopascal = 'inverse_kilopascal'
+        InverseKilopascal = 'InverseKilopascal'
         """
             
         """
         
-        InverseMegapascal = 'inverse_megapascal'
+        InverseMegapascal = 'InverseMegapascal'
         """
             
         """
         
-        InverseAtmosphere = 'inverse_atmosphere'
+        InverseAtmosphere = 'InverseAtmosphere'
         """
             
         """
         
-        InverseMillibar = 'inverse_millibar'
+        InverseMillibar = 'InverseMillibar'
         """
             
         """
         
-        InverseBar = 'inverse_bar'
+        InverseBar = 'InverseBar'
         """
             
         """
         
-        InversePoundForcePerSquareInch = 'inverse_pound_force_per_square_inch'
+        InversePoundForcePerSquareInch = 'InversePoundForcePerSquareInch'
         """
             
         """
         
+
+class CompressibilityDto:
+    """
+    A DTO representation of a Compressibility
+
+    Attributes:
+        value (float): The value of the Compressibility.
+        unit (CompressibilityUnits): The specific unit that the Compressibility value is representing.
+    """
+
+    def __init__(self, value: float, unit: CompressibilityUnits):
+        """
+        Create a new DTO representation of a Compressibility
+
+        Parameters:
+            value (float): The value of the Compressibility.
+            unit (CompressibilityUnits): The specific unit that the Compressibility value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Compressibility
+        """
+        self.unit: CompressibilityUnits = unit
+        """
+        The specific unit that the Compressibility value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Compressibility DTO JSON object representing the current unit.
+
+        :return: JSON object represents Compressibility DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "InversePascal"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Compressibility DTO from a json representation.
+
+        :param data: The Compressibility DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "InversePascal"}
+        :return: A new instance of CompressibilityDto.
+        :rtype: CompressibilityDto
+        """
+        return CompressibilityDto(value=data["value"], unit=CompressibilityUnits(data["unit"]))
+
 
 class Compressibility(AbstractMeasure):
     """
@@ -55,8 +105,10 @@ class Compressibility(AbstractMeasure):
         from_unit (CompressibilityUnits): The Compressibility unit to create from, The default unit is InversePascal
     """
     def __init__(self, value: float, from_unit: CompressibilityUnits = CompressibilityUnits.InversePascal):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__inverse_pascals = None
@@ -76,6 +128,54 @@ class Compressibility(AbstractMeasure):
 
     def convert(self, unit: CompressibilityUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: CompressibilityUnits = CompressibilityUnits.InversePascal) -> CompressibilityDto:
+        """
+        Get a new instance of Compressibility DTO representing the current unit.
+
+        :param hold_in_unit: The specific Compressibility unit to store the Compressibility value in the DTO representation.
+        :type hold_in_unit: CompressibilityUnits
+        :return: A new instance of CompressibilityDto.
+        :rtype: CompressibilityDto
+        """
+        return CompressibilityDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: CompressibilityUnits = CompressibilityUnits.InversePascal):
+        """
+        Get a Compressibility DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Compressibility unit to store the Compressibility value in the DTO representation.
+        :type hold_in_unit: CompressibilityUnits
+        :return: JSON object represents Compressibility DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "InversePascal"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(compressibility_dto: CompressibilityDto):
+        """
+        Obtain a new instance of Compressibility from a DTO unit object.
+
+        :param compressibility_dto: The Compressibility DTO representation.
+        :type compressibility_dto: CompressibilityDto
+        :return: A new instance of Compressibility.
+        :rtype: Compressibility
+        """
+        return Compressibility(compressibility_dto.value, compressibility_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Compressibility from a DTO unit json representation.
+
+        :param data: The Compressibility DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "InversePascal"}
+        :return: A new instance of Compressibility.
+        :rtype: Compressibility
+        """
+        return Compressibility.from_dto(CompressibilityDto.from_json(data))
 
     def __convert_from_base(self, from_unit: CompressibilityUnits) -> float:
         value = self._value
@@ -317,33 +417,41 @@ class Compressibility(AbstractMeasure):
         return self.__inverse_pounds_force_per_square_inch
 
     
-    def to_string(self, unit: CompressibilityUnits = CompressibilityUnits.InversePascal) -> str:
+    def to_string(self, unit: CompressibilityUnits = CompressibilityUnits.InversePascal, fractional_digits: int = None) -> str:
         """
-        Format the Compressibility to string.
-        Note! the default format for Compressibility is InversePascal.
-        To specify the unit format set the 'unit' parameter.
+        Format the Compressibility to a string.
+        
+        Note: the default format for Compressibility is InversePascal.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Compressibility. Default is 'InversePascal'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == CompressibilityUnits.InversePascal:
-            return f"""{self.inverse_pascals} Pa⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_pascals, fractional_digits)} Pa⁻¹"""
         
         if unit == CompressibilityUnits.InverseKilopascal:
-            return f"""{self.inverse_kilopascals} kPa⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_kilopascals, fractional_digits)} kPa⁻¹"""
         
         if unit == CompressibilityUnits.InverseMegapascal:
-            return f"""{self.inverse_megapascals} MPa⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_megapascals, fractional_digits)} MPa⁻¹"""
         
         if unit == CompressibilityUnits.InverseAtmosphere:
-            return f"""{self.inverse_atmospheres} atm⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_atmospheres, fractional_digits)} atm⁻¹"""
         
         if unit == CompressibilityUnits.InverseMillibar:
-            return f"""{self.inverse_millibars} mbar⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_millibars, fractional_digits)} mbar⁻¹"""
         
         if unit == CompressibilityUnits.InverseBar:
-            return f"""{self.inverse_bars} bar⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_bars, fractional_digits)} bar⁻¹"""
         
         if unit == CompressibilityUnits.InversePoundForcePerSquareInch:
-            return f"""{self.inverse_pounds_force_per_square_inch} psi⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.inverse_pounds_force_per_square_inch, fractional_digits)} psi⁻¹"""
         
         return f'{self._value}'
 

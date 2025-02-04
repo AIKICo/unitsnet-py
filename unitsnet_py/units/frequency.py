@@ -10,71 +10,121 @@ class FrequencyUnits(Enum):
             FrequencyUnits enumeration
         """
         
-        Hertz = 'hertz'
+        Hertz = 'Hertz'
         """
             
         """
         
-        RadianPerSecond = 'radian_per_second'
+        RadianPerSecond = 'RadianPerSecond'
         """
             
         """
         
-        CyclePerMinute = 'cycle_per_minute'
+        CyclePerMinute = 'CyclePerMinute'
         """
             
         """
         
-        CyclePerHour = 'cycle_per_hour'
+        CyclePerHour = 'CyclePerHour'
         """
             
         """
         
-        BeatPerMinute = 'beat_per_minute'
+        BeatPerMinute = 'BeatPerMinute'
         """
             
         """
         
-        PerSecond = 'per_second'
+        PerSecond = 'PerSecond'
         """
             
         """
         
-        BUnit = 'b_unit'
+        BUnit = 'BUnit'
         """
             
         """
         
-        Microhertz = 'microhertz'
+        Microhertz = 'Microhertz'
         """
             
         """
         
-        Millihertz = 'millihertz'
+        Millihertz = 'Millihertz'
         """
             
         """
         
-        Kilohertz = 'kilohertz'
+        Kilohertz = 'Kilohertz'
         """
             
         """
         
-        Megahertz = 'megahertz'
+        Megahertz = 'Megahertz'
         """
             
         """
         
-        Gigahertz = 'gigahertz'
+        Gigahertz = 'Gigahertz'
         """
             
         """
         
-        Terahertz = 'terahertz'
+        Terahertz = 'Terahertz'
         """
             
         """
         
+
+class FrequencyDto:
+    """
+    A DTO representation of a Frequency
+
+    Attributes:
+        value (float): The value of the Frequency.
+        unit (FrequencyUnits): The specific unit that the Frequency value is representing.
+    """
+
+    def __init__(self, value: float, unit: FrequencyUnits):
+        """
+        Create a new DTO representation of a Frequency
+
+        Parameters:
+            value (float): The value of the Frequency.
+            unit (FrequencyUnits): The specific unit that the Frequency value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Frequency
+        """
+        self.unit: FrequencyUnits = unit
+        """
+        The specific unit that the Frequency value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Frequency DTO JSON object representing the current unit.
+
+        :return: JSON object represents Frequency DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Hertz"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Frequency DTO from a json representation.
+
+        :param data: The Frequency DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Hertz"}
+        :return: A new instance of FrequencyDto.
+        :rtype: FrequencyDto
+        """
+        return FrequencyDto(value=data["value"], unit=FrequencyUnits(data["unit"]))
+
 
 class Frequency(AbstractMeasure):
     """
@@ -85,8 +135,10 @@ class Frequency(AbstractMeasure):
         from_unit (FrequencyUnits): The Frequency unit to create from, The default unit is Hertz
     """
     def __init__(self, value: float, from_unit: FrequencyUnits = FrequencyUnits.Hertz):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__hertz = None
@@ -118,6 +170,54 @@ class Frequency(AbstractMeasure):
 
     def convert(self, unit: FrequencyUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: FrequencyUnits = FrequencyUnits.Hertz) -> FrequencyDto:
+        """
+        Get a new instance of Frequency DTO representing the current unit.
+
+        :param hold_in_unit: The specific Frequency unit to store the Frequency value in the DTO representation.
+        :type hold_in_unit: FrequencyUnits
+        :return: A new instance of FrequencyDto.
+        :rtype: FrequencyDto
+        """
+        return FrequencyDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: FrequencyUnits = FrequencyUnits.Hertz):
+        """
+        Get a Frequency DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Frequency unit to store the Frequency value in the DTO representation.
+        :type hold_in_unit: FrequencyUnits
+        :return: JSON object represents Frequency DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Hertz"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(frequency_dto: FrequencyDto):
+        """
+        Obtain a new instance of Frequency from a DTO unit object.
+
+        :param frequency_dto: The Frequency DTO representation.
+        :type frequency_dto: FrequencyDto
+        :return: A new instance of Frequency.
+        :rtype: Frequency
+        """
+        return Frequency(frequency_dto.value, frequency_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Frequency from a DTO unit json representation.
+
+        :param data: The Frequency DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Hertz"}
+        :return: A new instance of Frequency.
+        :rtype: Frequency
+        """
+        return Frequency.from_dto(FrequencyDto.from_json(data))
 
     def __convert_from_base(self, from_unit: FrequencyUnits) -> float:
         value = self._value
@@ -551,51 +651,59 @@ class Frequency(AbstractMeasure):
         return self.__terahertz
 
     
-    def to_string(self, unit: FrequencyUnits = FrequencyUnits.Hertz) -> str:
+    def to_string(self, unit: FrequencyUnits = FrequencyUnits.Hertz, fractional_digits: int = None) -> str:
         """
-        Format the Frequency to string.
-        Note! the default format for Frequency is Hertz.
-        To specify the unit format set the 'unit' parameter.
+        Format the Frequency to a string.
+        
+        Note: the default format for Frequency is Hertz.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Frequency. Default is 'Hertz'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == FrequencyUnits.Hertz:
-            return f"""{self.hertz} Hz"""
+            return f"""{super()._truncate_fraction_digits(self.hertz, fractional_digits)} Hz"""
         
         if unit == FrequencyUnits.RadianPerSecond:
-            return f"""{self.radians_per_second} rad/s"""
+            return f"""{super()._truncate_fraction_digits(self.radians_per_second, fractional_digits)} rad/s"""
         
         if unit == FrequencyUnits.CyclePerMinute:
-            return f"""{self.cycles_per_minute} cpm"""
+            return f"""{super()._truncate_fraction_digits(self.cycles_per_minute, fractional_digits)} cpm"""
         
         if unit == FrequencyUnits.CyclePerHour:
-            return f"""{self.cycles_per_hour} cph"""
+            return f"""{super()._truncate_fraction_digits(self.cycles_per_hour, fractional_digits)} cph"""
         
         if unit == FrequencyUnits.BeatPerMinute:
-            return f"""{self.beats_per_minute} bpm"""
+            return f"""{super()._truncate_fraction_digits(self.beats_per_minute, fractional_digits)} bpm"""
         
         if unit == FrequencyUnits.PerSecond:
-            return f"""{self.per_second} s⁻¹"""
+            return f"""{super()._truncate_fraction_digits(self.per_second, fractional_digits)} s⁻¹"""
         
         if unit == FrequencyUnits.BUnit:
-            return f"""{self.b_units} B Units"""
+            return f"""{super()._truncate_fraction_digits(self.b_units, fractional_digits)} B Units"""
         
         if unit == FrequencyUnits.Microhertz:
-            return f"""{self.microhertz} μHz"""
+            return f"""{super()._truncate_fraction_digits(self.microhertz, fractional_digits)} μHz"""
         
         if unit == FrequencyUnits.Millihertz:
-            return f"""{self.millihertz} mHz"""
+            return f"""{super()._truncate_fraction_digits(self.millihertz, fractional_digits)} mHz"""
         
         if unit == FrequencyUnits.Kilohertz:
-            return f"""{self.kilohertz} kHz"""
+            return f"""{super()._truncate_fraction_digits(self.kilohertz, fractional_digits)} kHz"""
         
         if unit == FrequencyUnits.Megahertz:
-            return f"""{self.megahertz} MHz"""
+            return f"""{super()._truncate_fraction_digits(self.megahertz, fractional_digits)} MHz"""
         
         if unit == FrequencyUnits.Gigahertz:
-            return f"""{self.gigahertz} GHz"""
+            return f"""{super()._truncate_fraction_digits(self.gigahertz, fractional_digits)} GHz"""
         
         if unit == FrequencyUnits.Terahertz:
-            return f"""{self.terahertz} THz"""
+            return f"""{super()._truncate_fraction_digits(self.terahertz, fractional_digits)} THz"""
         
         return f'{self._value}'
 

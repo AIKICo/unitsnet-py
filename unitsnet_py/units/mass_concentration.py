@@ -10,251 +10,301 @@ class MassConcentrationUnits(Enum):
             MassConcentrationUnits enumeration
         """
         
-        GramPerCubicMillimeter = 'gram_per_cubic_millimeter'
+        GramPerCubicMillimeter = 'GramPerCubicMillimeter'
         """
             
         """
         
-        GramPerCubicCentimeter = 'gram_per_cubic_centimeter'
+        GramPerCubicCentimeter = 'GramPerCubicCentimeter'
         """
             
         """
         
-        GramPerCubicMeter = 'gram_per_cubic_meter'
+        GramPerCubicMeter = 'GramPerCubicMeter'
         """
             
         """
         
-        GramPerMicroliter = 'gram_per_microliter'
+        GramPerMicroliter = 'GramPerMicroliter'
         """
             
         """
         
-        GramPerMilliliter = 'gram_per_milliliter'
+        GramPerMilliliter = 'GramPerMilliliter'
         """
             
         """
         
-        GramPerDeciliter = 'gram_per_deciliter'
+        GramPerDeciliter = 'GramPerDeciliter'
         """
             
         """
         
-        GramPerLiter = 'gram_per_liter'
+        GramPerLiter = 'GramPerLiter'
         """
             
         """
         
-        TonnePerCubicMillimeter = 'tonne_per_cubic_millimeter'
+        TonnePerCubicMillimeter = 'TonnePerCubicMillimeter'
         """
             
         """
         
-        TonnePerCubicCentimeter = 'tonne_per_cubic_centimeter'
+        TonnePerCubicCentimeter = 'TonnePerCubicCentimeter'
         """
             
         """
         
-        TonnePerCubicMeter = 'tonne_per_cubic_meter'
+        TonnePerCubicMeter = 'TonnePerCubicMeter'
         """
             
         """
         
-        PoundPerCubicInch = 'pound_per_cubic_inch'
+        PoundPerCubicInch = 'PoundPerCubicInch'
         """
             
         """
         
-        PoundPerCubicFoot = 'pound_per_cubic_foot'
+        PoundPerCubicFoot = 'PoundPerCubicFoot'
         """
             
         """
         
-        SlugPerCubicFoot = 'slug_per_cubic_foot'
+        SlugPerCubicFoot = 'SlugPerCubicFoot'
         """
             
         """
         
-        PoundPerUSGallon = 'pound_per_us_gallon'
+        PoundPerUSGallon = 'PoundPerUSGallon'
         """
             
         """
         
-        OuncePerUSGallon = 'ounce_per_us_gallon'
+        OuncePerUSGallon = 'OuncePerUSGallon'
         """
             
         """
         
-        OuncePerImperialGallon = 'ounce_per_imperial_gallon'
+        OuncePerImperialGallon = 'OuncePerImperialGallon'
         """
             
         """
         
-        PoundPerImperialGallon = 'pound_per_imperial_gallon'
+        PoundPerImperialGallon = 'PoundPerImperialGallon'
         """
             
         """
         
-        KilogramPerCubicMillimeter = 'kilogram_per_cubic_millimeter'
+        KilogramPerCubicMillimeter = 'KilogramPerCubicMillimeter'
         """
             
         """
         
-        KilogramPerCubicCentimeter = 'kilogram_per_cubic_centimeter'
+        KilogramPerCubicCentimeter = 'KilogramPerCubicCentimeter'
         """
             
         """
         
-        KilogramPerCubicMeter = 'kilogram_per_cubic_meter'
+        KilogramPerCubicMeter = 'KilogramPerCubicMeter'
         """
             
         """
         
-        MilligramPerCubicMeter = 'milligram_per_cubic_meter'
+        MilligramPerCubicMeter = 'MilligramPerCubicMeter'
         """
             
         """
         
-        MicrogramPerCubicMeter = 'microgram_per_cubic_meter'
+        MicrogramPerCubicMeter = 'MicrogramPerCubicMeter'
         """
             
         """
         
-        PicogramPerMicroliter = 'picogram_per_microliter'
+        PicogramPerMicroliter = 'PicogramPerMicroliter'
         """
             
         """
         
-        NanogramPerMicroliter = 'nanogram_per_microliter'
+        NanogramPerMicroliter = 'NanogramPerMicroliter'
         """
             
         """
         
-        MicrogramPerMicroliter = 'microgram_per_microliter'
+        MicrogramPerMicroliter = 'MicrogramPerMicroliter'
         """
             
         """
         
-        MilligramPerMicroliter = 'milligram_per_microliter'
+        MilligramPerMicroliter = 'MilligramPerMicroliter'
         """
             
         """
         
-        CentigramPerMicroliter = 'centigram_per_microliter'
+        CentigramPerMicroliter = 'CentigramPerMicroliter'
         """
             
         """
         
-        DecigramPerMicroliter = 'decigram_per_microliter'
+        DecigramPerMicroliter = 'DecigramPerMicroliter'
         """
             
         """
         
-        PicogramPerMilliliter = 'picogram_per_milliliter'
+        PicogramPerMilliliter = 'PicogramPerMilliliter'
         """
             
         """
         
-        NanogramPerMilliliter = 'nanogram_per_milliliter'
+        NanogramPerMilliliter = 'NanogramPerMilliliter'
         """
             
         """
         
-        MicrogramPerMilliliter = 'microgram_per_milliliter'
+        MicrogramPerMilliliter = 'MicrogramPerMilliliter'
         """
             
         """
         
-        MilligramPerMilliliter = 'milligram_per_milliliter'
+        MilligramPerMilliliter = 'MilligramPerMilliliter'
         """
             
         """
         
-        CentigramPerMilliliter = 'centigram_per_milliliter'
+        CentigramPerMilliliter = 'CentigramPerMilliliter'
         """
             
         """
         
-        DecigramPerMilliliter = 'decigram_per_milliliter'
+        DecigramPerMilliliter = 'DecigramPerMilliliter'
         """
             
         """
         
-        PicogramPerDeciliter = 'picogram_per_deciliter'
+        PicogramPerDeciliter = 'PicogramPerDeciliter'
         """
             
         """
         
-        NanogramPerDeciliter = 'nanogram_per_deciliter'
+        NanogramPerDeciliter = 'NanogramPerDeciliter'
         """
             
         """
         
-        MicrogramPerDeciliter = 'microgram_per_deciliter'
+        MicrogramPerDeciliter = 'MicrogramPerDeciliter'
         """
             
         """
         
-        MilligramPerDeciliter = 'milligram_per_deciliter'
+        MilligramPerDeciliter = 'MilligramPerDeciliter'
         """
             
         """
         
-        CentigramPerDeciliter = 'centigram_per_deciliter'
+        CentigramPerDeciliter = 'CentigramPerDeciliter'
         """
             
         """
         
-        DecigramPerDeciliter = 'decigram_per_deciliter'
+        DecigramPerDeciliter = 'DecigramPerDeciliter'
         """
             
         """
         
-        PicogramPerLiter = 'picogram_per_liter'
+        PicogramPerLiter = 'PicogramPerLiter'
         """
             
         """
         
-        NanogramPerLiter = 'nanogram_per_liter'
+        NanogramPerLiter = 'NanogramPerLiter'
         """
             
         """
         
-        MicrogramPerLiter = 'microgram_per_liter'
+        MicrogramPerLiter = 'MicrogramPerLiter'
         """
             
         """
         
-        MilligramPerLiter = 'milligram_per_liter'
+        MilligramPerLiter = 'MilligramPerLiter'
         """
             
         """
         
-        CentigramPerLiter = 'centigram_per_liter'
+        CentigramPerLiter = 'CentigramPerLiter'
         """
             
         """
         
-        DecigramPerLiter = 'decigram_per_liter'
+        DecigramPerLiter = 'DecigramPerLiter'
         """
             
         """
         
-        KilogramPerLiter = 'kilogram_per_liter'
+        KilogramPerLiter = 'KilogramPerLiter'
         """
             
         """
         
-        KilopoundPerCubicInch = 'kilopound_per_cubic_inch'
+        KilopoundPerCubicInch = 'KilopoundPerCubicInch'
         """
             
         """
         
-        KilopoundPerCubicFoot = 'kilopound_per_cubic_foot'
+        KilopoundPerCubicFoot = 'KilopoundPerCubicFoot'
         """
             
         """
         
+
+class MassConcentrationDto:
+    """
+    A DTO representation of a MassConcentration
+
+    Attributes:
+        value (float): The value of the MassConcentration.
+        unit (MassConcentrationUnits): The specific unit that the MassConcentration value is representing.
+    """
+
+    def __init__(self, value: float, unit: MassConcentrationUnits):
+        """
+        Create a new DTO representation of a MassConcentration
+
+        Parameters:
+            value (float): The value of the MassConcentration.
+            unit (MassConcentrationUnits): The specific unit that the MassConcentration value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the MassConcentration
+        """
+        self.unit: MassConcentrationUnits = unit
+        """
+        The specific unit that the MassConcentration value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a MassConcentration DTO JSON object representing the current unit.
+
+        :return: JSON object represents MassConcentration DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "KilogramPerCubicMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of MassConcentration DTO from a json representation.
+
+        :param data: The MassConcentration DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "KilogramPerCubicMeter"}
+        :return: A new instance of MassConcentrationDto.
+        :rtype: MassConcentrationDto
+        """
+        return MassConcentrationDto(value=data["value"], unit=MassConcentrationUnits(data["unit"]))
+
 
 class MassConcentration(AbstractMeasure):
     """
@@ -265,8 +315,10 @@ class MassConcentration(AbstractMeasure):
         from_unit (MassConcentrationUnits): The MassConcentration unit to create from, The default unit is KilogramPerCubicMeter
     """
     def __init__(self, value: float, from_unit: MassConcentrationUnits = MassConcentrationUnits.KilogramPerCubicMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__grams_per_cubic_millimeter = None
@@ -370,6 +422,54 @@ class MassConcentration(AbstractMeasure):
 
     def convert(self, unit: MassConcentrationUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: MassConcentrationUnits = MassConcentrationUnits.KilogramPerCubicMeter) -> MassConcentrationDto:
+        """
+        Get a new instance of MassConcentration DTO representing the current unit.
+
+        :param hold_in_unit: The specific MassConcentration unit to store the MassConcentration value in the DTO representation.
+        :type hold_in_unit: MassConcentrationUnits
+        :return: A new instance of MassConcentrationDto.
+        :rtype: MassConcentrationDto
+        """
+        return MassConcentrationDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: MassConcentrationUnits = MassConcentrationUnits.KilogramPerCubicMeter):
+        """
+        Get a MassConcentration DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific MassConcentration unit to store the MassConcentration value in the DTO representation.
+        :type hold_in_unit: MassConcentrationUnits
+        :return: JSON object represents MassConcentration DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "KilogramPerCubicMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(mass_concentration_dto: MassConcentrationDto):
+        """
+        Obtain a new instance of MassConcentration from a DTO unit object.
+
+        :param mass_concentration_dto: The MassConcentration DTO representation.
+        :type mass_concentration_dto: MassConcentrationDto
+        :return: A new instance of MassConcentration.
+        :rtype: MassConcentration
+        """
+        return MassConcentration(mass_concentration_dto.value, mass_concentration_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of MassConcentration from a DTO unit json representation.
+
+        :param data: The MassConcentration DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "KilogramPerCubicMeter"}
+        :return: A new instance of MassConcentration.
+        :rtype: MassConcentration
+        """
+        return MassConcentration.from_dto(MassConcentrationDto.from_json(data))
 
     def __convert_from_base(self, from_unit: MassConcentrationUnits) -> float:
         value = self._value
@@ -1955,159 +2055,167 @@ class MassConcentration(AbstractMeasure):
         return self.__kilopounds_per_cubic_foot
 
     
-    def to_string(self, unit: MassConcentrationUnits = MassConcentrationUnits.KilogramPerCubicMeter) -> str:
+    def to_string(self, unit: MassConcentrationUnits = MassConcentrationUnits.KilogramPerCubicMeter, fractional_digits: int = None) -> str:
         """
-        Format the MassConcentration to string.
-        Note! the default format for MassConcentration is KilogramPerCubicMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the MassConcentration to a string.
+        
+        Note: the default format for MassConcentration is KilogramPerCubicMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the MassConcentration. Default is 'KilogramPerCubicMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == MassConcentrationUnits.GramPerCubicMillimeter:
-            return f"""{self.grams_per_cubic_millimeter} g/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_cubic_millimeter, fractional_digits)} g/mm³"""
         
         if unit == MassConcentrationUnits.GramPerCubicCentimeter:
-            return f"""{self.grams_per_cubic_centimeter} g/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_cubic_centimeter, fractional_digits)} g/cm³"""
         
         if unit == MassConcentrationUnits.GramPerCubicMeter:
-            return f"""{self.grams_per_cubic_meter} g/m³"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_cubic_meter, fractional_digits)} g/m³"""
         
         if unit == MassConcentrationUnits.GramPerMicroliter:
-            return f"""{self.grams_per_microliter} g/μL"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_microliter, fractional_digits)} g/μL"""
         
         if unit == MassConcentrationUnits.GramPerMilliliter:
-            return f"""{self.grams_per_milliliter} g/mL"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_milliliter, fractional_digits)} g/mL"""
         
         if unit == MassConcentrationUnits.GramPerDeciliter:
-            return f"""{self.grams_per_deciliter} g/dL"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_deciliter, fractional_digits)} g/dL"""
         
         if unit == MassConcentrationUnits.GramPerLiter:
-            return f"""{self.grams_per_liter} g/L"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_liter, fractional_digits)} g/L"""
         
         if unit == MassConcentrationUnits.TonnePerCubicMillimeter:
-            return f"""{self.tonnes_per_cubic_millimeter} t/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_per_cubic_millimeter, fractional_digits)} t/mm³"""
         
         if unit == MassConcentrationUnits.TonnePerCubicCentimeter:
-            return f"""{self.tonnes_per_cubic_centimeter} t/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_per_cubic_centimeter, fractional_digits)} t/cm³"""
         
         if unit == MassConcentrationUnits.TonnePerCubicMeter:
-            return f"""{self.tonnes_per_cubic_meter} t/m³"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_per_cubic_meter, fractional_digits)} t/m³"""
         
         if unit == MassConcentrationUnits.PoundPerCubicInch:
-            return f"""{self.pounds_per_cubic_inch} lb/in³"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_cubic_inch, fractional_digits)} lb/in³"""
         
         if unit == MassConcentrationUnits.PoundPerCubicFoot:
-            return f"""{self.pounds_per_cubic_foot} lb/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_cubic_foot, fractional_digits)} lb/ft³"""
         
         if unit == MassConcentrationUnits.SlugPerCubicFoot:
-            return f"""{self.slugs_per_cubic_foot} slug/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.slugs_per_cubic_foot, fractional_digits)} slug/ft³"""
         
         if unit == MassConcentrationUnits.PoundPerUSGallon:
-            return f"""{self.pounds_per_us_gallon} ppg (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_us_gallon, fractional_digits)} ppg (U.S.)"""
         
         if unit == MassConcentrationUnits.OuncePerUSGallon:
-            return f"""{self.ounces_per_us_gallon} oz/gal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.ounces_per_us_gallon, fractional_digits)} oz/gal (U.S.)"""
         
         if unit == MassConcentrationUnits.OuncePerImperialGallon:
-            return f"""{self.ounces_per_imperial_gallon} oz/gal (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.ounces_per_imperial_gallon, fractional_digits)} oz/gal (imp.)"""
         
         if unit == MassConcentrationUnits.PoundPerImperialGallon:
-            return f"""{self.pounds_per_imperial_gallon} ppg (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_per_imperial_gallon, fractional_digits)} ppg (imp.)"""
         
         if unit == MassConcentrationUnits.KilogramPerCubicMillimeter:
-            return f"""{self.kilograms_per_cubic_millimeter} kg/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_cubic_millimeter, fractional_digits)} kg/mm³"""
         
         if unit == MassConcentrationUnits.KilogramPerCubicCentimeter:
-            return f"""{self.kilograms_per_cubic_centimeter} kg/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_cubic_centimeter, fractional_digits)} kg/cm³"""
         
         if unit == MassConcentrationUnits.KilogramPerCubicMeter:
-            return f"""{self.kilograms_per_cubic_meter} kg/m³"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_cubic_meter, fractional_digits)} kg/m³"""
         
         if unit == MassConcentrationUnits.MilligramPerCubicMeter:
-            return f"""{self.milligrams_per_cubic_meter} mg/m³"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_cubic_meter, fractional_digits)} mg/m³"""
         
         if unit == MassConcentrationUnits.MicrogramPerCubicMeter:
-            return f"""{self.micrograms_per_cubic_meter} μg/m³"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_cubic_meter, fractional_digits)} μg/m³"""
         
         if unit == MassConcentrationUnits.PicogramPerMicroliter:
-            return f"""{self.picograms_per_microliter} pg/μL"""
+            return f"""{super()._truncate_fraction_digits(self.picograms_per_microliter, fractional_digits)} pg/μL"""
         
         if unit == MassConcentrationUnits.NanogramPerMicroliter:
-            return f"""{self.nanograms_per_microliter} ng/μL"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_microliter, fractional_digits)} ng/μL"""
         
         if unit == MassConcentrationUnits.MicrogramPerMicroliter:
-            return f"""{self.micrograms_per_microliter} μg/μL"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_microliter, fractional_digits)} μg/μL"""
         
         if unit == MassConcentrationUnits.MilligramPerMicroliter:
-            return f"""{self.milligrams_per_microliter} mg/μL"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_microliter, fractional_digits)} mg/μL"""
         
         if unit == MassConcentrationUnits.CentigramPerMicroliter:
-            return f"""{self.centigrams_per_microliter} cg/μL"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_microliter, fractional_digits)} cg/μL"""
         
         if unit == MassConcentrationUnits.DecigramPerMicroliter:
-            return f"""{self.decigrams_per_microliter} dg/μL"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_microliter, fractional_digits)} dg/μL"""
         
         if unit == MassConcentrationUnits.PicogramPerMilliliter:
-            return f"""{self.picograms_per_milliliter} pg/mL"""
+            return f"""{super()._truncate_fraction_digits(self.picograms_per_milliliter, fractional_digits)} pg/mL"""
         
         if unit == MassConcentrationUnits.NanogramPerMilliliter:
-            return f"""{self.nanograms_per_milliliter} ng/mL"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_milliliter, fractional_digits)} ng/mL"""
         
         if unit == MassConcentrationUnits.MicrogramPerMilliliter:
-            return f"""{self.micrograms_per_milliliter} μg/mL"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_milliliter, fractional_digits)} μg/mL"""
         
         if unit == MassConcentrationUnits.MilligramPerMilliliter:
-            return f"""{self.milligrams_per_milliliter} mg/mL"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_milliliter, fractional_digits)} mg/mL"""
         
         if unit == MassConcentrationUnits.CentigramPerMilliliter:
-            return f"""{self.centigrams_per_milliliter} cg/mL"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_milliliter, fractional_digits)} cg/mL"""
         
         if unit == MassConcentrationUnits.DecigramPerMilliliter:
-            return f"""{self.decigrams_per_milliliter} dg/mL"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_milliliter, fractional_digits)} dg/mL"""
         
         if unit == MassConcentrationUnits.PicogramPerDeciliter:
-            return f"""{self.picograms_per_deciliter} pg/dL"""
+            return f"""{super()._truncate_fraction_digits(self.picograms_per_deciliter, fractional_digits)} pg/dL"""
         
         if unit == MassConcentrationUnits.NanogramPerDeciliter:
-            return f"""{self.nanograms_per_deciliter} ng/dL"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_deciliter, fractional_digits)} ng/dL"""
         
         if unit == MassConcentrationUnits.MicrogramPerDeciliter:
-            return f"""{self.micrograms_per_deciliter} μg/dL"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_deciliter, fractional_digits)} μg/dL"""
         
         if unit == MassConcentrationUnits.MilligramPerDeciliter:
-            return f"""{self.milligrams_per_deciliter} mg/dL"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_deciliter, fractional_digits)} mg/dL"""
         
         if unit == MassConcentrationUnits.CentigramPerDeciliter:
-            return f"""{self.centigrams_per_deciliter} cg/dL"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_deciliter, fractional_digits)} cg/dL"""
         
         if unit == MassConcentrationUnits.DecigramPerDeciliter:
-            return f"""{self.decigrams_per_deciliter} dg/dL"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_deciliter, fractional_digits)} dg/dL"""
         
         if unit == MassConcentrationUnits.PicogramPerLiter:
-            return f"""{self.picograms_per_liter} pg/L"""
+            return f"""{super()._truncate_fraction_digits(self.picograms_per_liter, fractional_digits)} pg/L"""
         
         if unit == MassConcentrationUnits.NanogramPerLiter:
-            return f"""{self.nanograms_per_liter} ng/L"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms_per_liter, fractional_digits)} ng/L"""
         
         if unit == MassConcentrationUnits.MicrogramPerLiter:
-            return f"""{self.micrograms_per_liter} μg/L"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms_per_liter, fractional_digits)} μg/L"""
         
         if unit == MassConcentrationUnits.MilligramPerLiter:
-            return f"""{self.milligrams_per_liter} mg/L"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams_per_liter, fractional_digits)} mg/L"""
         
         if unit == MassConcentrationUnits.CentigramPerLiter:
-            return f"""{self.centigrams_per_liter} cg/L"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams_per_liter, fractional_digits)} cg/L"""
         
         if unit == MassConcentrationUnits.DecigramPerLiter:
-            return f"""{self.decigrams_per_liter} dg/L"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams_per_liter, fractional_digits)} dg/L"""
         
         if unit == MassConcentrationUnits.KilogramPerLiter:
-            return f"""{self.kilograms_per_liter} kg/L"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_liter, fractional_digits)} kg/L"""
         
         if unit == MassConcentrationUnits.KilopoundPerCubicInch:
-            return f"""{self.kilopounds_per_cubic_inch} klb/in³"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_per_cubic_inch, fractional_digits)} klb/in³"""
         
         if unit == MassConcentrationUnits.KilopoundPerCubicFoot:
-            return f"""{self.kilopounds_per_cubic_foot} klb/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_per_cubic_foot, fractional_digits)} klb/ft³"""
         
         return f'{self._value}'
 

@@ -10,41 +10,91 @@ class CapacitanceUnits(Enum):
             CapacitanceUnits enumeration
         """
         
-        Farad = 'farad'
+        Farad = 'Farad'
         """
             
         """
         
-        Picofarad = 'picofarad'
+        Picofarad = 'Picofarad'
         """
             
         """
         
-        Nanofarad = 'nanofarad'
+        Nanofarad = 'Nanofarad'
         """
             
         """
         
-        Microfarad = 'microfarad'
+        Microfarad = 'Microfarad'
         """
             
         """
         
-        Millifarad = 'millifarad'
+        Millifarad = 'Millifarad'
         """
             
         """
         
-        Kilofarad = 'kilofarad'
+        Kilofarad = 'Kilofarad'
         """
             
         """
         
-        Megafarad = 'megafarad'
+        Megafarad = 'Megafarad'
         """
             
         """
         
+
+class CapacitanceDto:
+    """
+    A DTO representation of a Capacitance
+
+    Attributes:
+        value (float): The value of the Capacitance.
+        unit (CapacitanceUnits): The specific unit that the Capacitance value is representing.
+    """
+
+    def __init__(self, value: float, unit: CapacitanceUnits):
+        """
+        Create a new DTO representation of a Capacitance
+
+        Parameters:
+            value (float): The value of the Capacitance.
+            unit (CapacitanceUnits): The specific unit that the Capacitance value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Capacitance
+        """
+        self.unit: CapacitanceUnits = unit
+        """
+        The specific unit that the Capacitance value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Capacitance DTO JSON object representing the current unit.
+
+        :return: JSON object represents Capacitance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Farad"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Capacitance DTO from a json representation.
+
+        :param data: The Capacitance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Farad"}
+        :return: A new instance of CapacitanceDto.
+        :rtype: CapacitanceDto
+        """
+        return CapacitanceDto(value=data["value"], unit=CapacitanceUnits(data["unit"]))
+
 
 class Capacitance(AbstractMeasure):
     """
@@ -55,8 +105,10 @@ class Capacitance(AbstractMeasure):
         from_unit (CapacitanceUnits): The Capacitance unit to create from, The default unit is Farad
     """
     def __init__(self, value: float, from_unit: CapacitanceUnits = CapacitanceUnits.Farad):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__farads = None
@@ -76,6 +128,54 @@ class Capacitance(AbstractMeasure):
 
     def convert(self, unit: CapacitanceUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: CapacitanceUnits = CapacitanceUnits.Farad) -> CapacitanceDto:
+        """
+        Get a new instance of Capacitance DTO representing the current unit.
+
+        :param hold_in_unit: The specific Capacitance unit to store the Capacitance value in the DTO representation.
+        :type hold_in_unit: CapacitanceUnits
+        :return: A new instance of CapacitanceDto.
+        :rtype: CapacitanceDto
+        """
+        return CapacitanceDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: CapacitanceUnits = CapacitanceUnits.Farad):
+        """
+        Get a Capacitance DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Capacitance unit to store the Capacitance value in the DTO representation.
+        :type hold_in_unit: CapacitanceUnits
+        :return: JSON object represents Capacitance DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Farad"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(capacitance_dto: CapacitanceDto):
+        """
+        Obtain a new instance of Capacitance from a DTO unit object.
+
+        :param capacitance_dto: The Capacitance DTO representation.
+        :type capacitance_dto: CapacitanceDto
+        :return: A new instance of Capacitance.
+        :rtype: Capacitance
+        """
+        return Capacitance(capacitance_dto.value, capacitance_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Capacitance from a DTO unit json representation.
+
+        :param data: The Capacitance DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Farad"}
+        :return: A new instance of Capacitance.
+        :rtype: Capacitance
+        """
+        return Capacitance.from_dto(CapacitanceDto.from_json(data))
 
     def __convert_from_base(self, from_unit: CapacitanceUnits) -> float:
         value = self._value
@@ -317,33 +417,41 @@ class Capacitance(AbstractMeasure):
         return self.__megafarads
 
     
-    def to_string(self, unit: CapacitanceUnits = CapacitanceUnits.Farad) -> str:
+    def to_string(self, unit: CapacitanceUnits = CapacitanceUnits.Farad, fractional_digits: int = None) -> str:
         """
-        Format the Capacitance to string.
-        Note! the default format for Capacitance is Farad.
-        To specify the unit format set the 'unit' parameter.
+        Format the Capacitance to a string.
+        
+        Note: the default format for Capacitance is Farad.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Capacitance. Default is 'Farad'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == CapacitanceUnits.Farad:
-            return f"""{self.farads} F"""
+            return f"""{super()._truncate_fraction_digits(self.farads, fractional_digits)} F"""
         
         if unit == CapacitanceUnits.Picofarad:
-            return f"""{self.picofarads} pF"""
+            return f"""{super()._truncate_fraction_digits(self.picofarads, fractional_digits)} pF"""
         
         if unit == CapacitanceUnits.Nanofarad:
-            return f"""{self.nanofarads} nF"""
+            return f"""{super()._truncate_fraction_digits(self.nanofarads, fractional_digits)} nF"""
         
         if unit == CapacitanceUnits.Microfarad:
-            return f"""{self.microfarads} μF"""
+            return f"""{super()._truncate_fraction_digits(self.microfarads, fractional_digits)} μF"""
         
         if unit == CapacitanceUnits.Millifarad:
-            return f"""{self.millifarads} mF"""
+            return f"""{super()._truncate_fraction_digits(self.millifarads, fractional_digits)} mF"""
         
         if unit == CapacitanceUnits.Kilofarad:
-            return f"""{self.kilofarads} kF"""
+            return f"""{super()._truncate_fraction_digits(self.kilofarads, fractional_digits)} kF"""
         
         if unit == CapacitanceUnits.Megafarad:
-            return f"""{self.megafarads} MF"""
+            return f"""{super()._truncate_fraction_digits(self.megafarads, fractional_digits)} MF"""
         
         return f'{self._value}'
 

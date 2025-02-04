@@ -10,276 +10,326 @@ class VolumeUnits(Enum):
             VolumeUnits enumeration
         """
         
-        Liter = 'liter'
+        Liter = 'Liter'
         """
             
         """
         
-        CubicMeter = 'cubic_meter'
+        CubicMeter = 'CubicMeter'
         """
             
         """
         
-        CubicKilometer = 'cubic_kilometer'
+        CubicKilometer = 'CubicKilometer'
         """
             
         """
         
-        CubicHectometer = 'cubic_hectometer'
+        CubicHectometer = 'CubicHectometer'
         """
             
         """
         
-        CubicDecimeter = 'cubic_decimeter'
+        CubicDecimeter = 'CubicDecimeter'
         """
             
         """
         
-        CubicCentimeter = 'cubic_centimeter'
+        CubicCentimeter = 'CubicCentimeter'
         """
             
         """
         
-        CubicMillimeter = 'cubic_millimeter'
+        CubicMillimeter = 'CubicMillimeter'
         """
             
         """
         
-        CubicMicrometer = 'cubic_micrometer'
+        CubicMicrometer = 'CubicMicrometer'
         """
             
         """
         
-        CubicMile = 'cubic_mile'
+        CubicMile = 'CubicMile'
         """
             
         """
         
-        CubicYard = 'cubic_yard'
+        CubicYard = 'CubicYard'
         """
             
         """
         
-        CubicFoot = 'cubic_foot'
+        CubicFoot = 'CubicFoot'
         """
             
         """
         
-        CubicInch = 'cubic_inch'
+        CubicInch = 'CubicInch'
         """
             
         """
         
-        ImperialGallon = 'imperial_gallon'
+        ImperialGallon = 'ImperialGallon'
         """
             The British imperial gallon (frequently called simply "gallon") is defined as exactly 4.54609 litres.
         """
         
-        ImperialOunce = 'imperial_ounce'
+        ImperialOunce = 'ImperialOunce'
         """
             
         """
         
-        UsGallon = 'us_gallon'
+        UsGallon = 'UsGallon'
         """
             The US liquid gallon (frequently called simply "gallon") is legally defined as 231 cubic inches, which is exactly 3.785411784 litres.
         """
         
-        UsOunce = 'us_ounce'
+        UsOunce = 'UsOunce'
         """
             
         """
         
-        UsTablespoon = 'us_tablespoon'
+        UsTablespoon = 'UsTablespoon'
         """
             
         """
         
-        AuTablespoon = 'au_tablespoon'
+        AuTablespoon = 'AuTablespoon'
         """
             
         """
         
-        UkTablespoon = 'uk_tablespoon'
+        UkTablespoon = 'UkTablespoon'
         """
             
         """
         
-        MetricTeaspoon = 'metric_teaspoon'
+        MetricTeaspoon = 'MetricTeaspoon'
         """
             
         """
         
-        UsTeaspoon = 'us_teaspoon'
+        UsTeaspoon = 'UsTeaspoon'
         """
             
         """
         
-        MetricCup = 'metric_cup'
+        MetricCup = 'MetricCup'
         """
             
         """
         
-        UsCustomaryCup = 'us_customary_cup'
+        UsCustomaryCup = 'UsCustomaryCup'
         """
             
         """
         
-        UsLegalCup = 'us_legal_cup'
+        UsLegalCup = 'UsLegalCup'
         """
             
         """
         
-        OilBarrel = 'oil_barrel'
+        OilBarrel = 'OilBarrel'
         """
             
         """
         
-        UsBeerBarrel = 'us_beer_barrel'
+        UsBeerBarrel = 'UsBeerBarrel'
         """
             
         """
         
-        ImperialBeerBarrel = 'imperial_beer_barrel'
+        ImperialBeerBarrel = 'ImperialBeerBarrel'
         """
             
         """
         
-        UsQuart = 'us_quart'
+        UsQuart = 'UsQuart'
         """
             
         """
         
-        ImperialQuart = 'imperial_quart'
+        ImperialQuart = 'ImperialQuart'
         """
             
         """
         
-        UsPint = 'us_pint'
+        UsPint = 'UsPint'
         """
             
         """
         
-        AcreFoot = 'acre_foot'
+        AcreFoot = 'AcreFoot'
         """
             
         """
         
-        ImperialPint = 'imperial_pint'
+        ImperialPint = 'ImperialPint'
         """
             
         """
         
-        BoardFoot = 'board_foot'
+        BoardFoot = 'BoardFoot'
         """
             
         """
         
-        Nanoliter = 'nanoliter'
+        Nanoliter = 'Nanoliter'
         """
             
         """
         
-        Microliter = 'microliter'
+        Microliter = 'Microliter'
         """
             
         """
         
-        Milliliter = 'milliliter'
+        Milliliter = 'Milliliter'
         """
             
         """
         
-        Centiliter = 'centiliter'
+        Centiliter = 'Centiliter'
         """
             
         """
         
-        Deciliter = 'deciliter'
+        Deciliter = 'Deciliter'
         """
             
         """
         
-        Decaliter = 'decaliter'
+        Decaliter = 'Decaliter'
         """
             
         """
         
-        Hectoliter = 'hectoliter'
+        Hectoliter = 'Hectoliter'
         """
             
         """
         
-        Kiloliter = 'kiloliter'
+        Kiloliter = 'Kiloliter'
         """
             
         """
         
-        Megaliter = 'megaliter'
+        Megaliter = 'Megaliter'
         """
             
         """
         
-        HectocubicMeter = 'hectocubic_meter'
+        HectocubicMeter = 'HectocubicMeter'
         """
             
         """
         
-        KilocubicMeter = 'kilocubic_meter'
+        KilocubicMeter = 'KilocubicMeter'
         """
             
         """
         
-        HectocubicFoot = 'hectocubic_foot'
+        HectocubicFoot = 'HectocubicFoot'
         """
             
         """
         
-        KilocubicFoot = 'kilocubic_foot'
+        KilocubicFoot = 'KilocubicFoot'
         """
             
         """
         
-        MegacubicFoot = 'megacubic_foot'
+        MegacubicFoot = 'MegacubicFoot'
         """
             
         """
         
-        KiloimperialGallon = 'kiloimperial_gallon'
+        KiloimperialGallon = 'KiloimperialGallon'
         """
             
         """
         
-        MegaimperialGallon = 'megaimperial_gallon'
+        MegaimperialGallon = 'MegaimperialGallon'
         """
             
         """
         
-        DecausGallon = 'decaus_gallon'
+        DecausGallon = 'DecausGallon'
         """
             
         """
         
-        DeciusGallon = 'decius_gallon'
+        DeciusGallon = 'DeciusGallon'
         """
             
         """
         
-        HectousGallon = 'hectous_gallon'
+        HectousGallon = 'HectousGallon'
         """
             
         """
         
-        KilousGallon = 'kilous_gallon'
+        KilousGallon = 'KilousGallon'
         """
             
         """
         
-        MegausGallon = 'megaus_gallon'
+        MegausGallon = 'MegausGallon'
         """
             
         """
         
+
+class VolumeDto:
+    """
+    A DTO representation of a Volume
+
+    Attributes:
+        value (float): The value of the Volume.
+        unit (VolumeUnits): The specific unit that the Volume value is representing.
+    """
+
+    def __init__(self, value: float, unit: VolumeUnits):
+        """
+        Create a new DTO representation of a Volume
+
+        Parameters:
+            value (float): The value of the Volume.
+            unit (VolumeUnits): The specific unit that the Volume value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Volume
+        """
+        self.unit: VolumeUnits = unit
+        """
+        The specific unit that the Volume value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Volume DTO JSON object representing the current unit.
+
+        :return: JSON object represents Volume DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "CubicMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Volume DTO from a json representation.
+
+        :param data: The Volume DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "CubicMeter"}
+        :return: A new instance of VolumeDto.
+        :rtype: VolumeDto
+        """
+        return VolumeDto(value=data["value"], unit=VolumeUnits(data["unit"]))
+
 
 class Volume(AbstractMeasure):
     """
@@ -290,8 +340,10 @@ class Volume(AbstractMeasure):
         from_unit (VolumeUnits): The Volume unit to create from, The default unit is CubicMeter
     """
     def __init__(self, value: float, from_unit: VolumeUnits = VolumeUnits.CubicMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__liters = None
@@ -406,6 +458,54 @@ class Volume(AbstractMeasure):
     def convert(self, unit: VolumeUnits) -> float:
         return self.__convert_from_base(unit)
 
+    def to_dto(self, hold_in_unit: VolumeUnits = VolumeUnits.CubicMeter) -> VolumeDto:
+        """
+        Get a new instance of Volume DTO representing the current unit.
+
+        :param hold_in_unit: The specific Volume unit to store the Volume value in the DTO representation.
+        :type hold_in_unit: VolumeUnits
+        :return: A new instance of VolumeDto.
+        :rtype: VolumeDto
+        """
+        return VolumeDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: VolumeUnits = VolumeUnits.CubicMeter):
+        """
+        Get a Volume DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Volume unit to store the Volume value in the DTO representation.
+        :type hold_in_unit: VolumeUnits
+        :return: JSON object represents Volume DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "CubicMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(volume_dto: VolumeDto):
+        """
+        Obtain a new instance of Volume from a DTO unit object.
+
+        :param volume_dto: The Volume DTO representation.
+        :type volume_dto: VolumeDto
+        :return: A new instance of Volume.
+        :rtype: Volume
+        """
+        return Volume(volume_dto.value, volume_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Volume from a DTO unit json representation.
+
+        :param data: The Volume DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "CubicMeter"}
+        :return: A new instance of Volume.
+        :rtype: Volume
+        """
+        return Volume.from_dto(VolumeDto.from_json(data))
+
     def __convert_from_base(self, from_unit: VolumeUnits) -> float:
         value = self._value
         
@@ -443,7 +543,7 @@ class Volume(AbstractMeasure):
             return (value / 2.8316846592e-2)
         
         if from_unit == VolumeUnits.CubicInch:
-            return (value / (1.6387 * 1e-5))
+            return (value / 1.6387064e-5)
         
         if from_unit == VolumeUnits.ImperialGallon:
             return (value / 0.00454609)
@@ -610,7 +710,7 @@ class Volume(AbstractMeasure):
             return (value * 2.8316846592e-2)
         
         if to_unit == VolumeUnits.CubicInch:
-            return (value * 1.6387 * 1e-5)
+            return (value * 1.6387064e-5)
         
         if to_unit == VolumeUnits.ImperialGallon:
             return (value * 0.00454609)
@@ -2150,174 +2250,182 @@ class Volume(AbstractMeasure):
         return self.__megaus_gallons
 
     
-    def to_string(self, unit: VolumeUnits = VolumeUnits.CubicMeter) -> str:
+    def to_string(self, unit: VolumeUnits = VolumeUnits.CubicMeter, fractional_digits: int = None) -> str:
         """
-        Format the Volume to string.
-        Note! the default format for Volume is CubicMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the Volume to a string.
+        
+        Note: the default format for Volume is CubicMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Volume. Default is 'CubicMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == VolumeUnits.Liter:
-            return f"""{self.liters} l"""
+            return f"""{super()._truncate_fraction_digits(self.liters, fractional_digits)} l"""
         
         if unit == VolumeUnits.CubicMeter:
-            return f"""{self.cubic_meters} m³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_meters, fractional_digits)} m³"""
         
         if unit == VolumeUnits.CubicKilometer:
-            return f"""{self.cubic_kilometers} km³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_kilometers, fractional_digits)} km³"""
         
         if unit == VolumeUnits.CubicHectometer:
-            return f"""{self.cubic_hectometers} hm³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_hectometers, fractional_digits)} hm³"""
         
         if unit == VolumeUnits.CubicDecimeter:
-            return f"""{self.cubic_decimeters} dm³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_decimeters, fractional_digits)} dm³"""
         
         if unit == VolumeUnits.CubicCentimeter:
-            return f"""{self.cubic_centimeters} cm³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_centimeters, fractional_digits)} cm³"""
         
         if unit == VolumeUnits.CubicMillimeter:
-            return f"""{self.cubic_millimeters} mm³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_millimeters, fractional_digits)} mm³"""
         
         if unit == VolumeUnits.CubicMicrometer:
-            return f"""{self.cubic_micrometers} µm³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_micrometers, fractional_digits)} µm³"""
         
         if unit == VolumeUnits.CubicMile:
-            return f"""{self.cubic_miles} mi³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_miles, fractional_digits)} mi³"""
         
         if unit == VolumeUnits.CubicYard:
-            return f"""{self.cubic_yards} yd³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_yards, fractional_digits)} yd³"""
         
         if unit == VolumeUnits.CubicFoot:
-            return f"""{self.cubic_feet} ft³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_feet, fractional_digits)} ft³"""
         
         if unit == VolumeUnits.CubicInch:
-            return f"""{self.cubic_inches} in³"""
+            return f"""{super()._truncate_fraction_digits(self.cubic_inches, fractional_digits)} in³"""
         
         if unit == VolumeUnits.ImperialGallon:
-            return f"""{self.imperial_gallons} gal (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.imperial_gallons, fractional_digits)} gal (imp.)"""
         
         if unit == VolumeUnits.ImperialOunce:
-            return f"""{self.imperial_ounces} oz (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.imperial_ounces, fractional_digits)} oz (imp.)"""
         
         if unit == VolumeUnits.UsGallon:
-            return f"""{self.us_gallons} gal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.us_gallons, fractional_digits)} gal (U.S.)"""
         
         if unit == VolumeUnits.UsOunce:
-            return f"""{self.us_ounces} oz (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.us_ounces, fractional_digits)} oz (U.S.)"""
         
         if unit == VolumeUnits.UsTablespoon:
-            return f"""{self.us_tablespoons} """
+            return f"""{super()._truncate_fraction_digits(self.us_tablespoons, fractional_digits)} """
         
         if unit == VolumeUnits.AuTablespoon:
-            return f"""{self.au_tablespoons} """
+            return f"""{super()._truncate_fraction_digits(self.au_tablespoons, fractional_digits)} """
         
         if unit == VolumeUnits.UkTablespoon:
-            return f"""{self.uk_tablespoons} """
+            return f"""{super()._truncate_fraction_digits(self.uk_tablespoons, fractional_digits)} """
         
         if unit == VolumeUnits.MetricTeaspoon:
-            return f"""{self.metric_teaspoons} tsp"""
+            return f"""{super()._truncate_fraction_digits(self.metric_teaspoons, fractional_digits)} tsp"""
         
         if unit == VolumeUnits.UsTeaspoon:
-            return f"""{self.us_teaspoons} """
+            return f"""{super()._truncate_fraction_digits(self.us_teaspoons, fractional_digits)} """
         
         if unit == VolumeUnits.MetricCup:
-            return f"""{self.metric_cups} """
+            return f"""{super()._truncate_fraction_digits(self.metric_cups, fractional_digits)} """
         
         if unit == VolumeUnits.UsCustomaryCup:
-            return f"""{self.us_customary_cups} """
+            return f"""{super()._truncate_fraction_digits(self.us_customary_cups, fractional_digits)} """
         
         if unit == VolumeUnits.UsLegalCup:
-            return f"""{self.us_legal_cups} """
+            return f"""{super()._truncate_fraction_digits(self.us_legal_cups, fractional_digits)} """
         
         if unit == VolumeUnits.OilBarrel:
-            return f"""{self.oil_barrels} bbl"""
+            return f"""{super()._truncate_fraction_digits(self.oil_barrels, fractional_digits)} bbl"""
         
         if unit == VolumeUnits.UsBeerBarrel:
-            return f"""{self.us_beer_barrels} bl (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.us_beer_barrels, fractional_digits)} bl (U.S.)"""
         
         if unit == VolumeUnits.ImperialBeerBarrel:
-            return f"""{self.imperial_beer_barrels} bl (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.imperial_beer_barrels, fractional_digits)} bl (imp.)"""
         
         if unit == VolumeUnits.UsQuart:
-            return f"""{self.us_quarts} qt (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.us_quarts, fractional_digits)} qt (U.S.)"""
         
         if unit == VolumeUnits.ImperialQuart:
-            return f"""{self.imperial_quarts} qt (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.imperial_quarts, fractional_digits)} qt (imp.)"""
         
         if unit == VolumeUnits.UsPint:
-            return f"""{self.us_pints} pt (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.us_pints, fractional_digits)} pt (U.S.)"""
         
         if unit == VolumeUnits.AcreFoot:
-            return f"""{self.acre_feet} ac-ft"""
+            return f"""{super()._truncate_fraction_digits(self.acre_feet, fractional_digits)} ac-ft"""
         
         if unit == VolumeUnits.ImperialPint:
-            return f"""{self.imperial_pints} pt (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.imperial_pints, fractional_digits)} pt (imp.)"""
         
         if unit == VolumeUnits.BoardFoot:
-            return f"""{self.board_feet} bf"""
+            return f"""{super()._truncate_fraction_digits(self.board_feet, fractional_digits)} bf"""
         
         if unit == VolumeUnits.Nanoliter:
-            return f"""{self.nanoliters} nl"""
+            return f"""{super()._truncate_fraction_digits(self.nanoliters, fractional_digits)} nl"""
         
         if unit == VolumeUnits.Microliter:
-            return f"""{self.microliters} μl"""
+            return f"""{super()._truncate_fraction_digits(self.microliters, fractional_digits)} μl"""
         
         if unit == VolumeUnits.Milliliter:
-            return f"""{self.milliliters} ml"""
+            return f"""{super()._truncate_fraction_digits(self.milliliters, fractional_digits)} ml"""
         
         if unit == VolumeUnits.Centiliter:
-            return f"""{self.centiliters} cl"""
+            return f"""{super()._truncate_fraction_digits(self.centiliters, fractional_digits)} cl"""
         
         if unit == VolumeUnits.Deciliter:
-            return f"""{self.deciliters} dl"""
+            return f"""{super()._truncate_fraction_digits(self.deciliters, fractional_digits)} dl"""
         
         if unit == VolumeUnits.Decaliter:
-            return f"""{self.decaliters} dal"""
+            return f"""{super()._truncate_fraction_digits(self.decaliters, fractional_digits)} dal"""
         
         if unit == VolumeUnits.Hectoliter:
-            return f"""{self.hectoliters} hl"""
+            return f"""{super()._truncate_fraction_digits(self.hectoliters, fractional_digits)} hl"""
         
         if unit == VolumeUnits.Kiloliter:
-            return f"""{self.kiloliters} kl"""
+            return f"""{super()._truncate_fraction_digits(self.kiloliters, fractional_digits)} kl"""
         
         if unit == VolumeUnits.Megaliter:
-            return f"""{self.megaliters} Ml"""
+            return f"""{super()._truncate_fraction_digits(self.megaliters, fractional_digits)} Ml"""
         
         if unit == VolumeUnits.HectocubicMeter:
-            return f"""{self.hectocubic_meters} hm³"""
+            return f"""{super()._truncate_fraction_digits(self.hectocubic_meters, fractional_digits)} hm³"""
         
         if unit == VolumeUnits.KilocubicMeter:
-            return f"""{self.kilocubic_meters} km³"""
+            return f"""{super()._truncate_fraction_digits(self.kilocubic_meters, fractional_digits)} km³"""
         
         if unit == VolumeUnits.HectocubicFoot:
-            return f"""{self.hectocubic_feet} hft³"""
+            return f"""{super()._truncate_fraction_digits(self.hectocubic_feet, fractional_digits)} hft³"""
         
         if unit == VolumeUnits.KilocubicFoot:
-            return f"""{self.kilocubic_feet} kft³"""
+            return f"""{super()._truncate_fraction_digits(self.kilocubic_feet, fractional_digits)} kft³"""
         
         if unit == VolumeUnits.MegacubicFoot:
-            return f"""{self.megacubic_feet} Mft³"""
+            return f"""{super()._truncate_fraction_digits(self.megacubic_feet, fractional_digits)} Mft³"""
         
         if unit == VolumeUnits.KiloimperialGallon:
-            return f"""{self.kiloimperial_gallons} kgal (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.kiloimperial_gallons, fractional_digits)} kgal (imp.)"""
         
         if unit == VolumeUnits.MegaimperialGallon:
-            return f"""{self.megaimperial_gallons} Mgal (imp.)"""
+            return f"""{super()._truncate_fraction_digits(self.megaimperial_gallons, fractional_digits)} Mgal (imp.)"""
         
         if unit == VolumeUnits.DecausGallon:
-            return f"""{self.decaus_gallons} dagal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.decaus_gallons, fractional_digits)} dagal (U.S.)"""
         
         if unit == VolumeUnits.DeciusGallon:
-            return f"""{self.decius_gallons} dgal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.decius_gallons, fractional_digits)} dgal (U.S.)"""
         
         if unit == VolumeUnits.HectousGallon:
-            return f"""{self.hectous_gallons} hgal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.hectous_gallons, fractional_digits)} hgal (U.S.)"""
         
         if unit == VolumeUnits.KilousGallon:
-            return f"""{self.kilous_gallons} kgal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.kilous_gallons, fractional_digits)} kgal (U.S.)"""
         
         if unit == VolumeUnits.MegausGallon:
-            return f"""{self.megaus_gallons} Mgal (U.S.)"""
+            return f"""{super()._truncate_fraction_digits(self.megaus_gallons, fractional_digits)} Mgal (U.S.)"""
         
         return f'{self._value}'
 

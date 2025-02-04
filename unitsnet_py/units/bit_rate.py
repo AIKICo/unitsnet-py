@@ -10,76 +10,186 @@ class BitRateUnits(Enum):
             BitRateUnits enumeration
         """
         
-        BitPerSecond = 'bit_per_second'
+        BitPerSecond = 'BitPerSecond'
         """
             
         """
         
-        BytePerSecond = 'byte_per_second'
+        BytePerSecond = 'BytePerSecond'
         """
             
         """
         
-        KilobitPerSecond = 'kilobit_per_second'
+        KilobitPerSecond = 'KilobitPerSecond'
         """
             
         """
         
-        MegabitPerSecond = 'megabit_per_second'
+        MegabitPerSecond = 'MegabitPerSecond'
         """
             
         """
         
-        GigabitPerSecond = 'gigabit_per_second'
+        GigabitPerSecond = 'GigabitPerSecond'
         """
             
         """
         
-        TerabitPerSecond = 'terabit_per_second'
+        TerabitPerSecond = 'TerabitPerSecond'
         """
             
         """
         
-        PetabitPerSecond = 'petabit_per_second'
+        PetabitPerSecond = 'PetabitPerSecond'
         """
             
         """
         
-        ExabitPerSecond = 'exabit_per_second'
+        ExabitPerSecond = 'ExabitPerSecond'
         """
             
         """
         
-        KilobytePerSecond = 'kilobyte_per_second'
+        KibibitPerSecond = 'KibibitPerSecond'
         """
             
         """
         
-        MegabytePerSecond = 'megabyte_per_second'
+        MebibitPerSecond = 'MebibitPerSecond'
         """
             
         """
         
-        GigabytePerSecond = 'gigabyte_per_second'
+        GibibitPerSecond = 'GibibitPerSecond'
         """
             
         """
         
-        TerabytePerSecond = 'terabyte_per_second'
+        TebibitPerSecond = 'TebibitPerSecond'
         """
             
         """
         
-        PetabytePerSecond = 'petabyte_per_second'
+        PebibitPerSecond = 'PebibitPerSecond'
         """
             
         """
         
-        ExabytePerSecond = 'exabyte_per_second'
+        ExbibitPerSecond = 'ExbibitPerSecond'
         """
             
         """
         
+        KilobytePerSecond = 'KilobytePerSecond'
+        """
+            
+        """
+        
+        MegabytePerSecond = 'MegabytePerSecond'
+        """
+            
+        """
+        
+        GigabytePerSecond = 'GigabytePerSecond'
+        """
+            
+        """
+        
+        TerabytePerSecond = 'TerabytePerSecond'
+        """
+            
+        """
+        
+        PetabytePerSecond = 'PetabytePerSecond'
+        """
+            
+        """
+        
+        ExabytePerSecond = 'ExabytePerSecond'
+        """
+            
+        """
+        
+        KibibytePerSecond = 'KibibytePerSecond'
+        """
+            
+        """
+        
+        MebibytePerSecond = 'MebibytePerSecond'
+        """
+            
+        """
+        
+        GibibytePerSecond = 'GibibytePerSecond'
+        """
+            
+        """
+        
+        TebibytePerSecond = 'TebibytePerSecond'
+        """
+            
+        """
+        
+        PebibytePerSecond = 'PebibytePerSecond'
+        """
+            
+        """
+        
+        ExbibytePerSecond = 'ExbibytePerSecond'
+        """
+            
+        """
+        
+
+class BitRateDto:
+    """
+    A DTO representation of a BitRate
+
+    Attributes:
+        value (float): The value of the BitRate.
+        unit (BitRateUnits): The specific unit that the BitRate value is representing.
+    """
+
+    def __init__(self, value: float, unit: BitRateUnits):
+        """
+        Create a new DTO representation of a BitRate
+
+        Parameters:
+            value (float): The value of the BitRate.
+            unit (BitRateUnits): The specific unit that the BitRate value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the BitRate
+        """
+        self.unit: BitRateUnits = unit
+        """
+        The specific unit that the BitRate value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a BitRate DTO JSON object representing the current unit.
+
+        :return: JSON object represents BitRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "BitPerSecond"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of BitRate DTO from a json representation.
+
+        :param data: The BitRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "BitPerSecond"}
+        :return: A new instance of BitRateDto.
+        :rtype: BitRateDto
+        """
+        return BitRateDto(value=data["value"], unit=BitRateUnits(data["unit"]))
+
 
 class BitRate(AbstractMeasure):
     """
@@ -90,8 +200,10 @@ class BitRate(AbstractMeasure):
         from_unit (BitRateUnits): The BitRate unit to create from, The default unit is BitPerSecond
     """
     def __init__(self, value: float, from_unit: BitRateUnits = BitRateUnits.BitPerSecond):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__bits_per_second = None
@@ -110,6 +222,18 @@ class BitRate(AbstractMeasure):
         
         self.__exabits_per_second = None
         
+        self.__kibibits_per_second = None
+        
+        self.__mebibits_per_second = None
+        
+        self.__gibibits_per_second = None
+        
+        self.__tebibits_per_second = None
+        
+        self.__pebibits_per_second = None
+        
+        self.__exbibits_per_second = None
+        
         self.__kilobytes_per_second = None
         
         self.__megabytes_per_second = None
@@ -122,9 +246,69 @@ class BitRate(AbstractMeasure):
         
         self.__exabytes_per_second = None
         
+        self.__kibibytes_per_second = None
+        
+        self.__mebibytes_per_second = None
+        
+        self.__gibibytes_per_second = None
+        
+        self.__tebibytes_per_second = None
+        
+        self.__pebibytes_per_second = None
+        
+        self.__exbibytes_per_second = None
+        
 
     def convert(self, unit: BitRateUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: BitRateUnits = BitRateUnits.BitPerSecond) -> BitRateDto:
+        """
+        Get a new instance of BitRate DTO representing the current unit.
+
+        :param hold_in_unit: The specific BitRate unit to store the BitRate value in the DTO representation.
+        :type hold_in_unit: BitRateUnits
+        :return: A new instance of BitRateDto.
+        :rtype: BitRateDto
+        """
+        return BitRateDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: BitRateUnits = BitRateUnits.BitPerSecond):
+        """
+        Get a BitRate DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific BitRate unit to store the BitRate value in the DTO representation.
+        :type hold_in_unit: BitRateUnits
+        :return: JSON object represents BitRate DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "BitPerSecond"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(bit_rate_dto: BitRateDto):
+        """
+        Obtain a new instance of BitRate from a DTO unit object.
+
+        :param bit_rate_dto: The BitRate DTO representation.
+        :type bit_rate_dto: BitRateDto
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(bit_rate_dto.value, bit_rate_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of BitRate from a DTO unit json representation.
+
+        :param data: The BitRate DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "BitPerSecond"}
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate.from_dto(BitRateDto.from_json(data))
 
     def __convert_from_base(self, from_unit: BitRateUnits) -> float:
         value = self._value
@@ -153,6 +337,24 @@ class BitRate(AbstractMeasure):
         if from_unit == BitRateUnits.ExabitPerSecond:
             return ((value) / 1e+18)
         
+        if from_unit == BitRateUnits.KibibitPerSecond:
+            return ((value) / 1024)
+        
+        if from_unit == BitRateUnits.MebibitPerSecond:
+            return ((value) / 1048576)
+        
+        if from_unit == BitRateUnits.GibibitPerSecond:
+            return ((value) / 1073741824)
+        
+        if from_unit == BitRateUnits.TebibitPerSecond:
+            return ((value) / 1099511627776)
+        
+        if from_unit == BitRateUnits.PebibitPerSecond:
+            return ((value) / 1125899906842624)
+        
+        if from_unit == BitRateUnits.ExbibitPerSecond:
+            return ((value) / 1152921504606846976)
+        
         if from_unit == BitRateUnits.KilobytePerSecond:
             return ((value / 8) / 1000.0)
         
@@ -170,6 +372,24 @@ class BitRate(AbstractMeasure):
         
         if from_unit == BitRateUnits.ExabytePerSecond:
             return ((value / 8) / 1e+18)
+        
+        if from_unit == BitRateUnits.KibibytePerSecond:
+            return ((value / 8) / 1024)
+        
+        if from_unit == BitRateUnits.MebibytePerSecond:
+            return ((value / 8) / 1048576)
+        
+        if from_unit == BitRateUnits.GibibytePerSecond:
+            return ((value / 8) / 1073741824)
+        
+        if from_unit == BitRateUnits.TebibytePerSecond:
+            return ((value / 8) / 1099511627776)
+        
+        if from_unit == BitRateUnits.PebibytePerSecond:
+            return ((value / 8) / 1125899906842624)
+        
+        if from_unit == BitRateUnits.ExbibytePerSecond:
+            return ((value / 8) / 1152921504606846976)
         
         return None
 
@@ -200,6 +420,24 @@ class BitRate(AbstractMeasure):
         if to_unit == BitRateUnits.ExabitPerSecond:
             return ((value) * 1e+18)
         
+        if to_unit == BitRateUnits.KibibitPerSecond:
+            return ((value) * 1024)
+        
+        if to_unit == BitRateUnits.MebibitPerSecond:
+            return ((value) * 1048576)
+        
+        if to_unit == BitRateUnits.GibibitPerSecond:
+            return ((value) * 1073741824)
+        
+        if to_unit == BitRateUnits.TebibitPerSecond:
+            return ((value) * 1099511627776)
+        
+        if to_unit == BitRateUnits.PebibitPerSecond:
+            return ((value) * 1125899906842624)
+        
+        if to_unit == BitRateUnits.ExbibitPerSecond:
+            return ((value) * 1152921504606846976)
+        
         if to_unit == BitRateUnits.KilobytePerSecond:
             return ((value * 8) * 1000.0)
         
@@ -217,6 +455,24 @@ class BitRate(AbstractMeasure):
         
         if to_unit == BitRateUnits.ExabytePerSecond:
             return ((value * 8) * 1e+18)
+        
+        if to_unit == BitRateUnits.KibibytePerSecond:
+            return ((value * 8) * 1024)
+        
+        if to_unit == BitRateUnits.MebibytePerSecond:
+            return ((value * 8) * 1048576)
+        
+        if to_unit == BitRateUnits.GibibytePerSecond:
+            return ((value * 8) * 1073741824)
+        
+        if to_unit == BitRateUnits.TebibytePerSecond:
+            return ((value * 8) * 1099511627776)
+        
+        if to_unit == BitRateUnits.PebibytePerSecond:
+            return ((value * 8) * 1125899906842624)
+        
+        if to_unit == BitRateUnits.ExbibytePerSecond:
+            return ((value * 8) * 1152921504606846976)
         
         return None
 
@@ -347,6 +603,96 @@ class BitRate(AbstractMeasure):
 
     
     @staticmethod
+    def from_kibibits_per_second(kibibits_per_second: float):
+        """
+        Create a new instance of BitRate from a value in kibibits_per_second.
+
+        
+
+        :param meters: The BitRate value in kibibits_per_second.
+        :type kibibits_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(kibibits_per_second, BitRateUnits.KibibitPerSecond)
+
+    
+    @staticmethod
+    def from_mebibits_per_second(mebibits_per_second: float):
+        """
+        Create a new instance of BitRate from a value in mebibits_per_second.
+
+        
+
+        :param meters: The BitRate value in mebibits_per_second.
+        :type mebibits_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(mebibits_per_second, BitRateUnits.MebibitPerSecond)
+
+    
+    @staticmethod
+    def from_gibibits_per_second(gibibits_per_second: float):
+        """
+        Create a new instance of BitRate from a value in gibibits_per_second.
+
+        
+
+        :param meters: The BitRate value in gibibits_per_second.
+        :type gibibits_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(gibibits_per_second, BitRateUnits.GibibitPerSecond)
+
+    
+    @staticmethod
+    def from_tebibits_per_second(tebibits_per_second: float):
+        """
+        Create a new instance of BitRate from a value in tebibits_per_second.
+
+        
+
+        :param meters: The BitRate value in tebibits_per_second.
+        :type tebibits_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(tebibits_per_second, BitRateUnits.TebibitPerSecond)
+
+    
+    @staticmethod
+    def from_pebibits_per_second(pebibits_per_second: float):
+        """
+        Create a new instance of BitRate from a value in pebibits_per_second.
+
+        
+
+        :param meters: The BitRate value in pebibits_per_second.
+        :type pebibits_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(pebibits_per_second, BitRateUnits.PebibitPerSecond)
+
+    
+    @staticmethod
+    def from_exbibits_per_second(exbibits_per_second: float):
+        """
+        Create a new instance of BitRate from a value in exbibits_per_second.
+
+        
+
+        :param meters: The BitRate value in exbibits_per_second.
+        :type exbibits_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(exbibits_per_second, BitRateUnits.ExbibitPerSecond)
+
+    
+    @staticmethod
     def from_kilobytes_per_second(kilobytes_per_second: float):
         """
         Create a new instance of BitRate from a value in kilobytes_per_second.
@@ -434,6 +780,96 @@ class BitRate(AbstractMeasure):
         :rtype: BitRate
         """
         return BitRate(exabytes_per_second, BitRateUnits.ExabytePerSecond)
+
+    
+    @staticmethod
+    def from_kibibytes_per_second(kibibytes_per_second: float):
+        """
+        Create a new instance of BitRate from a value in kibibytes_per_second.
+
+        
+
+        :param meters: The BitRate value in kibibytes_per_second.
+        :type kibibytes_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(kibibytes_per_second, BitRateUnits.KibibytePerSecond)
+
+    
+    @staticmethod
+    def from_mebibytes_per_second(mebibytes_per_second: float):
+        """
+        Create a new instance of BitRate from a value in mebibytes_per_second.
+
+        
+
+        :param meters: The BitRate value in mebibytes_per_second.
+        :type mebibytes_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(mebibytes_per_second, BitRateUnits.MebibytePerSecond)
+
+    
+    @staticmethod
+    def from_gibibytes_per_second(gibibytes_per_second: float):
+        """
+        Create a new instance of BitRate from a value in gibibytes_per_second.
+
+        
+
+        :param meters: The BitRate value in gibibytes_per_second.
+        :type gibibytes_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(gibibytes_per_second, BitRateUnits.GibibytePerSecond)
+
+    
+    @staticmethod
+    def from_tebibytes_per_second(tebibytes_per_second: float):
+        """
+        Create a new instance of BitRate from a value in tebibytes_per_second.
+
+        
+
+        :param meters: The BitRate value in tebibytes_per_second.
+        :type tebibytes_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(tebibytes_per_second, BitRateUnits.TebibytePerSecond)
+
+    
+    @staticmethod
+    def from_pebibytes_per_second(pebibytes_per_second: float):
+        """
+        Create a new instance of BitRate from a value in pebibytes_per_second.
+
+        
+
+        :param meters: The BitRate value in pebibytes_per_second.
+        :type pebibytes_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(pebibytes_per_second, BitRateUnits.PebibytePerSecond)
+
+    
+    @staticmethod
+    def from_exbibytes_per_second(exbibytes_per_second: float):
+        """
+        Create a new instance of BitRate from a value in exbibytes_per_second.
+
+        
+
+        :param meters: The BitRate value in exbibytes_per_second.
+        :type exbibytes_per_second: float
+        :return: A new instance of BitRate.
+        :rtype: BitRate
+        """
+        return BitRate(exbibytes_per_second, BitRateUnits.ExbibytePerSecond)
 
     
     @property
@@ -525,6 +961,72 @@ class BitRate(AbstractMeasure):
 
     
     @property
+    def kibibits_per_second(self) -> float:
+        """
+        
+        """
+        if self.__kibibits_per_second != None:
+            return self.__kibibits_per_second
+        self.__kibibits_per_second = self.__convert_from_base(BitRateUnits.KibibitPerSecond)
+        return self.__kibibits_per_second
+
+    
+    @property
+    def mebibits_per_second(self) -> float:
+        """
+        
+        """
+        if self.__mebibits_per_second != None:
+            return self.__mebibits_per_second
+        self.__mebibits_per_second = self.__convert_from_base(BitRateUnits.MebibitPerSecond)
+        return self.__mebibits_per_second
+
+    
+    @property
+    def gibibits_per_second(self) -> float:
+        """
+        
+        """
+        if self.__gibibits_per_second != None:
+            return self.__gibibits_per_second
+        self.__gibibits_per_second = self.__convert_from_base(BitRateUnits.GibibitPerSecond)
+        return self.__gibibits_per_second
+
+    
+    @property
+    def tebibits_per_second(self) -> float:
+        """
+        
+        """
+        if self.__tebibits_per_second != None:
+            return self.__tebibits_per_second
+        self.__tebibits_per_second = self.__convert_from_base(BitRateUnits.TebibitPerSecond)
+        return self.__tebibits_per_second
+
+    
+    @property
+    def pebibits_per_second(self) -> float:
+        """
+        
+        """
+        if self.__pebibits_per_second != None:
+            return self.__pebibits_per_second
+        self.__pebibits_per_second = self.__convert_from_base(BitRateUnits.PebibitPerSecond)
+        return self.__pebibits_per_second
+
+    
+    @property
+    def exbibits_per_second(self) -> float:
+        """
+        
+        """
+        if self.__exbibits_per_second != None:
+            return self.__exbibits_per_second
+        self.__exbibits_per_second = self.__convert_from_base(BitRateUnits.ExbibitPerSecond)
+        return self.__exbibits_per_second
+
+    
+    @property
     def kilobytes_per_second(self) -> float:
         """
         
@@ -590,54 +1092,164 @@ class BitRate(AbstractMeasure):
         return self.__exabytes_per_second
 
     
-    def to_string(self, unit: BitRateUnits = BitRateUnits.BitPerSecond) -> str:
+    @property
+    def kibibytes_per_second(self) -> float:
         """
-        Format the BitRate to string.
-        Note! the default format for BitRate is BitPerSecond.
-        To specify the unit format set the 'unit' parameter.
+        
+        """
+        if self.__kibibytes_per_second != None:
+            return self.__kibibytes_per_second
+        self.__kibibytes_per_second = self.__convert_from_base(BitRateUnits.KibibytePerSecond)
+        return self.__kibibytes_per_second
+
+    
+    @property
+    def mebibytes_per_second(self) -> float:
+        """
+        
+        """
+        if self.__mebibytes_per_second != None:
+            return self.__mebibytes_per_second
+        self.__mebibytes_per_second = self.__convert_from_base(BitRateUnits.MebibytePerSecond)
+        return self.__mebibytes_per_second
+
+    
+    @property
+    def gibibytes_per_second(self) -> float:
+        """
+        
+        """
+        if self.__gibibytes_per_second != None:
+            return self.__gibibytes_per_second
+        self.__gibibytes_per_second = self.__convert_from_base(BitRateUnits.GibibytePerSecond)
+        return self.__gibibytes_per_second
+
+    
+    @property
+    def tebibytes_per_second(self) -> float:
+        """
+        
+        """
+        if self.__tebibytes_per_second != None:
+            return self.__tebibytes_per_second
+        self.__tebibytes_per_second = self.__convert_from_base(BitRateUnits.TebibytePerSecond)
+        return self.__tebibytes_per_second
+
+    
+    @property
+    def pebibytes_per_second(self) -> float:
+        """
+        
+        """
+        if self.__pebibytes_per_second != None:
+            return self.__pebibytes_per_second
+        self.__pebibytes_per_second = self.__convert_from_base(BitRateUnits.PebibytePerSecond)
+        return self.__pebibytes_per_second
+
+    
+    @property
+    def exbibytes_per_second(self) -> float:
+        """
+        
+        """
+        if self.__exbibytes_per_second != None:
+            return self.__exbibytes_per_second
+        self.__exbibytes_per_second = self.__convert_from_base(BitRateUnits.ExbibytePerSecond)
+        return self.__exbibytes_per_second
+
+    
+    def to_string(self, unit: BitRateUnits = BitRateUnits.BitPerSecond, fractional_digits: int = None) -> str:
+        """
+        Format the BitRate to a string.
+        
+        Note: the default format for BitRate is BitPerSecond.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the BitRate. Default is 'BitPerSecond'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == BitRateUnits.BitPerSecond:
-            return f"""{self.bits_per_second} bit/s"""
+            return f"""{super()._truncate_fraction_digits(self.bits_per_second, fractional_digits)} bit/s"""
         
         if unit == BitRateUnits.BytePerSecond:
-            return f"""{self.bytes_per_second} B/s"""
+            return f"""{super()._truncate_fraction_digits(self.bytes_per_second, fractional_digits)} B/s"""
         
         if unit == BitRateUnits.KilobitPerSecond:
-            return f"""{self.kilobits_per_second} kbit/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilobits_per_second, fractional_digits)} kbit/s"""
         
         if unit == BitRateUnits.MegabitPerSecond:
-            return f"""{self.megabits_per_second} Mbit/s"""
+            return f"""{super()._truncate_fraction_digits(self.megabits_per_second, fractional_digits)} Mbit/s"""
         
         if unit == BitRateUnits.GigabitPerSecond:
-            return f"""{self.gigabits_per_second} Gbit/s"""
+            return f"""{super()._truncate_fraction_digits(self.gigabits_per_second, fractional_digits)} Gbit/s"""
         
         if unit == BitRateUnits.TerabitPerSecond:
-            return f"""{self.terabits_per_second} Tbit/s"""
+            return f"""{super()._truncate_fraction_digits(self.terabits_per_second, fractional_digits)} Tbit/s"""
         
         if unit == BitRateUnits.PetabitPerSecond:
-            return f"""{self.petabits_per_second} Pbit/s"""
+            return f"""{super()._truncate_fraction_digits(self.petabits_per_second, fractional_digits)} Pbit/s"""
         
         if unit == BitRateUnits.ExabitPerSecond:
-            return f"""{self.exabits_per_second} Ebit/s"""
+            return f"""{super()._truncate_fraction_digits(self.exabits_per_second, fractional_digits)} Ebit/s"""
+        
+        if unit == BitRateUnits.KibibitPerSecond:
+            return f"""{super()._truncate_fraction_digits(self.kibibits_per_second, fractional_digits)} KiBbit/s"""
+        
+        if unit == BitRateUnits.MebibitPerSecond:
+            return f"""{super()._truncate_fraction_digits(self.mebibits_per_second, fractional_digits)} MiBbit/s"""
+        
+        if unit == BitRateUnits.GibibitPerSecond:
+            return f"""{super()._truncate_fraction_digits(self.gibibits_per_second, fractional_digits)} GiBbit/s"""
+        
+        if unit == BitRateUnits.TebibitPerSecond:
+            return f"""{super()._truncate_fraction_digits(self.tebibits_per_second, fractional_digits)} TiBbit/s"""
+        
+        if unit == BitRateUnits.PebibitPerSecond:
+            return f"""{super()._truncate_fraction_digits(self.pebibits_per_second, fractional_digits)} PiBbit/s"""
+        
+        if unit == BitRateUnits.ExbibitPerSecond:
+            return f"""{super()._truncate_fraction_digits(self.exbibits_per_second, fractional_digits)} EiBbit/s"""
         
         if unit == BitRateUnits.KilobytePerSecond:
-            return f"""{self.kilobytes_per_second} kB/s"""
+            return f"""{super()._truncate_fraction_digits(self.kilobytes_per_second, fractional_digits)} kB/s"""
         
         if unit == BitRateUnits.MegabytePerSecond:
-            return f"""{self.megabytes_per_second} MB/s"""
+            return f"""{super()._truncate_fraction_digits(self.megabytes_per_second, fractional_digits)} MB/s"""
         
         if unit == BitRateUnits.GigabytePerSecond:
-            return f"""{self.gigabytes_per_second} GB/s"""
+            return f"""{super()._truncate_fraction_digits(self.gigabytes_per_second, fractional_digits)} GB/s"""
         
         if unit == BitRateUnits.TerabytePerSecond:
-            return f"""{self.terabytes_per_second} TB/s"""
+            return f"""{super()._truncate_fraction_digits(self.terabytes_per_second, fractional_digits)} TB/s"""
         
         if unit == BitRateUnits.PetabytePerSecond:
-            return f"""{self.petabytes_per_second} PB/s"""
+            return f"""{super()._truncate_fraction_digits(self.petabytes_per_second, fractional_digits)} PB/s"""
         
         if unit == BitRateUnits.ExabytePerSecond:
-            return f"""{self.exabytes_per_second} EB/s"""
+            return f"""{super()._truncate_fraction_digits(self.exabytes_per_second, fractional_digits)} EB/s"""
+        
+        if unit == BitRateUnits.KibibytePerSecond:
+            return f"""{super()._truncate_fraction_digits(self.kibibytes_per_second, fractional_digits)} KiBB/s"""
+        
+        if unit == BitRateUnits.MebibytePerSecond:
+            return f"""{super()._truncate_fraction_digits(self.mebibytes_per_second, fractional_digits)} MiBB/s"""
+        
+        if unit == BitRateUnits.GibibytePerSecond:
+            return f"""{super()._truncate_fraction_digits(self.gibibytes_per_second, fractional_digits)} GiBB/s"""
+        
+        if unit == BitRateUnits.TebibytePerSecond:
+            return f"""{super()._truncate_fraction_digits(self.tebibytes_per_second, fractional_digits)} TiBB/s"""
+        
+        if unit == BitRateUnits.PebibytePerSecond:
+            return f"""{super()._truncate_fraction_digits(self.pebibytes_per_second, fractional_digits)} PiBB/s"""
+        
+        if unit == BitRateUnits.ExbibytePerSecond:
+            return f"""{super()._truncate_fraction_digits(self.exbibytes_per_second, fractional_digits)} EiBB/s"""
         
         return f'{self._value}'
 
@@ -673,6 +1285,24 @@ class BitRate(AbstractMeasure):
         if unit_abbreviation == BitRateUnits.ExabitPerSecond:
             return """Ebit/s"""
         
+        if unit_abbreviation == BitRateUnits.KibibitPerSecond:
+            return """KiBbit/s"""
+        
+        if unit_abbreviation == BitRateUnits.MebibitPerSecond:
+            return """MiBbit/s"""
+        
+        if unit_abbreviation == BitRateUnits.GibibitPerSecond:
+            return """GiBbit/s"""
+        
+        if unit_abbreviation == BitRateUnits.TebibitPerSecond:
+            return """TiBbit/s"""
+        
+        if unit_abbreviation == BitRateUnits.PebibitPerSecond:
+            return """PiBbit/s"""
+        
+        if unit_abbreviation == BitRateUnits.ExbibitPerSecond:
+            return """EiBbit/s"""
+        
         if unit_abbreviation == BitRateUnits.KilobytePerSecond:
             return """kB/s"""
         
@@ -690,4 +1320,22 @@ class BitRate(AbstractMeasure):
         
         if unit_abbreviation == BitRateUnits.ExabytePerSecond:
             return """EB/s"""
+        
+        if unit_abbreviation == BitRateUnits.KibibytePerSecond:
+            return """KiBB/s"""
+        
+        if unit_abbreviation == BitRateUnits.MebibytePerSecond:
+            return """MiBB/s"""
+        
+        if unit_abbreviation == BitRateUnits.GibibytePerSecond:
+            return """GiBB/s"""
+        
+        if unit_abbreviation == BitRateUnits.TebibytePerSecond:
+            return """TiBB/s"""
+        
+        if unit_abbreviation == BitRateUnits.PebibytePerSecond:
+            return """PiBB/s"""
+        
+        if unit_abbreviation == BitRateUnits.ExbibytePerSecond:
+            return """EiBB/s"""
         

@@ -10,91 +10,141 @@ class SpecificWeightUnits(Enum):
             SpecificWeightUnits enumeration
         """
         
-        NewtonPerCubicMillimeter = 'newton_per_cubic_millimeter'
+        NewtonPerCubicMillimeter = 'NewtonPerCubicMillimeter'
         """
             
         """
         
-        NewtonPerCubicCentimeter = 'newton_per_cubic_centimeter'
+        NewtonPerCubicCentimeter = 'NewtonPerCubicCentimeter'
         """
             
         """
         
-        NewtonPerCubicMeter = 'newton_per_cubic_meter'
+        NewtonPerCubicMeter = 'NewtonPerCubicMeter'
         """
             
         """
         
-        KilogramForcePerCubicMillimeter = 'kilogram_force_per_cubic_millimeter'
+        KilogramForcePerCubicMillimeter = 'KilogramForcePerCubicMillimeter'
         """
             
         """
         
-        KilogramForcePerCubicCentimeter = 'kilogram_force_per_cubic_centimeter'
+        KilogramForcePerCubicCentimeter = 'KilogramForcePerCubicCentimeter'
         """
             
         """
         
-        KilogramForcePerCubicMeter = 'kilogram_force_per_cubic_meter'
+        KilogramForcePerCubicMeter = 'KilogramForcePerCubicMeter'
         """
             
         """
         
-        PoundForcePerCubicInch = 'pound_force_per_cubic_inch'
+        PoundForcePerCubicInch = 'PoundForcePerCubicInch'
         """
             
         """
         
-        PoundForcePerCubicFoot = 'pound_force_per_cubic_foot'
+        PoundForcePerCubicFoot = 'PoundForcePerCubicFoot'
         """
             
         """
         
-        TonneForcePerCubicMillimeter = 'tonne_force_per_cubic_millimeter'
+        TonneForcePerCubicMillimeter = 'TonneForcePerCubicMillimeter'
         """
             
         """
         
-        TonneForcePerCubicCentimeter = 'tonne_force_per_cubic_centimeter'
+        TonneForcePerCubicCentimeter = 'TonneForcePerCubicCentimeter'
         """
             
         """
         
-        TonneForcePerCubicMeter = 'tonne_force_per_cubic_meter'
+        TonneForcePerCubicMeter = 'TonneForcePerCubicMeter'
         """
             
         """
         
-        KilonewtonPerCubicMillimeter = 'kilonewton_per_cubic_millimeter'
+        KilonewtonPerCubicMillimeter = 'KilonewtonPerCubicMillimeter'
         """
             
         """
         
-        KilonewtonPerCubicCentimeter = 'kilonewton_per_cubic_centimeter'
+        KilonewtonPerCubicCentimeter = 'KilonewtonPerCubicCentimeter'
         """
             
         """
         
-        KilonewtonPerCubicMeter = 'kilonewton_per_cubic_meter'
+        KilonewtonPerCubicMeter = 'KilonewtonPerCubicMeter'
         """
             
         """
         
-        MeganewtonPerCubicMeter = 'meganewton_per_cubic_meter'
+        MeganewtonPerCubicMeter = 'MeganewtonPerCubicMeter'
         """
             
         """
         
-        KilopoundForcePerCubicInch = 'kilopound_force_per_cubic_inch'
+        KilopoundForcePerCubicInch = 'KilopoundForcePerCubicInch'
         """
             
         """
         
-        KilopoundForcePerCubicFoot = 'kilopound_force_per_cubic_foot'
+        KilopoundForcePerCubicFoot = 'KilopoundForcePerCubicFoot'
         """
             
         """
         
+
+class SpecificWeightDto:
+    """
+    A DTO representation of a SpecificWeight
+
+    Attributes:
+        value (float): The value of the SpecificWeight.
+        unit (SpecificWeightUnits): The specific unit that the SpecificWeight value is representing.
+    """
+
+    def __init__(self, value: float, unit: SpecificWeightUnits):
+        """
+        Create a new DTO representation of a SpecificWeight
+
+        Parameters:
+            value (float): The value of the SpecificWeight.
+            unit (SpecificWeightUnits): The specific unit that the SpecificWeight value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the SpecificWeight
+        """
+        self.unit: SpecificWeightUnits = unit
+        """
+        The specific unit that the SpecificWeight value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a SpecificWeight DTO JSON object representing the current unit.
+
+        :return: JSON object represents SpecificWeight DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonPerCubicMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of SpecificWeight DTO from a json representation.
+
+        :param data: The SpecificWeight DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonPerCubicMeter"}
+        :return: A new instance of SpecificWeightDto.
+        :rtype: SpecificWeightDto
+        """
+        return SpecificWeightDto(value=data["value"], unit=SpecificWeightUnits(data["unit"]))
+
 
 class SpecificWeight(AbstractMeasure):
     """
@@ -105,8 +155,10 @@ class SpecificWeight(AbstractMeasure):
         from_unit (SpecificWeightUnits): The SpecificWeight unit to create from, The default unit is NewtonPerCubicMeter
     """
     def __init__(self, value: float, from_unit: SpecificWeightUnits = SpecificWeightUnits.NewtonPerCubicMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__newtons_per_cubic_millimeter = None
@@ -146,6 +198,54 @@ class SpecificWeight(AbstractMeasure):
 
     def convert(self, unit: SpecificWeightUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: SpecificWeightUnits = SpecificWeightUnits.NewtonPerCubicMeter) -> SpecificWeightDto:
+        """
+        Get a new instance of SpecificWeight DTO representing the current unit.
+
+        :param hold_in_unit: The specific SpecificWeight unit to store the SpecificWeight value in the DTO representation.
+        :type hold_in_unit: SpecificWeightUnits
+        :return: A new instance of SpecificWeightDto.
+        :rtype: SpecificWeightDto
+        """
+        return SpecificWeightDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: SpecificWeightUnits = SpecificWeightUnits.NewtonPerCubicMeter):
+        """
+        Get a SpecificWeight DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific SpecificWeight unit to store the SpecificWeight value in the DTO representation.
+        :type hold_in_unit: SpecificWeightUnits
+        :return: JSON object represents SpecificWeight DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonPerCubicMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(specific_weight_dto: SpecificWeightDto):
+        """
+        Obtain a new instance of SpecificWeight from a DTO unit object.
+
+        :param specific_weight_dto: The SpecificWeight DTO representation.
+        :type specific_weight_dto: SpecificWeightDto
+        :return: A new instance of SpecificWeight.
+        :rtype: SpecificWeight
+        """
+        return SpecificWeight(specific_weight_dto.value, specific_weight_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of SpecificWeight from a DTO unit json representation.
+
+        :param data: The SpecificWeight DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonPerCubicMeter"}
+        :return: A new instance of SpecificWeight.
+        :rtype: SpecificWeight
+        """
+        return SpecificWeight.from_dto(SpecificWeightDto.from_json(data))
 
     def __convert_from_base(self, from_unit: SpecificWeightUnits) -> float:
         value = self._value
@@ -707,63 +807,71 @@ class SpecificWeight(AbstractMeasure):
         return self.__kilopounds_force_per_cubic_foot
 
     
-    def to_string(self, unit: SpecificWeightUnits = SpecificWeightUnits.NewtonPerCubicMeter) -> str:
+    def to_string(self, unit: SpecificWeightUnits = SpecificWeightUnits.NewtonPerCubicMeter, fractional_digits: int = None) -> str:
         """
-        Format the SpecificWeight to string.
-        Note! the default format for SpecificWeight is NewtonPerCubicMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the SpecificWeight to a string.
+        
+        Note: the default format for SpecificWeight is NewtonPerCubicMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the SpecificWeight. Default is 'NewtonPerCubicMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == SpecificWeightUnits.NewtonPerCubicMillimeter:
-            return f"""{self.newtons_per_cubic_millimeter} N/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_cubic_millimeter, fractional_digits)} N/mm³"""
         
         if unit == SpecificWeightUnits.NewtonPerCubicCentimeter:
-            return f"""{self.newtons_per_cubic_centimeter} N/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_cubic_centimeter, fractional_digits)} N/cm³"""
         
         if unit == SpecificWeightUnits.NewtonPerCubicMeter:
-            return f"""{self.newtons_per_cubic_meter} N/m³"""
+            return f"""{super()._truncate_fraction_digits(self.newtons_per_cubic_meter, fractional_digits)} N/m³"""
         
         if unit == SpecificWeightUnits.KilogramForcePerCubicMillimeter:
-            return f"""{self.kilograms_force_per_cubic_millimeter} kgf/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force_per_cubic_millimeter, fractional_digits)} kgf/mm³"""
         
         if unit == SpecificWeightUnits.KilogramForcePerCubicCentimeter:
-            return f"""{self.kilograms_force_per_cubic_centimeter} kgf/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force_per_cubic_centimeter, fractional_digits)} kgf/cm³"""
         
         if unit == SpecificWeightUnits.KilogramForcePerCubicMeter:
-            return f"""{self.kilograms_force_per_cubic_meter} kgf/m³"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force_per_cubic_meter, fractional_digits)} kgf/m³"""
         
         if unit == SpecificWeightUnits.PoundForcePerCubicInch:
-            return f"""{self.pounds_force_per_cubic_inch} lbf/in³"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_cubic_inch, fractional_digits)} lbf/in³"""
         
         if unit == SpecificWeightUnits.PoundForcePerCubicFoot:
-            return f"""{self.pounds_force_per_cubic_foot} lbf/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force_per_cubic_foot, fractional_digits)} lbf/ft³"""
         
         if unit == SpecificWeightUnits.TonneForcePerCubicMillimeter:
-            return f"""{self.tonnes_force_per_cubic_millimeter} tf/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force_per_cubic_millimeter, fractional_digits)} tf/mm³"""
         
         if unit == SpecificWeightUnits.TonneForcePerCubicCentimeter:
-            return f"""{self.tonnes_force_per_cubic_centimeter} tf/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force_per_cubic_centimeter, fractional_digits)} tf/cm³"""
         
         if unit == SpecificWeightUnits.TonneForcePerCubicMeter:
-            return f"""{self.tonnes_force_per_cubic_meter} tf/m³"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force_per_cubic_meter, fractional_digits)} tf/m³"""
         
         if unit == SpecificWeightUnits.KilonewtonPerCubicMillimeter:
-            return f"""{self.kilonewtons_per_cubic_millimeter} kN/mm³"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_cubic_millimeter, fractional_digits)} kN/mm³"""
         
         if unit == SpecificWeightUnits.KilonewtonPerCubicCentimeter:
-            return f"""{self.kilonewtons_per_cubic_centimeter} kN/cm³"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_cubic_centimeter, fractional_digits)} kN/cm³"""
         
         if unit == SpecificWeightUnits.KilonewtonPerCubicMeter:
-            return f"""{self.kilonewtons_per_cubic_meter} kN/m³"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons_per_cubic_meter, fractional_digits)} kN/m³"""
         
         if unit == SpecificWeightUnits.MeganewtonPerCubicMeter:
-            return f"""{self.meganewtons_per_cubic_meter} MN/m³"""
+            return f"""{super()._truncate_fraction_digits(self.meganewtons_per_cubic_meter, fractional_digits)} MN/m³"""
         
         if unit == SpecificWeightUnits.KilopoundForcePerCubicInch:
-            return f"""{self.kilopounds_force_per_cubic_inch} klbf/in³"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_cubic_inch, fractional_digits)} klbf/in³"""
         
         if unit == SpecificWeightUnits.KilopoundForcePerCubicFoot:
-            return f"""{self.kilopounds_force_per_cubic_foot} klbf/ft³"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force_per_cubic_foot, fractional_digits)} klbf/ft³"""
         
         return f'{self._value}'
 

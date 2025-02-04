@@ -10,141 +10,191 @@ class MassUnits(Enum):
             MassUnits enumeration
         """
         
-        Gram = 'gram'
+        Gram = 'Gram'
         """
             
         """
         
-        Tonne = 'tonne'
+        Tonne = 'Tonne'
         """
             
         """
         
-        ShortTon = 'short_ton'
+        ShortTon = 'ShortTon'
         """
             The short ton is a unit of mass equal to 2,000 pounds (907.18474 kg), that is most commonly used in the United States – known there simply as the ton.
         """
         
-        LongTon = 'long_ton'
+        LongTon = 'LongTon'
         """
             Long ton (weight ton or Imperial ton) is a unit of mass equal to 2,240 pounds (1,016 kg) and is the name for the unit called the "ton" in the avoirdupois or Imperial system of measurements that was used in the United Kingdom and several other Commonwealth countries before metrication.
         """
         
-        Pound = 'pound'
+        Pound = 'Pound'
         """
             The pound or pound-mass (abbreviations: lb, lbm) is a unit of mass used in the imperial, United States customary and other systems of measurement. A number of different definitions have been used, the most common today being the international avoirdupois pound which is legally defined as exactly 0.45359237 kilograms, and which is divided into 16 avoirdupois ounces.
         """
         
-        Ounce = 'ounce'
+        Ounce = 'Ounce'
         """
             The international avoirdupois ounce (abbreviated oz) is defined as exactly 28.349523125 g under the international yard and pound agreement of 1959, signed by the United States and countries of the Commonwealth of Nations. 16 oz make up an avoirdupois pound.
         """
         
-        Slug = 'slug'
+        Slug = 'Slug'
         """
             The slug (abbreviation slug) is a unit of mass that is accelerated by 1 ft/s² when a force of one pound (lbf) is exerted on it.
         """
         
-        Stone = 'stone'
+        Stone = 'Stone'
         """
             The stone (abbreviation st) is a unit of mass equal to 14 pounds avoirdupois (about 6.35 kilograms) used in Great Britain and Ireland for measuring human body weight.
         """
         
-        ShortHundredweight = 'short_hundredweight'
+        ShortHundredweight = 'ShortHundredweight'
         """
             The short hundredweight (abbreviation cwt) is a unit of mass equal to 100 pounds in US and Canada. In British English, the short hundredweight is referred to as the "cental".
         """
         
-        LongHundredweight = 'long_hundredweight'
+        LongHundredweight = 'LongHundredweight'
         """
             The long or imperial hundredweight (abbreviation cwt) is a unit of mass equal to 112 pounds in US and Canada.
         """
         
-        Grain = 'grain'
+        Grain = 'Grain'
         """
             A grain is a unit of measurement of mass, and in the troy weight, avoirdupois, and Apothecaries' system, equal to exactly 64.79891 milligrams.
         """
         
-        SolarMass = 'solar_mass'
+        SolarMass = 'SolarMass'
         """
             Solar mass is a ratio unit to the mass of the solar system star, the sun.
         """
         
-        EarthMass = 'earth_mass'
+        EarthMass = 'EarthMass'
         """
             Earth mass is a ratio unit to the mass of planet Earth.
         """
         
-        Femtogram = 'femtogram'
+        Femtogram = 'Femtogram'
         """
             
         """
         
-        Picogram = 'picogram'
+        Picogram = 'Picogram'
         """
             
         """
         
-        Nanogram = 'nanogram'
+        Nanogram = 'Nanogram'
         """
             
         """
         
-        Microgram = 'microgram'
+        Microgram = 'Microgram'
         """
             
         """
         
-        Milligram = 'milligram'
+        Milligram = 'Milligram'
         """
             
         """
         
-        Centigram = 'centigram'
+        Centigram = 'Centigram'
         """
             
         """
         
-        Decigram = 'decigram'
+        Decigram = 'Decigram'
         """
             
         """
         
-        Decagram = 'decagram'
+        Decagram = 'Decagram'
         """
             
         """
         
-        Hectogram = 'hectogram'
+        Hectogram = 'Hectogram'
         """
             
         """
         
-        Kilogram = 'kilogram'
+        Kilogram = 'Kilogram'
         """
             
         """
         
-        Kilotonne = 'kilotonne'
+        Kilotonne = 'Kilotonne'
         """
             
         """
         
-        Megatonne = 'megatonne'
+        Megatonne = 'Megatonne'
         """
             
         """
         
-        Kilopound = 'kilopound'
+        Kilopound = 'Kilopound'
         """
             
         """
         
-        Megapound = 'megapound'
+        Megapound = 'Megapound'
         """
             
         """
         
+
+class MassDto:
+    """
+    A DTO representation of a Mass
+
+    Attributes:
+        value (float): The value of the Mass.
+        unit (MassUnits): The specific unit that the Mass value is representing.
+    """
+
+    def __init__(self, value: float, unit: MassUnits):
+        """
+        Create a new DTO representation of a Mass
+
+        Parameters:
+            value (float): The value of the Mass.
+            unit (MassUnits): The specific unit that the Mass value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Mass
+        """
+        self.unit: MassUnits = unit
+        """
+        The specific unit that the Mass value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Mass DTO JSON object representing the current unit.
+
+        :return: JSON object represents Mass DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Kilogram"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Mass DTO from a json representation.
+
+        :param data: The Mass DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Kilogram"}
+        :return: A new instance of MassDto.
+        :rtype: MassDto
+        """
+        return MassDto(value=data["value"], unit=MassUnits(data["unit"]))
+
 
 class Mass(AbstractMeasure):
     """
@@ -155,8 +205,10 @@ class Mass(AbstractMeasure):
         from_unit (MassUnits): The Mass unit to create from, The default unit is Kilogram
     """
     def __init__(self, value: float, from_unit: MassUnits = MassUnits.Kilogram):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__grams = None
@@ -216,6 +268,54 @@ class Mass(AbstractMeasure):
 
     def convert(self, unit: MassUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: MassUnits = MassUnits.Kilogram) -> MassDto:
+        """
+        Get a new instance of Mass DTO representing the current unit.
+
+        :param hold_in_unit: The specific Mass unit to store the Mass value in the DTO representation.
+        :type hold_in_unit: MassUnits
+        :return: A new instance of MassDto.
+        :rtype: MassDto
+        """
+        return MassDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: MassUnits = MassUnits.Kilogram):
+        """
+        Get a Mass DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Mass unit to store the Mass value in the DTO representation.
+        :type hold_in_unit: MassUnits
+        :return: JSON object represents Mass DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Kilogram"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(mass_dto: MassDto):
+        """
+        Obtain a new instance of Mass from a DTO unit object.
+
+        :param mass_dto: The Mass DTO representation.
+        :type mass_dto: MassDto
+        :return: A new instance of Mass.
+        :rtype: Mass
+        """
+        return Mass(mass_dto.value, mass_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Mass from a DTO unit json representation.
+
+        :param data: The Mass DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Kilogram"}
+        :return: A new instance of Mass.
+        :rtype: Mass
+        """
+        return Mass.from_dto(MassDto.from_json(data))
 
     def __convert_from_base(self, from_unit: MassUnits) -> float:
         value = self._value
@@ -1097,93 +1197,101 @@ class Mass(AbstractMeasure):
         return self.__megapounds
 
     
-    def to_string(self, unit: MassUnits = MassUnits.Kilogram) -> str:
+    def to_string(self, unit: MassUnits = MassUnits.Kilogram, fractional_digits: int = None) -> str:
         """
-        Format the Mass to string.
-        Note! the default format for Mass is Kilogram.
-        To specify the unit format set the 'unit' parameter.
+        Format the Mass to a string.
+        
+        Note: the default format for Mass is Kilogram.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Mass. Default is 'Kilogram'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == MassUnits.Gram:
-            return f"""{self.grams} g"""
+            return f"""{super()._truncate_fraction_digits(self.grams, fractional_digits)} g"""
         
         if unit == MassUnits.Tonne:
-            return f"""{self.tonnes} t"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes, fractional_digits)} t"""
         
         if unit == MassUnits.ShortTon:
-            return f"""{self.short_tons} t (short)"""
+            return f"""{super()._truncate_fraction_digits(self.short_tons, fractional_digits)} t (short)"""
         
         if unit == MassUnits.LongTon:
-            return f"""{self.long_tons} long tn"""
+            return f"""{super()._truncate_fraction_digits(self.long_tons, fractional_digits)} long tn"""
         
         if unit == MassUnits.Pound:
-            return f"""{self.pounds} lb"""
+            return f"""{super()._truncate_fraction_digits(self.pounds, fractional_digits)} lb"""
         
         if unit == MassUnits.Ounce:
-            return f"""{self.ounces} oz"""
+            return f"""{super()._truncate_fraction_digits(self.ounces, fractional_digits)} oz"""
         
         if unit == MassUnits.Slug:
-            return f"""{self.slugs} slug"""
+            return f"""{super()._truncate_fraction_digits(self.slugs, fractional_digits)} slug"""
         
         if unit == MassUnits.Stone:
-            return f"""{self.stone} st"""
+            return f"""{super()._truncate_fraction_digits(self.stone, fractional_digits)} st"""
         
         if unit == MassUnits.ShortHundredweight:
-            return f"""{self.short_hundredweight} cwt"""
+            return f"""{super()._truncate_fraction_digits(self.short_hundredweight, fractional_digits)} cwt"""
         
         if unit == MassUnits.LongHundredweight:
-            return f"""{self.long_hundredweight} cwt"""
+            return f"""{super()._truncate_fraction_digits(self.long_hundredweight, fractional_digits)} cwt"""
         
         if unit == MassUnits.Grain:
-            return f"""{self.grains} gr"""
+            return f"""{super()._truncate_fraction_digits(self.grains, fractional_digits)} gr"""
         
         if unit == MassUnits.SolarMass:
-            return f"""{self.solar_masses} M☉"""
+            return f"""{super()._truncate_fraction_digits(self.solar_masses, fractional_digits)} M☉"""
         
         if unit == MassUnits.EarthMass:
-            return f"""{self.earth_masses} em"""
+            return f"""{super()._truncate_fraction_digits(self.earth_masses, fractional_digits)} em"""
         
         if unit == MassUnits.Femtogram:
-            return f"""{self.femtograms} fg"""
+            return f"""{super()._truncate_fraction_digits(self.femtograms, fractional_digits)} fg"""
         
         if unit == MassUnits.Picogram:
-            return f"""{self.picograms} pg"""
+            return f"""{super()._truncate_fraction_digits(self.picograms, fractional_digits)} pg"""
         
         if unit == MassUnits.Nanogram:
-            return f"""{self.nanograms} ng"""
+            return f"""{super()._truncate_fraction_digits(self.nanograms, fractional_digits)} ng"""
         
         if unit == MassUnits.Microgram:
-            return f"""{self.micrograms} μg"""
+            return f"""{super()._truncate_fraction_digits(self.micrograms, fractional_digits)} μg"""
         
         if unit == MassUnits.Milligram:
-            return f"""{self.milligrams} mg"""
+            return f"""{super()._truncate_fraction_digits(self.milligrams, fractional_digits)} mg"""
         
         if unit == MassUnits.Centigram:
-            return f"""{self.centigrams} cg"""
+            return f"""{super()._truncate_fraction_digits(self.centigrams, fractional_digits)} cg"""
         
         if unit == MassUnits.Decigram:
-            return f"""{self.decigrams} dg"""
+            return f"""{super()._truncate_fraction_digits(self.decigrams, fractional_digits)} dg"""
         
         if unit == MassUnits.Decagram:
-            return f"""{self.decagrams} dag"""
+            return f"""{super()._truncate_fraction_digits(self.decagrams, fractional_digits)} dag"""
         
         if unit == MassUnits.Hectogram:
-            return f"""{self.hectograms} hg"""
+            return f"""{super()._truncate_fraction_digits(self.hectograms, fractional_digits)} hg"""
         
         if unit == MassUnits.Kilogram:
-            return f"""{self.kilograms} kg"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms, fractional_digits)} kg"""
         
         if unit == MassUnits.Kilotonne:
-            return f"""{self.kilotonnes} kt"""
+            return f"""{super()._truncate_fraction_digits(self.kilotonnes, fractional_digits)} kt"""
         
         if unit == MassUnits.Megatonne:
-            return f"""{self.megatonnes} Mt"""
+            return f"""{super()._truncate_fraction_digits(self.megatonnes, fractional_digits)} Mt"""
         
         if unit == MassUnits.Kilopound:
-            return f"""{self.kilopounds} klb"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds, fractional_digits)} klb"""
         
         if unit == MassUnits.Megapound:
-            return f"""{self.megapounds} Mlb"""
+            return f"""{super()._truncate_fraction_digits(self.megapounds, fractional_digits)} Mlb"""
         
         return f'{self._value}'
 

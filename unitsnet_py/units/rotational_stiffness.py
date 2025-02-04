@@ -10,171 +10,221 @@ class RotationalStiffnessUnits(Enum):
             RotationalStiffnessUnits enumeration
         """
         
-        NewtonMeterPerRadian = 'newton_meter_per_radian'
+        NewtonMeterPerRadian = 'NewtonMeterPerRadian'
         """
             
         """
         
-        PoundForceFootPerDegrees = 'pound_force_foot_per_degrees'
+        PoundForceFootPerDegrees = 'PoundForceFootPerDegrees'
         """
             
         """
         
-        KilopoundForceFootPerDegrees = 'kilopound_force_foot_per_degrees'
+        KilopoundForceFootPerDegrees = 'KilopoundForceFootPerDegrees'
         """
             
         """
         
-        NewtonMillimeterPerDegree = 'newton_millimeter_per_degree'
+        NewtonMillimeterPerDegree = 'NewtonMillimeterPerDegree'
         """
             
         """
         
-        NewtonMeterPerDegree = 'newton_meter_per_degree'
+        NewtonMeterPerDegree = 'NewtonMeterPerDegree'
         """
             
         """
         
-        NewtonMillimeterPerRadian = 'newton_millimeter_per_radian'
+        NewtonMillimeterPerRadian = 'NewtonMillimeterPerRadian'
         """
             
         """
         
-        PoundForceFeetPerRadian = 'pound_force_feet_per_radian'
+        PoundForceFeetPerRadian = 'PoundForceFeetPerRadian'
         """
             
         """
         
-        KilonewtonMeterPerRadian = 'kilonewton_meter_per_radian'
+        KilonewtonMeterPerRadian = 'KilonewtonMeterPerRadian'
         """
             
         """
         
-        MeganewtonMeterPerRadian = 'meganewton_meter_per_radian'
+        MeganewtonMeterPerRadian = 'MeganewtonMeterPerRadian'
         """
             
         """
         
-        NanonewtonMillimeterPerDegree = 'nanonewton_millimeter_per_degree'
+        NanonewtonMillimeterPerDegree = 'NanonewtonMillimeterPerDegree'
         """
             
         """
         
-        MicronewtonMillimeterPerDegree = 'micronewton_millimeter_per_degree'
+        MicronewtonMillimeterPerDegree = 'MicronewtonMillimeterPerDegree'
         """
             
         """
         
-        MillinewtonMillimeterPerDegree = 'millinewton_millimeter_per_degree'
+        MillinewtonMillimeterPerDegree = 'MillinewtonMillimeterPerDegree'
         """
             
         """
         
-        CentinewtonMillimeterPerDegree = 'centinewton_millimeter_per_degree'
+        CentinewtonMillimeterPerDegree = 'CentinewtonMillimeterPerDegree'
         """
             
         """
         
-        DecinewtonMillimeterPerDegree = 'decinewton_millimeter_per_degree'
+        DecinewtonMillimeterPerDegree = 'DecinewtonMillimeterPerDegree'
         """
             
         """
         
-        DecanewtonMillimeterPerDegree = 'decanewton_millimeter_per_degree'
+        DecanewtonMillimeterPerDegree = 'DecanewtonMillimeterPerDegree'
         """
             
         """
         
-        KilonewtonMillimeterPerDegree = 'kilonewton_millimeter_per_degree'
+        KilonewtonMillimeterPerDegree = 'KilonewtonMillimeterPerDegree'
         """
             
         """
         
-        MeganewtonMillimeterPerDegree = 'meganewton_millimeter_per_degree'
+        MeganewtonMillimeterPerDegree = 'MeganewtonMillimeterPerDegree'
         """
             
         """
         
-        NanonewtonMeterPerDegree = 'nanonewton_meter_per_degree'
+        NanonewtonMeterPerDegree = 'NanonewtonMeterPerDegree'
         """
             
         """
         
-        MicronewtonMeterPerDegree = 'micronewton_meter_per_degree'
+        MicronewtonMeterPerDegree = 'MicronewtonMeterPerDegree'
         """
             
         """
         
-        MillinewtonMeterPerDegree = 'millinewton_meter_per_degree'
+        MillinewtonMeterPerDegree = 'MillinewtonMeterPerDegree'
         """
             
         """
         
-        CentinewtonMeterPerDegree = 'centinewton_meter_per_degree'
+        CentinewtonMeterPerDegree = 'CentinewtonMeterPerDegree'
         """
             
         """
         
-        DecinewtonMeterPerDegree = 'decinewton_meter_per_degree'
+        DecinewtonMeterPerDegree = 'DecinewtonMeterPerDegree'
         """
             
         """
         
-        DecanewtonMeterPerDegree = 'decanewton_meter_per_degree'
+        DecanewtonMeterPerDegree = 'DecanewtonMeterPerDegree'
         """
             
         """
         
-        KilonewtonMeterPerDegree = 'kilonewton_meter_per_degree'
+        KilonewtonMeterPerDegree = 'KilonewtonMeterPerDegree'
         """
             
         """
         
-        MeganewtonMeterPerDegree = 'meganewton_meter_per_degree'
+        MeganewtonMeterPerDegree = 'MeganewtonMeterPerDegree'
         """
             
         """
         
-        NanonewtonMillimeterPerRadian = 'nanonewton_millimeter_per_radian'
+        NanonewtonMillimeterPerRadian = 'NanonewtonMillimeterPerRadian'
         """
             
         """
         
-        MicronewtonMillimeterPerRadian = 'micronewton_millimeter_per_radian'
+        MicronewtonMillimeterPerRadian = 'MicronewtonMillimeterPerRadian'
         """
             
         """
         
-        MillinewtonMillimeterPerRadian = 'millinewton_millimeter_per_radian'
+        MillinewtonMillimeterPerRadian = 'MillinewtonMillimeterPerRadian'
         """
             
         """
         
-        CentinewtonMillimeterPerRadian = 'centinewton_millimeter_per_radian'
+        CentinewtonMillimeterPerRadian = 'CentinewtonMillimeterPerRadian'
         """
             
         """
         
-        DecinewtonMillimeterPerRadian = 'decinewton_millimeter_per_radian'
+        DecinewtonMillimeterPerRadian = 'DecinewtonMillimeterPerRadian'
         """
             
         """
         
-        DecanewtonMillimeterPerRadian = 'decanewton_millimeter_per_radian'
+        DecanewtonMillimeterPerRadian = 'DecanewtonMillimeterPerRadian'
         """
             
         """
         
-        KilonewtonMillimeterPerRadian = 'kilonewton_millimeter_per_radian'
+        KilonewtonMillimeterPerRadian = 'KilonewtonMillimeterPerRadian'
         """
             
         """
         
-        MeganewtonMillimeterPerRadian = 'meganewton_millimeter_per_radian'
+        MeganewtonMillimeterPerRadian = 'MeganewtonMillimeterPerRadian'
         """
             
         """
         
+
+class RotationalStiffnessDto:
+    """
+    A DTO representation of a RotationalStiffness
+
+    Attributes:
+        value (float): The value of the RotationalStiffness.
+        unit (RotationalStiffnessUnits): The specific unit that the RotationalStiffness value is representing.
+    """
+
+    def __init__(self, value: float, unit: RotationalStiffnessUnits):
+        """
+        Create a new DTO representation of a RotationalStiffness
+
+        Parameters:
+            value (float): The value of the RotationalStiffness.
+            unit (RotationalStiffnessUnits): The specific unit that the RotationalStiffness value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the RotationalStiffness
+        """
+        self.unit: RotationalStiffnessUnits = unit
+        """
+        The specific unit that the RotationalStiffness value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a RotationalStiffness DTO JSON object representing the current unit.
+
+        :return: JSON object represents RotationalStiffness DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonMeterPerRadian"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of RotationalStiffness DTO from a json representation.
+
+        :param data: The RotationalStiffness DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonMeterPerRadian"}
+        :return: A new instance of RotationalStiffnessDto.
+        :rtype: RotationalStiffnessDto
+        """
+        return RotationalStiffnessDto(value=data["value"], unit=RotationalStiffnessUnits(data["unit"]))
+
 
 class RotationalStiffness(AbstractMeasure):
     """
@@ -185,8 +235,10 @@ class RotationalStiffness(AbstractMeasure):
         from_unit (RotationalStiffnessUnits): The RotationalStiffness unit to create from, The default unit is NewtonMeterPerRadian
     """
     def __init__(self, value: float, from_unit: RotationalStiffnessUnits = RotationalStiffnessUnits.NewtonMeterPerRadian):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__newton_meters_per_radian = None
@@ -258,6 +310,54 @@ class RotationalStiffness(AbstractMeasure):
 
     def convert(self, unit: RotationalStiffnessUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: RotationalStiffnessUnits = RotationalStiffnessUnits.NewtonMeterPerRadian) -> RotationalStiffnessDto:
+        """
+        Get a new instance of RotationalStiffness DTO representing the current unit.
+
+        :param hold_in_unit: The specific RotationalStiffness unit to store the RotationalStiffness value in the DTO representation.
+        :type hold_in_unit: RotationalStiffnessUnits
+        :return: A new instance of RotationalStiffnessDto.
+        :rtype: RotationalStiffnessDto
+        """
+        return RotationalStiffnessDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: RotationalStiffnessUnits = RotationalStiffnessUnits.NewtonMeterPerRadian):
+        """
+        Get a RotationalStiffness DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific RotationalStiffness unit to store the RotationalStiffness value in the DTO representation.
+        :type hold_in_unit: RotationalStiffnessUnits
+        :return: JSON object represents RotationalStiffness DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonMeterPerRadian"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(rotational_stiffness_dto: RotationalStiffnessDto):
+        """
+        Obtain a new instance of RotationalStiffness from a DTO unit object.
+
+        :param rotational_stiffness_dto: The RotationalStiffness DTO representation.
+        :type rotational_stiffness_dto: RotationalStiffnessDto
+        :return: A new instance of RotationalStiffness.
+        :rtype: RotationalStiffness
+        """
+        return RotationalStiffness(rotational_stiffness_dto.value, rotational_stiffness_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of RotationalStiffness from a DTO unit json representation.
+
+        :param data: The RotationalStiffness DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonMeterPerRadian"}
+        :return: A new instance of RotationalStiffness.
+        :rtype: RotationalStiffness
+        """
+        return RotationalStiffness.from_dto(RotationalStiffnessDto.from_json(data))
 
     def __convert_from_base(self, from_unit: RotationalStiffnessUnits) -> float:
         value = self._value
@@ -1331,111 +1431,119 @@ class RotationalStiffness(AbstractMeasure):
         return self.__meganewton_millimeters_per_radian
 
     
-    def to_string(self, unit: RotationalStiffnessUnits = RotationalStiffnessUnits.NewtonMeterPerRadian) -> str:
+    def to_string(self, unit: RotationalStiffnessUnits = RotationalStiffnessUnits.NewtonMeterPerRadian, fractional_digits: int = None) -> str:
         """
-        Format the RotationalStiffness to string.
-        Note! the default format for RotationalStiffness is NewtonMeterPerRadian.
-        To specify the unit format set the 'unit' parameter.
+        Format the RotationalStiffness to a string.
+        
+        Note: the default format for RotationalStiffness is NewtonMeterPerRadian.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the RotationalStiffness. Default is 'NewtonMeterPerRadian'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == RotationalStiffnessUnits.NewtonMeterPerRadian:
-            return f"""{self.newton_meters_per_radian} N·m/rad"""
+            return f"""{super()._truncate_fraction_digits(self.newton_meters_per_radian, fractional_digits)} N·m/rad"""
         
         if unit == RotationalStiffnessUnits.PoundForceFootPerDegrees:
-            return f"""{self.pound_force_feet_per_degrees} lbf·ft/deg"""
+            return f"""{super()._truncate_fraction_digits(self.pound_force_feet_per_degrees, fractional_digits)} lbf·ft/deg"""
         
         if unit == RotationalStiffnessUnits.KilopoundForceFootPerDegrees:
-            return f"""{self.kilopound_force_feet_per_degrees} kipf·ft/°"""
+            return f"""{super()._truncate_fraction_digits(self.kilopound_force_feet_per_degrees, fractional_digits)} kipf·ft/°"""
         
         if unit == RotationalStiffnessUnits.NewtonMillimeterPerDegree:
-            return f"""{self.newton_millimeters_per_degree} N·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.newton_millimeters_per_degree, fractional_digits)} N·mm/deg"""
         
         if unit == RotationalStiffnessUnits.NewtonMeterPerDegree:
-            return f"""{self.newton_meters_per_degree} N·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.newton_meters_per_degree, fractional_digits)} N·m/deg"""
         
         if unit == RotationalStiffnessUnits.NewtonMillimeterPerRadian:
-            return f"""{self.newton_millimeters_per_radian} N·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.newton_millimeters_per_radian, fractional_digits)} N·mm/rad"""
         
         if unit == RotationalStiffnessUnits.PoundForceFeetPerRadian:
-            return f"""{self.pound_force_feet_per_radian} lbf·ft/rad"""
+            return f"""{super()._truncate_fraction_digits(self.pound_force_feet_per_radian, fractional_digits)} lbf·ft/rad"""
         
         if unit == RotationalStiffnessUnits.KilonewtonMeterPerRadian:
-            return f"""{self.kilonewton_meters_per_radian} kN·m/rad"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_meters_per_radian, fractional_digits)} kN·m/rad"""
         
         if unit == RotationalStiffnessUnits.MeganewtonMeterPerRadian:
-            return f"""{self.meganewton_meters_per_radian} MN·m/rad"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_meters_per_radian, fractional_digits)} MN·m/rad"""
         
         if unit == RotationalStiffnessUnits.NanonewtonMillimeterPerDegree:
-            return f"""{self.nanonewton_millimeters_per_degree} nN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.nanonewton_millimeters_per_degree, fractional_digits)} nN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.MicronewtonMillimeterPerDegree:
-            return f"""{self.micronewton_millimeters_per_degree} μN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.micronewton_millimeters_per_degree, fractional_digits)} μN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.MillinewtonMillimeterPerDegree:
-            return f"""{self.millinewton_millimeters_per_degree} mN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.millinewton_millimeters_per_degree, fractional_digits)} mN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.CentinewtonMillimeterPerDegree:
-            return f"""{self.centinewton_millimeters_per_degree} cN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.centinewton_millimeters_per_degree, fractional_digits)} cN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.DecinewtonMillimeterPerDegree:
-            return f"""{self.decinewton_millimeters_per_degree} dN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.decinewton_millimeters_per_degree, fractional_digits)} dN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.DecanewtonMillimeterPerDegree:
-            return f"""{self.decanewton_millimeters_per_degree} daN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.decanewton_millimeters_per_degree, fractional_digits)} daN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.KilonewtonMillimeterPerDegree:
-            return f"""{self.kilonewton_millimeters_per_degree} kN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_millimeters_per_degree, fractional_digits)} kN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.MeganewtonMillimeterPerDegree:
-            return f"""{self.meganewton_millimeters_per_degree} MN·mm/deg"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_millimeters_per_degree, fractional_digits)} MN·mm/deg"""
         
         if unit == RotationalStiffnessUnits.NanonewtonMeterPerDegree:
-            return f"""{self.nanonewton_meters_per_degree} nN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.nanonewton_meters_per_degree, fractional_digits)} nN·m/deg"""
         
         if unit == RotationalStiffnessUnits.MicronewtonMeterPerDegree:
-            return f"""{self.micronewton_meters_per_degree} μN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.micronewton_meters_per_degree, fractional_digits)} μN·m/deg"""
         
         if unit == RotationalStiffnessUnits.MillinewtonMeterPerDegree:
-            return f"""{self.millinewton_meters_per_degree} mN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.millinewton_meters_per_degree, fractional_digits)} mN·m/deg"""
         
         if unit == RotationalStiffnessUnits.CentinewtonMeterPerDegree:
-            return f"""{self.centinewton_meters_per_degree} cN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.centinewton_meters_per_degree, fractional_digits)} cN·m/deg"""
         
         if unit == RotationalStiffnessUnits.DecinewtonMeterPerDegree:
-            return f"""{self.decinewton_meters_per_degree} dN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.decinewton_meters_per_degree, fractional_digits)} dN·m/deg"""
         
         if unit == RotationalStiffnessUnits.DecanewtonMeterPerDegree:
-            return f"""{self.decanewton_meters_per_degree} daN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.decanewton_meters_per_degree, fractional_digits)} daN·m/deg"""
         
         if unit == RotationalStiffnessUnits.KilonewtonMeterPerDegree:
-            return f"""{self.kilonewton_meters_per_degree} kN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_meters_per_degree, fractional_digits)} kN·m/deg"""
         
         if unit == RotationalStiffnessUnits.MeganewtonMeterPerDegree:
-            return f"""{self.meganewton_meters_per_degree} MN·m/deg"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_meters_per_degree, fractional_digits)} MN·m/deg"""
         
         if unit == RotationalStiffnessUnits.NanonewtonMillimeterPerRadian:
-            return f"""{self.nanonewton_millimeters_per_radian} nN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.nanonewton_millimeters_per_radian, fractional_digits)} nN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.MicronewtonMillimeterPerRadian:
-            return f"""{self.micronewton_millimeters_per_radian} μN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.micronewton_millimeters_per_radian, fractional_digits)} μN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.MillinewtonMillimeterPerRadian:
-            return f"""{self.millinewton_millimeters_per_radian} mN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.millinewton_millimeters_per_radian, fractional_digits)} mN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.CentinewtonMillimeterPerRadian:
-            return f"""{self.centinewton_millimeters_per_radian} cN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.centinewton_millimeters_per_radian, fractional_digits)} cN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.DecinewtonMillimeterPerRadian:
-            return f"""{self.decinewton_millimeters_per_radian} dN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.decinewton_millimeters_per_radian, fractional_digits)} dN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.DecanewtonMillimeterPerRadian:
-            return f"""{self.decanewton_millimeters_per_radian} daN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.decanewton_millimeters_per_radian, fractional_digits)} daN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.KilonewtonMillimeterPerRadian:
-            return f"""{self.kilonewton_millimeters_per_radian} kN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_millimeters_per_radian, fractional_digits)} kN·mm/rad"""
         
         if unit == RotationalStiffnessUnits.MeganewtonMillimeterPerRadian:
-            return f"""{self.meganewton_millimeters_per_radian} MN·mm/rad"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_millimeters_per_radian, fractional_digits)} MN·mm/rad"""
         
         return f'{self._value}'
 

@@ -10,31 +10,81 @@ class RotationalStiffnessPerLengthUnits(Enum):
             RotationalStiffnessPerLengthUnits enumeration
         """
         
-        NewtonMeterPerRadianPerMeter = 'newton_meter_per_radian_per_meter'
+        NewtonMeterPerRadianPerMeter = 'NewtonMeterPerRadianPerMeter'
         """
             
         """
         
-        PoundForceFootPerDegreesPerFoot = 'pound_force_foot_per_degrees_per_foot'
+        PoundForceFootPerDegreesPerFoot = 'PoundForceFootPerDegreesPerFoot'
         """
             
         """
         
-        KilopoundForceFootPerDegreesPerFoot = 'kilopound_force_foot_per_degrees_per_foot'
+        KilopoundForceFootPerDegreesPerFoot = 'KilopoundForceFootPerDegreesPerFoot'
         """
             
         """
         
-        KilonewtonMeterPerRadianPerMeter = 'kilonewton_meter_per_radian_per_meter'
+        KilonewtonMeterPerRadianPerMeter = 'KilonewtonMeterPerRadianPerMeter'
         """
             
         """
         
-        MeganewtonMeterPerRadianPerMeter = 'meganewton_meter_per_radian_per_meter'
+        MeganewtonMeterPerRadianPerMeter = 'MeganewtonMeterPerRadianPerMeter'
         """
             
         """
         
+
+class RotationalStiffnessPerLengthDto:
+    """
+    A DTO representation of a RotationalStiffnessPerLength
+
+    Attributes:
+        value (float): The value of the RotationalStiffnessPerLength.
+        unit (RotationalStiffnessPerLengthUnits): The specific unit that the RotationalStiffnessPerLength value is representing.
+    """
+
+    def __init__(self, value: float, unit: RotationalStiffnessPerLengthUnits):
+        """
+        Create a new DTO representation of a RotationalStiffnessPerLength
+
+        Parameters:
+            value (float): The value of the RotationalStiffnessPerLength.
+            unit (RotationalStiffnessPerLengthUnits): The specific unit that the RotationalStiffnessPerLength value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the RotationalStiffnessPerLength
+        """
+        self.unit: RotationalStiffnessPerLengthUnits = unit
+        """
+        The specific unit that the RotationalStiffnessPerLength value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a RotationalStiffnessPerLength DTO JSON object representing the current unit.
+
+        :return: JSON object represents RotationalStiffnessPerLength DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonMeterPerRadianPerMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of RotationalStiffnessPerLength DTO from a json representation.
+
+        :param data: The RotationalStiffnessPerLength DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonMeterPerRadianPerMeter"}
+        :return: A new instance of RotationalStiffnessPerLengthDto.
+        :rtype: RotationalStiffnessPerLengthDto
+        """
+        return RotationalStiffnessPerLengthDto(value=data["value"], unit=RotationalStiffnessPerLengthUnits(data["unit"]))
+
 
 class RotationalStiffnessPerLength(AbstractMeasure):
     """
@@ -45,8 +95,10 @@ class RotationalStiffnessPerLength(AbstractMeasure):
         from_unit (RotationalStiffnessPerLengthUnits): The RotationalStiffnessPerLength unit to create from, The default unit is NewtonMeterPerRadianPerMeter
     """
     def __init__(self, value: float, from_unit: RotationalStiffnessPerLengthUnits = RotationalStiffnessPerLengthUnits.NewtonMeterPerRadianPerMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__newton_meters_per_radian_per_meter = None
@@ -62,6 +114,54 @@ class RotationalStiffnessPerLength(AbstractMeasure):
 
     def convert(self, unit: RotationalStiffnessPerLengthUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: RotationalStiffnessPerLengthUnits = RotationalStiffnessPerLengthUnits.NewtonMeterPerRadianPerMeter) -> RotationalStiffnessPerLengthDto:
+        """
+        Get a new instance of RotationalStiffnessPerLength DTO representing the current unit.
+
+        :param hold_in_unit: The specific RotationalStiffnessPerLength unit to store the RotationalStiffnessPerLength value in the DTO representation.
+        :type hold_in_unit: RotationalStiffnessPerLengthUnits
+        :return: A new instance of RotationalStiffnessPerLengthDto.
+        :rtype: RotationalStiffnessPerLengthDto
+        """
+        return RotationalStiffnessPerLengthDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: RotationalStiffnessPerLengthUnits = RotationalStiffnessPerLengthUnits.NewtonMeterPerRadianPerMeter):
+        """
+        Get a RotationalStiffnessPerLength DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific RotationalStiffnessPerLength unit to store the RotationalStiffnessPerLength value in the DTO representation.
+        :type hold_in_unit: RotationalStiffnessPerLengthUnits
+        :return: JSON object represents RotationalStiffnessPerLength DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "NewtonMeterPerRadianPerMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(rotational_stiffness_per_length_dto: RotationalStiffnessPerLengthDto):
+        """
+        Obtain a new instance of RotationalStiffnessPerLength from a DTO unit object.
+
+        :param rotational_stiffness_per_length_dto: The RotationalStiffnessPerLength DTO representation.
+        :type rotational_stiffness_per_length_dto: RotationalStiffnessPerLengthDto
+        :return: A new instance of RotationalStiffnessPerLength.
+        :rtype: RotationalStiffnessPerLength
+        """
+        return RotationalStiffnessPerLength(rotational_stiffness_per_length_dto.value, rotational_stiffness_per_length_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of RotationalStiffnessPerLength from a DTO unit json representation.
+
+        :param data: The RotationalStiffnessPerLength DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "NewtonMeterPerRadianPerMeter"}
+        :return: A new instance of RotationalStiffnessPerLength.
+        :rtype: RotationalStiffnessPerLength
+        """
+        return RotationalStiffnessPerLength.from_dto(RotationalStiffnessPerLengthDto.from_json(data))
 
     def __convert_from_base(self, from_unit: RotationalStiffnessPerLengthUnits) -> float:
         value = self._value
@@ -239,27 +339,35 @@ class RotationalStiffnessPerLength(AbstractMeasure):
         return self.__meganewton_meters_per_radian_per_meter
 
     
-    def to_string(self, unit: RotationalStiffnessPerLengthUnits = RotationalStiffnessPerLengthUnits.NewtonMeterPerRadianPerMeter) -> str:
+    def to_string(self, unit: RotationalStiffnessPerLengthUnits = RotationalStiffnessPerLengthUnits.NewtonMeterPerRadianPerMeter, fractional_digits: int = None) -> str:
         """
-        Format the RotationalStiffnessPerLength to string.
-        Note! the default format for RotationalStiffnessPerLength is NewtonMeterPerRadianPerMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the RotationalStiffnessPerLength to a string.
+        
+        Note: the default format for RotationalStiffnessPerLength is NewtonMeterPerRadianPerMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the RotationalStiffnessPerLength. Default is 'NewtonMeterPerRadianPerMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == RotationalStiffnessPerLengthUnits.NewtonMeterPerRadianPerMeter:
-            return f"""{self.newton_meters_per_radian_per_meter} N·m/rad/m"""
+            return f"""{super()._truncate_fraction_digits(self.newton_meters_per_radian_per_meter, fractional_digits)} N·m/rad/m"""
         
         if unit == RotationalStiffnessPerLengthUnits.PoundForceFootPerDegreesPerFoot:
-            return f"""{self.pound_force_feet_per_degrees_per_feet} lbf·ft/deg/ft"""
+            return f"""{super()._truncate_fraction_digits(self.pound_force_feet_per_degrees_per_feet, fractional_digits)} lbf·ft/deg/ft"""
         
         if unit == RotationalStiffnessPerLengthUnits.KilopoundForceFootPerDegreesPerFoot:
-            return f"""{self.kilopound_force_feet_per_degrees_per_feet} kipf·ft/°/ft"""
+            return f"""{super()._truncate_fraction_digits(self.kilopound_force_feet_per_degrees_per_feet, fractional_digits)} kipf·ft/°/ft"""
         
         if unit == RotationalStiffnessPerLengthUnits.KilonewtonMeterPerRadianPerMeter:
-            return f"""{self.kilonewton_meters_per_radian_per_meter} kN·m/rad/m"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewton_meters_per_radian_per_meter, fractional_digits)} kN·m/rad/m"""
         
         if unit == RotationalStiffnessPerLengthUnits.MeganewtonMeterPerRadianPerMeter:
-            return f"""{self.meganewton_meters_per_radian_per_meter} MN·m/rad/m"""
+            return f"""{super()._truncate_fraction_digits(self.meganewton_meters_per_radian_per_meter, fractional_digits)} MN·m/rad/m"""
         
         return f'{self._value}'
 

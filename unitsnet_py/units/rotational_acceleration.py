@@ -10,26 +10,76 @@ class RotationalAccelerationUnits(Enum):
             RotationalAccelerationUnits enumeration
         """
         
-        RadianPerSecondSquared = 'radian_per_second_squared'
+        RadianPerSecondSquared = 'RadianPerSecondSquared'
         """
             
         """
         
-        DegreePerSecondSquared = 'degree_per_second_squared'
+        DegreePerSecondSquared = 'DegreePerSecondSquared'
         """
             
         """
         
-        RevolutionPerMinutePerSecond = 'revolution_per_minute_per_second'
+        RevolutionPerMinutePerSecond = 'RevolutionPerMinutePerSecond'
         """
             
         """
         
-        RevolutionPerSecondSquared = 'revolution_per_second_squared'
+        RevolutionPerSecondSquared = 'RevolutionPerSecondSquared'
         """
             
         """
         
+
+class RotationalAccelerationDto:
+    """
+    A DTO representation of a RotationalAcceleration
+
+    Attributes:
+        value (float): The value of the RotationalAcceleration.
+        unit (RotationalAccelerationUnits): The specific unit that the RotationalAcceleration value is representing.
+    """
+
+    def __init__(self, value: float, unit: RotationalAccelerationUnits):
+        """
+        Create a new DTO representation of a RotationalAcceleration
+
+        Parameters:
+            value (float): The value of the RotationalAcceleration.
+            unit (RotationalAccelerationUnits): The specific unit that the RotationalAcceleration value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the RotationalAcceleration
+        """
+        self.unit: RotationalAccelerationUnits = unit
+        """
+        The specific unit that the RotationalAcceleration value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a RotationalAcceleration DTO JSON object representing the current unit.
+
+        :return: JSON object represents RotationalAcceleration DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "RadianPerSecondSquared"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of RotationalAcceleration DTO from a json representation.
+
+        :param data: The RotationalAcceleration DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "RadianPerSecondSquared"}
+        :return: A new instance of RotationalAccelerationDto.
+        :rtype: RotationalAccelerationDto
+        """
+        return RotationalAccelerationDto(value=data["value"], unit=RotationalAccelerationUnits(data["unit"]))
+
 
 class RotationalAcceleration(AbstractMeasure):
     """
@@ -40,8 +90,10 @@ class RotationalAcceleration(AbstractMeasure):
         from_unit (RotationalAccelerationUnits): The RotationalAcceleration unit to create from, The default unit is RadianPerSecondSquared
     """
     def __init__(self, value: float, from_unit: RotationalAccelerationUnits = RotationalAccelerationUnits.RadianPerSecondSquared):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__radians_per_second_squared = None
@@ -55,6 +107,54 @@ class RotationalAcceleration(AbstractMeasure):
 
     def convert(self, unit: RotationalAccelerationUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: RotationalAccelerationUnits = RotationalAccelerationUnits.RadianPerSecondSquared) -> RotationalAccelerationDto:
+        """
+        Get a new instance of RotationalAcceleration DTO representing the current unit.
+
+        :param hold_in_unit: The specific RotationalAcceleration unit to store the RotationalAcceleration value in the DTO representation.
+        :type hold_in_unit: RotationalAccelerationUnits
+        :return: A new instance of RotationalAccelerationDto.
+        :rtype: RotationalAccelerationDto
+        """
+        return RotationalAccelerationDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: RotationalAccelerationUnits = RotationalAccelerationUnits.RadianPerSecondSquared):
+        """
+        Get a RotationalAcceleration DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific RotationalAcceleration unit to store the RotationalAcceleration value in the DTO representation.
+        :type hold_in_unit: RotationalAccelerationUnits
+        :return: JSON object represents RotationalAcceleration DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "RadianPerSecondSquared"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(rotational_acceleration_dto: RotationalAccelerationDto):
+        """
+        Obtain a new instance of RotationalAcceleration from a DTO unit object.
+
+        :param rotational_acceleration_dto: The RotationalAcceleration DTO representation.
+        :type rotational_acceleration_dto: RotationalAccelerationDto
+        :return: A new instance of RotationalAcceleration.
+        :rtype: RotationalAcceleration
+        """
+        return RotationalAcceleration(rotational_acceleration_dto.value, rotational_acceleration_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of RotationalAcceleration from a DTO unit json representation.
+
+        :param data: The RotationalAcceleration DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "RadianPerSecondSquared"}
+        :return: A new instance of RotationalAcceleration.
+        :rtype: RotationalAcceleration
+        """
+        return RotationalAcceleration.from_dto(RotationalAccelerationDto.from_json(data))
 
     def __convert_from_base(self, from_unit: RotationalAccelerationUnits) -> float:
         value = self._value
@@ -200,24 +300,32 @@ class RotationalAcceleration(AbstractMeasure):
         return self.__revolutions_per_second_squared
 
     
-    def to_string(self, unit: RotationalAccelerationUnits = RotationalAccelerationUnits.RadianPerSecondSquared) -> str:
+    def to_string(self, unit: RotationalAccelerationUnits = RotationalAccelerationUnits.RadianPerSecondSquared, fractional_digits: int = None) -> str:
         """
-        Format the RotationalAcceleration to string.
-        Note! the default format for RotationalAcceleration is RadianPerSecondSquared.
-        To specify the unit format set the 'unit' parameter.
+        Format the RotationalAcceleration to a string.
+        
+        Note: the default format for RotationalAcceleration is RadianPerSecondSquared.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the RotationalAcceleration. Default is 'RadianPerSecondSquared'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == RotationalAccelerationUnits.RadianPerSecondSquared:
-            return f"""{self.radians_per_second_squared} rad/s²"""
+            return f"""{super()._truncate_fraction_digits(self.radians_per_second_squared, fractional_digits)} rad/s²"""
         
         if unit == RotationalAccelerationUnits.DegreePerSecondSquared:
-            return f"""{self.degrees_per_second_squared} °/s²"""
+            return f"""{super()._truncate_fraction_digits(self.degrees_per_second_squared, fractional_digits)} °/s²"""
         
         if unit == RotationalAccelerationUnits.RevolutionPerMinutePerSecond:
-            return f"""{self.revolutions_per_minute_per_second} rpm/s"""
+            return f"""{super()._truncate_fraction_digits(self.revolutions_per_minute_per_second, fractional_digits)} rpm/s"""
         
         if unit == RotationalAccelerationUnits.RevolutionPerSecondSquared:
-            return f"""{self.revolutions_per_second_squared} r/s²"""
+            return f"""{super()._truncate_fraction_digits(self.revolutions_per_second_squared, fractional_digits)} r/s²"""
         
         return f'{self._value}'
 

@@ -10,76 +10,126 @@ class AccelerationUnits(Enum):
             AccelerationUnits enumeration
         """
         
-        MeterPerSecondSquared = 'meter_per_second_squared'
+        MeterPerSecondSquared = 'MeterPerSecondSquared'
         """
             
         """
         
-        InchPerSecondSquared = 'inch_per_second_squared'
+        InchPerSecondSquared = 'InchPerSecondSquared'
         """
             
         """
         
-        FootPerSecondSquared = 'foot_per_second_squared'
+        FootPerSecondSquared = 'FootPerSecondSquared'
         """
             
         """
         
-        KnotPerSecond = 'knot_per_second'
+        KnotPerSecond = 'KnotPerSecond'
         """
             
         """
         
-        KnotPerMinute = 'knot_per_minute'
+        KnotPerMinute = 'KnotPerMinute'
         """
             
         """
         
-        KnotPerHour = 'knot_per_hour'
+        KnotPerHour = 'KnotPerHour'
         """
             
         """
         
-        StandardGravity = 'standard_gravity'
+        StandardGravity = 'StandardGravity'
         """
             
         """
         
-        NanometerPerSecondSquared = 'nanometer_per_second_squared'
+        NanometerPerSecondSquared = 'NanometerPerSecondSquared'
         """
             
         """
         
-        MicrometerPerSecondSquared = 'micrometer_per_second_squared'
+        MicrometerPerSecondSquared = 'MicrometerPerSecondSquared'
         """
             
         """
         
-        MillimeterPerSecondSquared = 'millimeter_per_second_squared'
+        MillimeterPerSecondSquared = 'MillimeterPerSecondSquared'
         """
             
         """
         
-        CentimeterPerSecondSquared = 'centimeter_per_second_squared'
+        CentimeterPerSecondSquared = 'CentimeterPerSecondSquared'
         """
             
         """
         
-        DecimeterPerSecondSquared = 'decimeter_per_second_squared'
+        DecimeterPerSecondSquared = 'DecimeterPerSecondSquared'
         """
             
         """
         
-        KilometerPerSecondSquared = 'kilometer_per_second_squared'
+        KilometerPerSecondSquared = 'KilometerPerSecondSquared'
         """
             
         """
         
-        MillistandardGravity = 'millistandard_gravity'
+        MillistandardGravity = 'MillistandardGravity'
         """
             
         """
         
+
+class AccelerationDto:
+    """
+    A DTO representation of a Acceleration
+
+    Attributes:
+        value (float): The value of the Acceleration.
+        unit (AccelerationUnits): The specific unit that the Acceleration value is representing.
+    """
+
+    def __init__(self, value: float, unit: AccelerationUnits):
+        """
+        Create a new DTO representation of a Acceleration
+
+        Parameters:
+            value (float): The value of the Acceleration.
+            unit (AccelerationUnits): The specific unit that the Acceleration value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Acceleration
+        """
+        self.unit: AccelerationUnits = unit
+        """
+        The specific unit that the Acceleration value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Acceleration DTO JSON object representing the current unit.
+
+        :return: JSON object represents Acceleration DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterPerSecondSquared"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Acceleration DTO from a json representation.
+
+        :param data: The Acceleration DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterPerSecondSquared"}
+        :return: A new instance of AccelerationDto.
+        :rtype: AccelerationDto
+        """
+        return AccelerationDto(value=data["value"], unit=AccelerationUnits(data["unit"]))
+
 
 class Acceleration(AbstractMeasure):
     """
@@ -90,8 +140,10 @@ class Acceleration(AbstractMeasure):
         from_unit (AccelerationUnits): The Acceleration unit to create from, The default unit is MeterPerSecondSquared
     """
     def __init__(self, value: float, from_unit: AccelerationUnits = AccelerationUnits.MeterPerSecondSquared):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__meters_per_second_squared = None
@@ -125,6 +177,54 @@ class Acceleration(AbstractMeasure):
 
     def convert(self, unit: AccelerationUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: AccelerationUnits = AccelerationUnits.MeterPerSecondSquared) -> AccelerationDto:
+        """
+        Get a new instance of Acceleration DTO representing the current unit.
+
+        :param hold_in_unit: The specific Acceleration unit to store the Acceleration value in the DTO representation.
+        :type hold_in_unit: AccelerationUnits
+        :return: A new instance of AccelerationDto.
+        :rtype: AccelerationDto
+        """
+        return AccelerationDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: AccelerationUnits = AccelerationUnits.MeterPerSecondSquared):
+        """
+        Get a Acceleration DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Acceleration unit to store the Acceleration value in the DTO representation.
+        :type hold_in_unit: AccelerationUnits
+        :return: JSON object represents Acceleration DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "MeterPerSecondSquared"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(acceleration_dto: AccelerationDto):
+        """
+        Obtain a new instance of Acceleration from a DTO unit object.
+
+        :param acceleration_dto: The Acceleration DTO representation.
+        :type acceleration_dto: AccelerationDto
+        :return: A new instance of Acceleration.
+        :rtype: Acceleration
+        """
+        return Acceleration(acceleration_dto.value, acceleration_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Acceleration from a DTO unit json representation.
+
+        :param data: The Acceleration DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "MeterPerSecondSquared"}
+        :return: A new instance of Acceleration.
+        :rtype: Acceleration
+        """
+        return Acceleration.from_dto(AccelerationDto.from_json(data))
 
     def __convert_from_base(self, from_unit: AccelerationUnits) -> float:
         value = self._value
@@ -590,54 +690,62 @@ class Acceleration(AbstractMeasure):
         return self.__millistandard_gravity
 
     
-    def to_string(self, unit: AccelerationUnits = AccelerationUnits.MeterPerSecondSquared) -> str:
+    def to_string(self, unit: AccelerationUnits = AccelerationUnits.MeterPerSecondSquared, fractional_digits: int = None) -> str:
         """
-        Format the Acceleration to string.
-        Note! the default format for Acceleration is MeterPerSecondSquared.
-        To specify the unit format set the 'unit' parameter.
+        Format the Acceleration to a string.
+        
+        Note: the default format for Acceleration is MeterPerSecondSquared.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Acceleration. Default is 'MeterPerSecondSquared'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == AccelerationUnits.MeterPerSecondSquared:
-            return f"""{self.meters_per_second_squared} m/s²"""
+            return f"""{super()._truncate_fraction_digits(self.meters_per_second_squared, fractional_digits)} m/s²"""
         
         if unit == AccelerationUnits.InchPerSecondSquared:
-            return f"""{self.inches_per_second_squared} in/s²"""
+            return f"""{super()._truncate_fraction_digits(self.inches_per_second_squared, fractional_digits)} in/s²"""
         
         if unit == AccelerationUnits.FootPerSecondSquared:
-            return f"""{self.feet_per_second_squared} ft/s²"""
+            return f"""{super()._truncate_fraction_digits(self.feet_per_second_squared, fractional_digits)} ft/s²"""
         
         if unit == AccelerationUnits.KnotPerSecond:
-            return f"""{self.knots_per_second} kn/s"""
+            return f"""{super()._truncate_fraction_digits(self.knots_per_second, fractional_digits)} kn/s"""
         
         if unit == AccelerationUnits.KnotPerMinute:
-            return f"""{self.knots_per_minute} kn/min"""
+            return f"""{super()._truncate_fraction_digits(self.knots_per_minute, fractional_digits)} kn/min"""
         
         if unit == AccelerationUnits.KnotPerHour:
-            return f"""{self.knots_per_hour} kn/h"""
+            return f"""{super()._truncate_fraction_digits(self.knots_per_hour, fractional_digits)} kn/h"""
         
         if unit == AccelerationUnits.StandardGravity:
-            return f"""{self.standard_gravity} g"""
+            return f"""{super()._truncate_fraction_digits(self.standard_gravity, fractional_digits)} g"""
         
         if unit == AccelerationUnits.NanometerPerSecondSquared:
-            return f"""{self.nanometers_per_second_squared} nm/s²"""
+            return f"""{super()._truncate_fraction_digits(self.nanometers_per_second_squared, fractional_digits)} nm/s²"""
         
         if unit == AccelerationUnits.MicrometerPerSecondSquared:
-            return f"""{self.micrometers_per_second_squared} μm/s²"""
+            return f"""{super()._truncate_fraction_digits(self.micrometers_per_second_squared, fractional_digits)} μm/s²"""
         
         if unit == AccelerationUnits.MillimeterPerSecondSquared:
-            return f"""{self.millimeters_per_second_squared} mm/s²"""
+            return f"""{super()._truncate_fraction_digits(self.millimeters_per_second_squared, fractional_digits)} mm/s²"""
         
         if unit == AccelerationUnits.CentimeterPerSecondSquared:
-            return f"""{self.centimeters_per_second_squared} cm/s²"""
+            return f"""{super()._truncate_fraction_digits(self.centimeters_per_second_squared, fractional_digits)} cm/s²"""
         
         if unit == AccelerationUnits.DecimeterPerSecondSquared:
-            return f"""{self.decimeters_per_second_squared} dm/s²"""
+            return f"""{super()._truncate_fraction_digits(self.decimeters_per_second_squared, fractional_digits)} dm/s²"""
         
         if unit == AccelerationUnits.KilometerPerSecondSquared:
-            return f"""{self.kilometers_per_second_squared} km/s²"""
+            return f"""{super()._truncate_fraction_digits(self.kilometers_per_second_squared, fractional_digits)} km/s²"""
         
         if unit == AccelerationUnits.MillistandardGravity:
-            return f"""{self.millistandard_gravity} mg"""
+            return f"""{super()._truncate_fraction_digits(self.millistandard_gravity, fractional_digits)} mg"""
         
         return f'{self._value}'
 

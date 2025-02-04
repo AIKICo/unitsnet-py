@@ -10,66 +10,116 @@ class MassFluxUnits(Enum):
             MassFluxUnits enumeration
         """
         
-        GramPerSecondPerSquareMeter = 'gram_per_second_per_square_meter'
+        GramPerSecondPerSquareMeter = 'GramPerSecondPerSquareMeter'
         """
             
         """
         
-        GramPerSecondPerSquareCentimeter = 'gram_per_second_per_square_centimeter'
+        GramPerSecondPerSquareCentimeter = 'GramPerSecondPerSquareCentimeter'
         """
             
         """
         
-        GramPerSecondPerSquareMillimeter = 'gram_per_second_per_square_millimeter'
+        GramPerSecondPerSquareMillimeter = 'GramPerSecondPerSquareMillimeter'
         """
             
         """
         
-        GramPerHourPerSquareMeter = 'gram_per_hour_per_square_meter'
+        GramPerHourPerSquareMeter = 'GramPerHourPerSquareMeter'
         """
             
         """
         
-        GramPerHourPerSquareCentimeter = 'gram_per_hour_per_square_centimeter'
+        GramPerHourPerSquareCentimeter = 'GramPerHourPerSquareCentimeter'
         """
             
         """
         
-        GramPerHourPerSquareMillimeter = 'gram_per_hour_per_square_millimeter'
+        GramPerHourPerSquareMillimeter = 'GramPerHourPerSquareMillimeter'
         """
             
         """
         
-        KilogramPerSecondPerSquareMeter = 'kilogram_per_second_per_square_meter'
+        KilogramPerSecondPerSquareMeter = 'KilogramPerSecondPerSquareMeter'
         """
             
         """
         
-        KilogramPerSecondPerSquareCentimeter = 'kilogram_per_second_per_square_centimeter'
+        KilogramPerSecondPerSquareCentimeter = 'KilogramPerSecondPerSquareCentimeter'
         """
             
         """
         
-        KilogramPerSecondPerSquareMillimeter = 'kilogram_per_second_per_square_millimeter'
+        KilogramPerSecondPerSquareMillimeter = 'KilogramPerSecondPerSquareMillimeter'
         """
             
         """
         
-        KilogramPerHourPerSquareMeter = 'kilogram_per_hour_per_square_meter'
+        KilogramPerHourPerSquareMeter = 'KilogramPerHourPerSquareMeter'
         """
             
         """
         
-        KilogramPerHourPerSquareCentimeter = 'kilogram_per_hour_per_square_centimeter'
+        KilogramPerHourPerSquareCentimeter = 'KilogramPerHourPerSquareCentimeter'
         """
             
         """
         
-        KilogramPerHourPerSquareMillimeter = 'kilogram_per_hour_per_square_millimeter'
+        KilogramPerHourPerSquareMillimeter = 'KilogramPerHourPerSquareMillimeter'
         """
             
         """
         
+
+class MassFluxDto:
+    """
+    A DTO representation of a MassFlux
+
+    Attributes:
+        value (float): The value of the MassFlux.
+        unit (MassFluxUnits): The specific unit that the MassFlux value is representing.
+    """
+
+    def __init__(self, value: float, unit: MassFluxUnits):
+        """
+        Create a new DTO representation of a MassFlux
+
+        Parameters:
+            value (float): The value of the MassFlux.
+            unit (MassFluxUnits): The specific unit that the MassFlux value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the MassFlux
+        """
+        self.unit: MassFluxUnits = unit
+        """
+        The specific unit that the MassFlux value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a MassFlux DTO JSON object representing the current unit.
+
+        :return: JSON object represents MassFlux DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "KilogramPerSecondPerSquareMeter"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of MassFlux DTO from a json representation.
+
+        :param data: The MassFlux DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "KilogramPerSecondPerSquareMeter"}
+        :return: A new instance of MassFluxDto.
+        :rtype: MassFluxDto
+        """
+        return MassFluxDto(value=data["value"], unit=MassFluxUnits(data["unit"]))
+
 
 class MassFlux(AbstractMeasure):
     """
@@ -80,8 +130,10 @@ class MassFlux(AbstractMeasure):
         from_unit (MassFluxUnits): The MassFlux unit to create from, The default unit is KilogramPerSecondPerSquareMeter
     """
     def __init__(self, value: float, from_unit: MassFluxUnits = MassFluxUnits.KilogramPerSecondPerSquareMeter):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__grams_per_second_per_square_meter = None
@@ -111,6 +163,54 @@ class MassFlux(AbstractMeasure):
 
     def convert(self, unit: MassFluxUnits) -> float:
         return self.__convert_from_base(unit)
+
+    def to_dto(self, hold_in_unit: MassFluxUnits = MassFluxUnits.KilogramPerSecondPerSquareMeter) -> MassFluxDto:
+        """
+        Get a new instance of MassFlux DTO representing the current unit.
+
+        :param hold_in_unit: The specific MassFlux unit to store the MassFlux value in the DTO representation.
+        :type hold_in_unit: MassFluxUnits
+        :return: A new instance of MassFluxDto.
+        :rtype: MassFluxDto
+        """
+        return MassFluxDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: MassFluxUnits = MassFluxUnits.KilogramPerSecondPerSquareMeter):
+        """
+        Get a MassFlux DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific MassFlux unit to store the MassFlux value in the DTO representation.
+        :type hold_in_unit: MassFluxUnits
+        :return: JSON object represents MassFlux DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "KilogramPerSecondPerSquareMeter"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(mass_flux_dto: MassFluxDto):
+        """
+        Obtain a new instance of MassFlux from a DTO unit object.
+
+        :param mass_flux_dto: The MassFlux DTO representation.
+        :type mass_flux_dto: MassFluxDto
+        :return: A new instance of MassFlux.
+        :rtype: MassFlux
+        """
+        return MassFlux(mass_flux_dto.value, mass_flux_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of MassFlux from a DTO unit json representation.
+
+        :param data: The MassFlux DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "KilogramPerSecondPerSquareMeter"}
+        :return: A new instance of MassFlux.
+        :rtype: MassFlux
+        """
+        return MassFlux.from_dto(MassFluxDto.from_json(data))
 
     def __convert_from_base(self, from_unit: MassFluxUnits) -> float:
         value = self._value
@@ -512,48 +612,56 @@ class MassFlux(AbstractMeasure):
         return self.__kilograms_per_hour_per_square_millimeter
 
     
-    def to_string(self, unit: MassFluxUnits = MassFluxUnits.KilogramPerSecondPerSquareMeter) -> str:
+    def to_string(self, unit: MassFluxUnits = MassFluxUnits.KilogramPerSecondPerSquareMeter, fractional_digits: int = None) -> str:
         """
-        Format the MassFlux to string.
-        Note! the default format for MassFlux is KilogramPerSecondPerSquareMeter.
-        To specify the unit format set the 'unit' parameter.
+        Format the MassFlux to a string.
+        
+        Note: the default format for MassFlux is KilogramPerSecondPerSquareMeter.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the MassFlux. Default is 'KilogramPerSecondPerSquareMeter'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == MassFluxUnits.GramPerSecondPerSquareMeter:
-            return f"""{self.grams_per_second_per_square_meter} g·s⁻¹·m⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_second_per_square_meter, fractional_digits)} g·s⁻¹·m⁻²"""
         
         if unit == MassFluxUnits.GramPerSecondPerSquareCentimeter:
-            return f"""{self.grams_per_second_per_square_centimeter} g·s⁻¹·cm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_second_per_square_centimeter, fractional_digits)} g·s⁻¹·cm⁻²"""
         
         if unit == MassFluxUnits.GramPerSecondPerSquareMillimeter:
-            return f"""{self.grams_per_second_per_square_millimeter} g·s⁻¹·mm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_second_per_square_millimeter, fractional_digits)} g·s⁻¹·mm⁻²"""
         
         if unit == MassFluxUnits.GramPerHourPerSquareMeter:
-            return f"""{self.grams_per_hour_per_square_meter} g·h⁻¹·m⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_hour_per_square_meter, fractional_digits)} g·h⁻¹·m⁻²"""
         
         if unit == MassFluxUnits.GramPerHourPerSquareCentimeter:
-            return f"""{self.grams_per_hour_per_square_centimeter} g·h⁻¹·cm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_hour_per_square_centimeter, fractional_digits)} g·h⁻¹·cm⁻²"""
         
         if unit == MassFluxUnits.GramPerHourPerSquareMillimeter:
-            return f"""{self.grams_per_hour_per_square_millimeter} g·h⁻¹·mm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.grams_per_hour_per_square_millimeter, fractional_digits)} g·h⁻¹·mm⁻²"""
         
         if unit == MassFluxUnits.KilogramPerSecondPerSquareMeter:
-            return f"""{self.kilograms_per_second_per_square_meter} kg·s⁻¹·m⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_second_per_square_meter, fractional_digits)} kg·s⁻¹·m⁻²"""
         
         if unit == MassFluxUnits.KilogramPerSecondPerSquareCentimeter:
-            return f"""{self.kilograms_per_second_per_square_centimeter} kg·s⁻¹·cm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_second_per_square_centimeter, fractional_digits)} kg·s⁻¹·cm⁻²"""
         
         if unit == MassFluxUnits.KilogramPerSecondPerSquareMillimeter:
-            return f"""{self.kilograms_per_second_per_square_millimeter} kg·s⁻¹·mm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_second_per_square_millimeter, fractional_digits)} kg·s⁻¹·mm⁻²"""
         
         if unit == MassFluxUnits.KilogramPerHourPerSquareMeter:
-            return f"""{self.kilograms_per_hour_per_square_meter} kg·h⁻¹·m⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_hour_per_square_meter, fractional_digits)} kg·h⁻¹·m⁻²"""
         
         if unit == MassFluxUnits.KilogramPerHourPerSquareCentimeter:
-            return f"""{self.kilograms_per_hour_per_square_centimeter} kg·h⁻¹·cm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_hour_per_square_centimeter, fractional_digits)} kg·h⁻¹·cm⁻²"""
         
         if unit == MassFluxUnits.KilogramPerHourPerSquareMillimeter:
-            return f"""{self.kilograms_per_hour_per_square_millimeter} kg·h⁻¹·mm⁻²"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_per_hour_per_square_millimeter, fractional_digits)} kg·h⁻¹·mm⁻²"""
         
         return f'{self._value}'
 

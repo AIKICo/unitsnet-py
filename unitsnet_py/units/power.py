@@ -10,136 +10,191 @@ class PowerUnits(Enum):
             PowerUnits enumeration
         """
         
-        Watt = 'watt'
+        Watt = 'Watt'
         """
             
         """
         
-        MechanicalHorsepower = 'mechanical_horsepower'
+        MechanicalHorsepower = 'MechanicalHorsepower'
         """
             
         """
         
-        MetricHorsepower = 'metric_horsepower'
+        MetricHorsepower = 'MetricHorsepower'
         """
             
         """
         
-        ElectricalHorsepower = 'electrical_horsepower'
+        ElectricalHorsepower = 'ElectricalHorsepower'
         """
             
         """
         
-        BoilerHorsepower = 'boiler_horsepower'
+        BoilerHorsepower = 'BoilerHorsepower'
         """
             
         """
         
-        HydraulicHorsepower = 'hydraulic_horsepower'
+        HydraulicHorsepower = 'HydraulicHorsepower'
         """
             
         """
         
-        BritishThermalUnitPerHour = 'british_thermal_unit_per_hour'
+        BritishThermalUnitPerHour = 'BritishThermalUnitPerHour'
         """
             
         """
         
-        JoulePerHour = 'joule_per_hour'
+        JoulePerHour = 'JoulePerHour'
         """
             
         """
         
-        Femtowatt = 'femtowatt'
+        TonOfRefrigeration = 'TonOfRefrigeration'
         """
             
         """
         
-        Picowatt = 'picowatt'
+        Femtowatt = 'Femtowatt'
         """
             
         """
         
-        Nanowatt = 'nanowatt'
+        Picowatt = 'Picowatt'
         """
             
         """
         
-        Microwatt = 'microwatt'
+        Nanowatt = 'Nanowatt'
         """
             
         """
         
-        Milliwatt = 'milliwatt'
+        Microwatt = 'Microwatt'
         """
             
         """
         
-        Deciwatt = 'deciwatt'
+        Milliwatt = 'Milliwatt'
         """
             
         """
         
-        Decawatt = 'decawatt'
+        Deciwatt = 'Deciwatt'
         """
             
         """
         
-        Kilowatt = 'kilowatt'
+        Decawatt = 'Decawatt'
         """
             
         """
         
-        Megawatt = 'megawatt'
+        Kilowatt = 'Kilowatt'
         """
             
         """
         
-        Gigawatt = 'gigawatt'
+        Megawatt = 'Megawatt'
         """
             
         """
         
-        Terawatt = 'terawatt'
+        Gigawatt = 'Gigawatt'
         """
             
         """
         
-        Petawatt = 'petawatt'
+        Terawatt = 'Terawatt'
         """
             
         """
         
-        KilobritishThermalUnitPerHour = 'kilobritish_thermal_unit_per_hour'
+        Petawatt = 'Petawatt'
         """
             
         """
         
-        MegabritishThermalUnitPerHour = 'megabritish_thermal_unit_per_hour'
+        KilobritishThermalUnitPerHour = 'KilobritishThermalUnitPerHour'
         """
             
         """
         
-        MillijoulePerHour = 'millijoule_per_hour'
+        MegabritishThermalUnitPerHour = 'MegabritishThermalUnitPerHour'
         """
             
         """
         
-        KilojoulePerHour = 'kilojoule_per_hour'
+        MillijoulePerHour = 'MillijoulePerHour'
         """
             
         """
         
-        MegajoulePerHour = 'megajoule_per_hour'
+        KilojoulePerHour = 'KilojoulePerHour'
         """
             
         """
         
-        GigajoulePerHour = 'gigajoule_per_hour'
+        MegajoulePerHour = 'MegajoulePerHour'
         """
             
         """
         
+        GigajoulePerHour = 'GigajoulePerHour'
+        """
+            
+        """
+        
+
+class PowerDto:
+    """
+    A DTO representation of a Power
+
+    Attributes:
+        value (float): The value of the Power.
+        unit (PowerUnits): The specific unit that the Power value is representing.
+    """
+
+    def __init__(self, value: float, unit: PowerUnits):
+        """
+        Create a new DTO representation of a Power
+
+        Parameters:
+            value (float): The value of the Power.
+            unit (PowerUnits): The specific unit that the Power value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Power
+        """
+        self.unit: PowerUnits = unit
+        """
+        The specific unit that the Power value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Power DTO JSON object representing the current unit.
+
+        :return: JSON object represents Power DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Watt"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Power DTO from a json representation.
+
+        :param data: The Power DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Watt"}
+        :return: A new instance of PowerDto.
+        :rtype: PowerDto
+        """
+        return PowerDto(value=data["value"], unit=PowerUnits(data["unit"]))
+
 
 class Power(AbstractMeasure):
     """
@@ -150,8 +205,10 @@ class Power(AbstractMeasure):
         from_unit (PowerUnits): The Power unit to create from, The default unit is Watt
     """
     def __init__(self, value: float, from_unit: PowerUnits = PowerUnits.Watt):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__watts = None
@@ -169,6 +226,8 @@ class Power(AbstractMeasure):
         self.__british_thermal_units_per_hour = None
         
         self.__joules_per_hour = None
+        
+        self.__tons_of_refrigeration = None
         
         self.__femtowatts = None
         
@@ -210,6 +269,54 @@ class Power(AbstractMeasure):
     def convert(self, unit: PowerUnits) -> float:
         return self.__convert_from_base(unit)
 
+    def to_dto(self, hold_in_unit: PowerUnits = PowerUnits.Watt) -> PowerDto:
+        """
+        Get a new instance of Power DTO representing the current unit.
+
+        :param hold_in_unit: The specific Power unit to store the Power value in the DTO representation.
+        :type hold_in_unit: PowerUnits
+        :return: A new instance of PowerDto.
+        :rtype: PowerDto
+        """
+        return PowerDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: PowerUnits = PowerUnits.Watt):
+        """
+        Get a Power DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Power unit to store the Power value in the DTO representation.
+        :type hold_in_unit: PowerUnits
+        :return: JSON object represents Power DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Watt"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(power_dto: PowerDto):
+        """
+        Obtain a new instance of Power from a DTO unit object.
+
+        :param power_dto: The Power DTO representation.
+        :type power_dto: PowerDto
+        :return: A new instance of Power.
+        :rtype: Power
+        """
+        return Power(power_dto.value, power_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Power from a DTO unit json representation.
+
+        :param data: The Power DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Watt"}
+        :return: A new instance of Power.
+        :rtype: Power
+        """
+        return Power.from_dto(PowerDto.from_json(data))
+
     def __convert_from_base(self, from_unit: PowerUnits) -> float:
         value = self._value
         
@@ -236,6 +343,9 @@ class Power(AbstractMeasure):
         
         if from_unit == PowerUnits.JoulePerHour:
             return (value * 3600)
+        
+        if from_unit == PowerUnits.TonOfRefrigeration:
+            return (value / 3516.853)
         
         if from_unit == PowerUnits.Femtowatt:
             return ((value) / 1e-15)
@@ -319,6 +429,9 @@ class Power(AbstractMeasure):
         
         if to_unit == PowerUnits.JoulePerHour:
             return (value / 3600)
+        
+        if to_unit == PowerUnits.TonOfRefrigeration:
+            return (value * 3516.853)
         
         if to_unit == PowerUnits.Femtowatt:
             return ((value) * 1e-15)
@@ -500,6 +613,21 @@ class Power(AbstractMeasure):
         :rtype: Power
         """
         return Power(joules_per_hour, PowerUnits.JoulePerHour)
+
+    
+    @staticmethod
+    def from_tons_of_refrigeration(tons_of_refrigeration: float):
+        """
+        Create a new instance of Power from a value in tons_of_refrigeration.
+
+        
+
+        :param meters: The Power value in tons_of_refrigeration.
+        :type tons_of_refrigeration: float
+        :return: A new instance of Power.
+        :rtype: Power
+        """
+        return Power(tons_of_refrigeration, PowerUnits.TonOfRefrigeration)
 
     
     @staticmethod
@@ -861,6 +989,17 @@ class Power(AbstractMeasure):
 
     
     @property
+    def tons_of_refrigeration(self) -> float:
+        """
+        
+        """
+        if self.__tons_of_refrigeration != None:
+            return self.__tons_of_refrigeration
+        self.__tons_of_refrigeration = self.__convert_from_base(PowerUnits.TonOfRefrigeration)
+        return self.__tons_of_refrigeration
+
+    
+    @property
     def femtowatts(self) -> float:
         """
         
@@ -1058,90 +1197,101 @@ class Power(AbstractMeasure):
         return self.__gigajoules_per_hour
 
     
-    def to_string(self, unit: PowerUnits = PowerUnits.Watt) -> str:
+    def to_string(self, unit: PowerUnits = PowerUnits.Watt, fractional_digits: int = None) -> str:
         """
-        Format the Power to string.
-        Note! the default format for Power is Watt.
-        To specify the unit format set the 'unit' parameter.
+        Format the Power to a string.
+        
+        Note: the default format for Power is Watt.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Power. Default is 'Watt'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == PowerUnits.Watt:
-            return f"""{self.watts} W"""
+            return f"""{super()._truncate_fraction_digits(self.watts, fractional_digits)} W"""
         
         if unit == PowerUnits.MechanicalHorsepower:
-            return f"""{self.mechanical_horsepower} hp(I)"""
+            return f"""{super()._truncate_fraction_digits(self.mechanical_horsepower, fractional_digits)} hp(I)"""
         
         if unit == PowerUnits.MetricHorsepower:
-            return f"""{self.metric_horsepower} hp(M)"""
+            return f"""{super()._truncate_fraction_digits(self.metric_horsepower, fractional_digits)} hp(M)"""
         
         if unit == PowerUnits.ElectricalHorsepower:
-            return f"""{self.electrical_horsepower} hp(E)"""
+            return f"""{super()._truncate_fraction_digits(self.electrical_horsepower, fractional_digits)} hp(E)"""
         
         if unit == PowerUnits.BoilerHorsepower:
-            return f"""{self.boiler_horsepower} hp(S)"""
+            return f"""{super()._truncate_fraction_digits(self.boiler_horsepower, fractional_digits)} hp(S)"""
         
         if unit == PowerUnits.HydraulicHorsepower:
-            return f"""{self.hydraulic_horsepower} hp(H)"""
+            return f"""{super()._truncate_fraction_digits(self.hydraulic_horsepower, fractional_digits)} hp(H)"""
         
         if unit == PowerUnits.BritishThermalUnitPerHour:
-            return f"""{self.british_thermal_units_per_hour} Btu/h"""
+            return f"""{super()._truncate_fraction_digits(self.british_thermal_units_per_hour, fractional_digits)} Btu/h"""
         
         if unit == PowerUnits.JoulePerHour:
-            return f"""{self.joules_per_hour} J/h"""
+            return f"""{super()._truncate_fraction_digits(self.joules_per_hour, fractional_digits)} J/h"""
+        
+        if unit == PowerUnits.TonOfRefrigeration:
+            return f"""{super()._truncate_fraction_digits(self.tons_of_refrigeration, fractional_digits)} TR"""
         
         if unit == PowerUnits.Femtowatt:
-            return f"""{self.femtowatts} fW"""
+            return f"""{super()._truncate_fraction_digits(self.femtowatts, fractional_digits)} fW"""
         
         if unit == PowerUnits.Picowatt:
-            return f"""{self.picowatts} pW"""
+            return f"""{super()._truncate_fraction_digits(self.picowatts, fractional_digits)} pW"""
         
         if unit == PowerUnits.Nanowatt:
-            return f"""{self.nanowatts} nW"""
+            return f"""{super()._truncate_fraction_digits(self.nanowatts, fractional_digits)} nW"""
         
         if unit == PowerUnits.Microwatt:
-            return f"""{self.microwatts} μW"""
+            return f"""{super()._truncate_fraction_digits(self.microwatts, fractional_digits)} μW"""
         
         if unit == PowerUnits.Milliwatt:
-            return f"""{self.milliwatts} mW"""
+            return f"""{super()._truncate_fraction_digits(self.milliwatts, fractional_digits)} mW"""
         
         if unit == PowerUnits.Deciwatt:
-            return f"""{self.deciwatts} dW"""
+            return f"""{super()._truncate_fraction_digits(self.deciwatts, fractional_digits)} dW"""
         
         if unit == PowerUnits.Decawatt:
-            return f"""{self.decawatts} daW"""
+            return f"""{super()._truncate_fraction_digits(self.decawatts, fractional_digits)} daW"""
         
         if unit == PowerUnits.Kilowatt:
-            return f"""{self.kilowatts} kW"""
+            return f"""{super()._truncate_fraction_digits(self.kilowatts, fractional_digits)} kW"""
         
         if unit == PowerUnits.Megawatt:
-            return f"""{self.megawatts} MW"""
+            return f"""{super()._truncate_fraction_digits(self.megawatts, fractional_digits)} MW"""
         
         if unit == PowerUnits.Gigawatt:
-            return f"""{self.gigawatts} GW"""
+            return f"""{super()._truncate_fraction_digits(self.gigawatts, fractional_digits)} GW"""
         
         if unit == PowerUnits.Terawatt:
-            return f"""{self.terawatts} TW"""
+            return f"""{super()._truncate_fraction_digits(self.terawatts, fractional_digits)} TW"""
         
         if unit == PowerUnits.Petawatt:
-            return f"""{self.petawatts} PW"""
+            return f"""{super()._truncate_fraction_digits(self.petawatts, fractional_digits)} PW"""
         
         if unit == PowerUnits.KilobritishThermalUnitPerHour:
-            return f"""{self.kilobritish_thermal_units_per_hour} kBtu/h"""
+            return f"""{super()._truncate_fraction_digits(self.kilobritish_thermal_units_per_hour, fractional_digits)} kBtu/h"""
         
         if unit == PowerUnits.MegabritishThermalUnitPerHour:
-            return f"""{self.megabritish_thermal_units_per_hour} MBtu/h"""
+            return f"""{super()._truncate_fraction_digits(self.megabritish_thermal_units_per_hour, fractional_digits)} MBtu/h"""
         
         if unit == PowerUnits.MillijoulePerHour:
-            return f"""{self.millijoules_per_hour} mJ/h"""
+            return f"""{super()._truncate_fraction_digits(self.millijoules_per_hour, fractional_digits)} mJ/h"""
         
         if unit == PowerUnits.KilojoulePerHour:
-            return f"""{self.kilojoules_per_hour} kJ/h"""
+            return f"""{super()._truncate_fraction_digits(self.kilojoules_per_hour, fractional_digits)} kJ/h"""
         
         if unit == PowerUnits.MegajoulePerHour:
-            return f"""{self.megajoules_per_hour} MJ/h"""
+            return f"""{super()._truncate_fraction_digits(self.megajoules_per_hour, fractional_digits)} MJ/h"""
         
         if unit == PowerUnits.GigajoulePerHour:
-            return f"""{self.gigajoules_per_hour} GJ/h"""
+            return f"""{super()._truncate_fraction_digits(self.gigajoules_per_hour, fractional_digits)} GJ/h"""
         
         return f'{self._value}'
 
@@ -1176,6 +1326,9 @@ class Power(AbstractMeasure):
         
         if unit_abbreviation == PowerUnits.JoulePerHour:
             return """J/h"""
+        
+        if unit_abbreviation == PowerUnits.TonOfRefrigeration:
+            return """TR"""
         
         if unit_abbreviation == PowerUnits.Femtowatt:
             return """fW"""

@@ -10,81 +10,131 @@ class ForceUnits(Enum):
             ForceUnits enumeration
         """
         
-        Dyn = 'dyn'
+        Dyn = 'Dyn'
         """
-            
-        """
-        
-        KilogramForce = 'kilogram_force'
-        """
-            
+            One dyne is equal to 10 micronewtons, 10e−5 N or to 10 nsn (nanosthenes) in the old metre–tonne–second system of units.
         """
         
-        TonneForce = 'tonne_force'
+        KilogramForce = 'KilogramForce'
         """
-            
-        """
-        
-        Newton = 'newton'
-        """
-            
+            The kilogram-force, or kilopond, is equal to the magnitude of the force exerted on one kilogram of mass in a 9.80665 m/s2 gravitational field (standard gravity). Therefore, one kilogram-force is by definition equal to 9.80665 N.
         """
         
-        KiloPond = 'kilo_pond'
+        TonneForce = 'TonneForce'
         """
-            
-        """
-        
-        Poundal = 'poundal'
-        """
-            
+            The tonne-force, metric ton-force, megagram-force, and megapond (Mp) are each 1000 kilograms-force.
         """
         
-        PoundForce = 'pound_force'
+        Newton = 'Newton'
         """
-            
-        """
-        
-        OunceForce = 'ounce_force'
-        """
-            
+            The newton (symbol: N) is the unit of force in the International System of Units (SI). It is defined as 1 kg⋅m/s2, the force which gives a mass of 1 kilogram an acceleration of 1 metre per second per second.
         """
         
-        ShortTonForce = 'short_ton_force'
+        KiloPond = 'KiloPond'
+        """
+            The kilogram-force, or kilopond, is equal to the magnitude of the force exerted on one kilogram of mass in a 9.80665 m/s2 gravitational field (standard gravity). Therefore, one kilogram-force is by definition equal to 9.80665 N.
+        """
+        
+        Poundal = 'Poundal'
+        """
+            The poundal is defined as the force necessary to accelerate 1 pound-mass at 1 foot per second per second. 1 pdl = 0.138254954376 N exactly.
+        """
+        
+        PoundForce = 'PoundForce'
+        """
+            The standard values of acceleration of the standard gravitational field (gn) and the international avoirdupois pound (lb) result in a pound-force equal to 4.4482216152605 N.
+        """
+        
+        OunceForce = 'OunceForce'
+        """
+            An ounce-force is 1⁄16 of a pound-force, or about 0.2780139 newtons.
+        """
+        
+        ShortTonForce = 'ShortTonForce'
         """
             The short ton-force is a unit of force equal to 2,000 pounds-force (907.18474 kgf), that is most commonly used in the United States – known there simply as the ton or US ton.
         """
         
-        Micronewton = 'micronewton'
+        Micronewton = 'Micronewton'
         """
             
         """
         
-        Millinewton = 'millinewton'
+        Millinewton = 'Millinewton'
         """
             
         """
         
-        Decanewton = 'decanewton'
+        Decanewton = 'Decanewton'
         """
             
         """
         
-        Kilonewton = 'kilonewton'
+        Kilonewton = 'Kilonewton'
         """
             
         """
         
-        Meganewton = 'meganewton'
+        Meganewton = 'Meganewton'
         """
             
         """
         
-        KilopoundForce = 'kilopound_force'
+        KilopoundForce = 'KilopoundForce'
         """
             
         """
         
+
+class ForceDto:
+    """
+    A DTO representation of a Force
+
+    Attributes:
+        value (float): The value of the Force.
+        unit (ForceUnits): The specific unit that the Force value is representing.
+    """
+
+    def __init__(self, value: float, unit: ForceUnits):
+        """
+        Create a new DTO representation of a Force
+
+        Parameters:
+            value (float): The value of the Force.
+            unit (ForceUnits): The specific unit that the Force value is representing.
+        """
+        self.value: float = value
+        """
+        The value of the Force
+        """
+        self.unit: ForceUnits = unit
+        """
+        The specific unit that the Force value is representing
+        """
+
+    def to_json(self):
+        """
+        Get a Force DTO JSON object representing the current unit.
+
+        :return: JSON object represents Force DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Newton"}
+        """
+        return {"value": self.value, "unit": self.unit.value}
+
+    @staticmethod
+    def from_json(data):
+        """
+        Obtain a new instance of Force DTO from a json representation.
+
+        :param data: The Force DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Newton"}
+        :return: A new instance of ForceDto.
+        :rtype: ForceDto
+        """
+        return ForceDto(value=data["value"], unit=ForceUnits(data["unit"]))
+
 
 class Force(AbstractMeasure):
     """
@@ -95,8 +145,10 @@ class Force(AbstractMeasure):
         from_unit (ForceUnits): The Force unit to create from, The default unit is Newton
     """
     def __init__(self, value: float, from_unit: ForceUnits = ForceUnits.Newton):
-        if math.isnan(value):
-            raise ValueError('Invalid unit: value is NaN')
+        # Do not validate type, to allow working with numpay arrays and similar objects who supports all arithmetic 
+        # operations, but they are not a number, see #14 
+        # if math.isnan(value):
+        #     raise ValueError('Invalid unit: value is NaN')
         self._value = self.__convert_to_base(value, from_unit)
         
         self.__dyne = None
@@ -133,6 +185,54 @@ class Force(AbstractMeasure):
     def convert(self, unit: ForceUnits) -> float:
         return self.__convert_from_base(unit)
 
+    def to_dto(self, hold_in_unit: ForceUnits = ForceUnits.Newton) -> ForceDto:
+        """
+        Get a new instance of Force DTO representing the current unit.
+
+        :param hold_in_unit: The specific Force unit to store the Force value in the DTO representation.
+        :type hold_in_unit: ForceUnits
+        :return: A new instance of ForceDto.
+        :rtype: ForceDto
+        """
+        return ForceDto(value=self.convert(hold_in_unit), unit=hold_in_unit)
+    
+    def to_dto_json(self, hold_in_unit: ForceUnits = ForceUnits.Newton):
+        """
+        Get a Force DTO JSON object representing the current unit.
+
+        :param hold_in_unit: The specific Force unit to store the Force value in the DTO representation.
+        :type hold_in_unit: ForceUnits
+        :return: JSON object represents Force DTO.
+        :rtype: dict
+        :example return: {"value": 100, "unit": "Newton"}
+        """
+        return self.to_dto(hold_in_unit).to_json()
+
+    @staticmethod
+    def from_dto(force_dto: ForceDto):
+        """
+        Obtain a new instance of Force from a DTO unit object.
+
+        :param force_dto: The Force DTO representation.
+        :type force_dto: ForceDto
+        :return: A new instance of Force.
+        :rtype: Force
+        """
+        return Force(force_dto.value, force_dto.unit)
+
+    @staticmethod
+    def from_dto_json(data: dict):
+        """
+        Obtain a new instance of Force from a DTO unit json representation.
+
+        :param data: The Force DTO in JSON representation.
+        :type data: dict
+        :example data: {"value": 100, "unit": "Newton"}
+        :return: A new instance of Force.
+        :rtype: Force
+        """
+        return Force.from_dto(ForceDto.from_json(data))
+
     def __convert_from_base(self, from_unit: ForceUnits) -> float:
         value = self._value
         
@@ -140,28 +240,28 @@ class Force(AbstractMeasure):
             return (value * 1e5)
         
         if from_unit == ForceUnits.KilogramForce:
-            return (value / 9.80665002864)
+            return (value / 9.80665)
         
         if from_unit == ForceUnits.TonneForce:
-            return (value / 9.80665002864e3)
+            return (value / (9.80665 * 1000))
         
         if from_unit == ForceUnits.Newton:
             return (value)
         
         if from_unit == ForceUnits.KiloPond:
-            return (value / 9.80665002864)
+            return (value / 9.80665)
         
         if from_unit == ForceUnits.Poundal:
-            return (value / 0.13825502798973041652092282466083)
+            return (value / 0.138254954376)
         
         if from_unit == ForceUnits.PoundForce:
-            return (value / 4.4482216152605095551842641431421)
+            return (value / 4.4482216152605)
         
         if from_unit == ForceUnits.OunceForce:
-            return (value / 2.780138509537812e-1)
+            return (value / (4.4482216152605 / 16))
         
         if from_unit == ForceUnits.ShortTonForce:
-            return (value / 8.896443230521e3)
+            return (value / (4.4482216152605 * 2000))
         
         if from_unit == ForceUnits.Micronewton:
             return ((value) / 1e-06)
@@ -179,7 +279,7 @@ class Force(AbstractMeasure):
             return ((value) / 1000000.0)
         
         if from_unit == ForceUnits.KilopoundForce:
-            return ((value / 4.4482216152605095551842641431421) / 1000.0)
+            return ((value / 4.4482216152605) / 1000.0)
         
         return None
 
@@ -190,28 +290,28 @@ class Force(AbstractMeasure):
             return (value / 1e5)
         
         if to_unit == ForceUnits.KilogramForce:
-            return (value * 9.80665002864)
+            return (value * 9.80665)
         
         if to_unit == ForceUnits.TonneForce:
-            return (value * 9.80665002864e3)
+            return (value * (9.80665 * 1000))
         
         if to_unit == ForceUnits.Newton:
             return (value)
         
         if to_unit == ForceUnits.KiloPond:
-            return (value * 9.80665002864)
+            return (value * 9.80665)
         
         if to_unit == ForceUnits.Poundal:
-            return (value * 0.13825502798973041652092282466083)
+            return (value * 0.138254954376)
         
         if to_unit == ForceUnits.PoundForce:
-            return (value * 4.4482216152605095551842641431421)
+            return (value * 4.4482216152605)
         
         if to_unit == ForceUnits.OunceForce:
-            return (value * 2.780138509537812e-1)
+            return (value * (4.4482216152605 / 16))
         
         if to_unit == ForceUnits.ShortTonForce:
-            return (value * 8.896443230521e3)
+            return (value * (4.4482216152605 * 2000))
         
         if to_unit == ForceUnits.Micronewton:
             return ((value) * 1e-06)
@@ -229,7 +329,7 @@ class Force(AbstractMeasure):
             return ((value) * 1000000.0)
         
         if to_unit == ForceUnits.KilopoundForce:
-            return ((value * 4.4482216152605095551842641431421) * 1000.0)
+            return ((value * 4.4482216152605) * 1000.0)
         
         return None
 
@@ -244,7 +344,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in dyne.
 
-        
+        One dyne is equal to 10 micronewtons, 10e−5 N or to 10 nsn (nanosthenes) in the old metre–tonne–second system of units.
 
         :param meters: The Force value in dyne.
         :type dyne: float
@@ -259,7 +359,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in kilograms_force.
 
-        
+        The kilogram-force, or kilopond, is equal to the magnitude of the force exerted on one kilogram of mass in a 9.80665 m/s2 gravitational field (standard gravity). Therefore, one kilogram-force is by definition equal to 9.80665 N.
 
         :param meters: The Force value in kilograms_force.
         :type kilograms_force: float
@@ -274,7 +374,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in tonnes_force.
 
-        
+        The tonne-force, metric ton-force, megagram-force, and megapond (Mp) are each 1000 kilograms-force.
 
         :param meters: The Force value in tonnes_force.
         :type tonnes_force: float
@@ -289,7 +389,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in newtons.
 
-        
+        The newton (symbol: N) is the unit of force in the International System of Units (SI). It is defined as 1 kg⋅m/s2, the force which gives a mass of 1 kilogram an acceleration of 1 metre per second per second.
 
         :param meters: The Force value in newtons.
         :type newtons: float
@@ -304,7 +404,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in kilo_ponds.
 
-        
+        The kilogram-force, or kilopond, is equal to the magnitude of the force exerted on one kilogram of mass in a 9.80665 m/s2 gravitational field (standard gravity). Therefore, one kilogram-force is by definition equal to 9.80665 N.
 
         :param meters: The Force value in kilo_ponds.
         :type kilo_ponds: float
@@ -319,7 +419,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in poundals.
 
-        
+        The poundal is defined as the force necessary to accelerate 1 pound-mass at 1 foot per second per second. 1 pdl = 0.138254954376 N exactly.
 
         :param meters: The Force value in poundals.
         :type poundals: float
@@ -334,7 +434,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in pounds_force.
 
-        
+        The standard values of acceleration of the standard gravitational field (gn) and the international avoirdupois pound (lb) result in a pound-force equal to 4.4482216152605 N.
 
         :param meters: The Force value in pounds_force.
         :type pounds_force: float
@@ -349,7 +449,7 @@ class Force(AbstractMeasure):
         """
         Create a new instance of Force from a value in ounce_force.
 
-        
+        An ounce-force is 1⁄16 of a pound-force, or about 0.2780139 newtons.
 
         :param meters: The Force value in ounce_force.
         :type ounce_force: float
@@ -467,7 +567,7 @@ class Force(AbstractMeasure):
     @property
     def dyne(self) -> float:
         """
-        
+        One dyne is equal to 10 micronewtons, 10e−5 N or to 10 nsn (nanosthenes) in the old metre–tonne–second system of units.
         """
         if self.__dyne != None:
             return self.__dyne
@@ -478,7 +578,7 @@ class Force(AbstractMeasure):
     @property
     def kilograms_force(self) -> float:
         """
-        
+        The kilogram-force, or kilopond, is equal to the magnitude of the force exerted on one kilogram of mass in a 9.80665 m/s2 gravitational field (standard gravity). Therefore, one kilogram-force is by definition equal to 9.80665 N.
         """
         if self.__kilograms_force != None:
             return self.__kilograms_force
@@ -489,7 +589,7 @@ class Force(AbstractMeasure):
     @property
     def tonnes_force(self) -> float:
         """
-        
+        The tonne-force, metric ton-force, megagram-force, and megapond (Mp) are each 1000 kilograms-force.
         """
         if self.__tonnes_force != None:
             return self.__tonnes_force
@@ -500,7 +600,7 @@ class Force(AbstractMeasure):
     @property
     def newtons(self) -> float:
         """
-        
+        The newton (symbol: N) is the unit of force in the International System of Units (SI). It is defined as 1 kg⋅m/s2, the force which gives a mass of 1 kilogram an acceleration of 1 metre per second per second.
         """
         if self.__newtons != None:
             return self.__newtons
@@ -511,7 +611,7 @@ class Force(AbstractMeasure):
     @property
     def kilo_ponds(self) -> float:
         """
-        
+        The kilogram-force, or kilopond, is equal to the magnitude of the force exerted on one kilogram of mass in a 9.80665 m/s2 gravitational field (standard gravity). Therefore, one kilogram-force is by definition equal to 9.80665 N.
         """
         if self.__kilo_ponds != None:
             return self.__kilo_ponds
@@ -522,7 +622,7 @@ class Force(AbstractMeasure):
     @property
     def poundals(self) -> float:
         """
-        
+        The poundal is defined as the force necessary to accelerate 1 pound-mass at 1 foot per second per second. 1 pdl = 0.138254954376 N exactly.
         """
         if self.__poundals != None:
             return self.__poundals
@@ -533,7 +633,7 @@ class Force(AbstractMeasure):
     @property
     def pounds_force(self) -> float:
         """
-        
+        The standard values of acceleration of the standard gravitational field (gn) and the international avoirdupois pound (lb) result in a pound-force equal to 4.4482216152605 N.
         """
         if self.__pounds_force != None:
             return self.__pounds_force
@@ -544,7 +644,7 @@ class Force(AbstractMeasure):
     @property
     def ounce_force(self) -> float:
         """
-        
+        An ounce-force is 1⁄16 of a pound-force, or about 0.2780139 newtons.
         """
         if self.__ounce_force != None:
             return self.__ounce_force
@@ -629,57 +729,65 @@ class Force(AbstractMeasure):
         return self.__kilopounds_force
 
     
-    def to_string(self, unit: ForceUnits = ForceUnits.Newton) -> str:
+    def to_string(self, unit: ForceUnits = ForceUnits.Newton, fractional_digits: int = None) -> str:
         """
-        Format the Force to string.
-        Note! the default format for Force is Newton.
-        To specify the unit format set the 'unit' parameter.
+        Format the Force to a string.
+        
+        Note: the default format for Force is Newton.
+        To specify the unit format, set the 'unit' parameter.
+        
+        Args:
+            unit (str): The unit to format the Force. Default is 'Newton'.
+            fractional_digits (int, optional): The number of fractional digits to keep.
+
+        Returns:
+            str: The string format of the Angle.
         """
         
         if unit == ForceUnits.Dyn:
-            return f"""{self.dyne} dyn"""
+            return f"""{super()._truncate_fraction_digits(self.dyne, fractional_digits)} dyn"""
         
         if unit == ForceUnits.KilogramForce:
-            return f"""{self.kilograms_force} kgf"""
+            return f"""{super()._truncate_fraction_digits(self.kilograms_force, fractional_digits)} kgf"""
         
         if unit == ForceUnits.TonneForce:
-            return f"""{self.tonnes_force} tf"""
+            return f"""{super()._truncate_fraction_digits(self.tonnes_force, fractional_digits)} tf"""
         
         if unit == ForceUnits.Newton:
-            return f"""{self.newtons} N"""
+            return f"""{super()._truncate_fraction_digits(self.newtons, fractional_digits)} N"""
         
         if unit == ForceUnits.KiloPond:
-            return f"""{self.kilo_ponds} kp"""
+            return f"""{super()._truncate_fraction_digits(self.kilo_ponds, fractional_digits)} kp"""
         
         if unit == ForceUnits.Poundal:
-            return f"""{self.poundals} pdl"""
+            return f"""{super()._truncate_fraction_digits(self.poundals, fractional_digits)} pdl"""
         
         if unit == ForceUnits.PoundForce:
-            return f"""{self.pounds_force} lbf"""
+            return f"""{super()._truncate_fraction_digits(self.pounds_force, fractional_digits)} lbf"""
         
         if unit == ForceUnits.OunceForce:
-            return f"""{self.ounce_force} ozf"""
+            return f"""{super()._truncate_fraction_digits(self.ounce_force, fractional_digits)} ozf"""
         
         if unit == ForceUnits.ShortTonForce:
-            return f"""{self.short_tons_force} tf (short)"""
+            return f"""{super()._truncate_fraction_digits(self.short_tons_force, fractional_digits)} tf (short)"""
         
         if unit == ForceUnits.Micronewton:
-            return f"""{self.micronewtons} μN"""
+            return f"""{super()._truncate_fraction_digits(self.micronewtons, fractional_digits)} μN"""
         
         if unit == ForceUnits.Millinewton:
-            return f"""{self.millinewtons} mN"""
+            return f"""{super()._truncate_fraction_digits(self.millinewtons, fractional_digits)} mN"""
         
         if unit == ForceUnits.Decanewton:
-            return f"""{self.decanewtons} daN"""
+            return f"""{super()._truncate_fraction_digits(self.decanewtons, fractional_digits)} daN"""
         
         if unit == ForceUnits.Kilonewton:
-            return f"""{self.kilonewtons} kN"""
+            return f"""{super()._truncate_fraction_digits(self.kilonewtons, fractional_digits)} kN"""
         
         if unit == ForceUnits.Meganewton:
-            return f"""{self.meganewtons} MN"""
+            return f"""{super()._truncate_fraction_digits(self.meganewtons, fractional_digits)} MN"""
         
         if unit == ForceUnits.KilopoundForce:
-            return f"""{self.kilopounds_force} klbf"""
+            return f"""{super()._truncate_fraction_digits(self.kilopounds_force, fractional_digits)} klbf"""
         
         return f'{self._value}'
 
